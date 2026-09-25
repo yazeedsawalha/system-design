@@ -1387,8 +1387,332 @@ function whiteboardTemplate() {
   return doc(els);
 }
 
+// Additional diagram builders — appended into gen_excalidraw_diagrams.mjs before DIAGRAMS registry
+
+function osiModel() {
+  const els = [...titleText("OSI Model (Interview View)"), ...subtitle()];
+  const layers = [
+    { name: "7 Application\nHTTP, gRPC, DNS apps", pal: CLIENT },
+    { name: "6 Presentation\nencoding / TLS data", pal: NETWORK },
+    { name: "5 Session\nsessions / dialogs", pal: HIGHLIGHT },
+    { name: "4 Transport\nTCP / UDP  (L4 LB)", pal: COMPUTE },
+    { name: "3 Network\nIP routing", pal: CACHE },
+    { name: "2 Data Link\nframes / MAC", pal: QUEUE },
+    { name: "1 Physical\ncables / bits", pal: EXTERNAL },
+  ];
+  layers.forEach((L, i) => {
+    const b = box(L.name, 120, 90 + i * 58, 420, 50, L.pal, 14);
+    els.push(...b.els);
+  });
+  els.push(...groupFrame(580, 90, 420, 380, "Why interviews care"));
+  els.push(
+    ...note(
+      "• L4 LB = TCP/UDP ports & IPs\n• L7 LB = HTTP path/host/headers\n• TLS often discussed near\n  presentation / app edge\n• You rarely design L1–L2,\n  but the vocabulary matters",
+      600,
+      140,
+      15
+    )
+  );
+  els.push(
+    ...note("Stack: app talks \"down\"; wires talk \"up\"", 120, 510, 14)
+  );
+  return doc(els);
+}
+
+function tcpVsUdp() {
+  const els = [...titleText("TCP vs UDP"), ...subtitle()];
+  els.push(...comparePanel(40, 90, 480, 380, "TCP — connection + reliability", false));
+  els.push(...comparePanel(560, 90, 480, 380, "UDP — connectionless + speed", true));
+  const c1 = client("Client", 80, 180, 110, 50);
+  const s1 = compute("Server", 340, 180, 110, 50);
+  els.push(...flatten(c1, s1));
+  els.push(...edge(c1, s1, "handshake"));
+  els.push(...edge(s1, c1, "acks / order", { dashed: true }));
+  els.push(
+    ...note(
+      "• Ordered, reliable streams\n• Retransmit lost packets\n• Congestion control\n• Used by HTTP, most DBs\n• Higher overhead",
+      80,
+      280,
+      14
+    )
+  );
+  const c2 = client("Client", 600, 180, 110, 50);
+  const s2 = compute("Server", 860, 180, 110, 50);
+  els.push(...flatten(c2, s2));
+  els.push(...edge(c2, s2, "datagrams"));
+  els.push(
+    ...note(
+      "• No connection setup\n• No delivery guarantee\n• App handles loss\n• DNS, VoIP, games, QUIC base\n• Lower latency",
+      600,
+      280,
+      14
+    )
+  );
+  els.push(
+    ...note(
+      "Pick TCP when correctness of bytes matters; UDP when late data is worse than lost data.",
+      40,
+      500
+    )
+  );
+  return doc(els);
+}
+
+function clusteringActiveActivePassive() {
+  const els = [...titleText("Clustering: Active-Active vs Active-Passive"), ...subtitle()];
+  els.push(...groupFrame(40, 90, 500, 320, "Active-Active"));
+  const lb1 = network("Load balancer", 200, 130, 160, 50);
+  const n1 = compute("Node A\nserving", 80, 230, 140, 70);
+  const n2 = compute("Node B\nserving", 320, 230, 140, 70);
+  els.push(...flatten(lb1, n1, n2));
+  els.push(...edge(lb1, n1));
+  els.push(...edge(lb1, n2));
+  els.push(...note("Both nodes take traffic\n= capacity + HA", 80, 330, 14));
+
+  els.push(...groupFrame(560, 90, 500, 320, "Active-Passive"));
+  const lb2 = network("VIP / failover", 720, 130, 160, 50);
+  const n3 = compute("Node A\nACTIVE", 600, 230, 140, 70);
+  const n4 = compute("Node B\nSTANDBY", 840, 230, 140, 70);
+  els.push(...flatten(lb2, n3, n4));
+  els.push(...edge(lb2, n3));
+  els.push(...edge(lb2, n4, "promote on fail", { dashed: true }));
+  els.push(...note("Standby idle until failover\n= simpler consistency", 600, 330, 14));
+
+  els.push(
+    ...note(
+      "Cluster ≠ load balancer: cluster nodes cooperate; LB spreads requests to unaware backends. Often used together.",
+      40,
+      440
+    )
+  );
+  return doc(els);
+}
+
+function storageFileBlockObject() {
+  const els = [...titleText("File vs Block vs Object Storage"), ...subtitle()];
+  const f = storage("File / NAS\npaths & folders", 60, 160, 280, 100);
+  const b = storage("Block\nvolumes / disks", 380, 160, 280, 100);
+  const o = storage("Object\nbuckets + keys", 700, 160, 280, 100);
+  els.push(...flatten(f, b, o));
+  els.push(
+    ...note(
+      "File: shared home dirs, lift-and-shift apps\nBlock: DB disks, VMs, low-level I/O\nObject: images, video, backups, data lakes",
+      60,
+      300,
+      15
+    )
+  );
+  els.push(
+    ...note(
+      "HDFS idea: split huge files into blocks, replicate across commodity nodes for throughput + fault tolerance.",
+      60,
+      400,
+      14
+    )
+  );
+  return doc(els);
+}
+
+function sagaVs2pc() {
+  const els = [...titleText("Distributed Tx: 2PC vs Sagas"), ...subtitle()];
+  els.push(...comparePanel(40, 90, 480, 400, "Two-phase commit (2PC)", true));
+  const coord = highlight("Coordinator", 180, 160, 160, 50);
+  const p1 = db("DB A", 80, 280, 120, 60);
+  const p2 = db("DB B", 220, 280, 120, 60);
+  const p3 = db("DB C", 360, 280, 120, 60);
+  els.push(...flatten(coord, p1, p2, p3));
+  els.push(...edge(coord, p1, "prepare"));
+  els.push(...edge(coord, p2, "prepare"));
+  els.push(...edge(coord, p3, "prepare"));
+  els.push(...note("Then commit/abort all\nBlocking if coordinator dies", 80, 370, 13));
+
+  els.push(...comparePanel(560, 90, 500, 400, "Saga (practical interview answer)", false));
+  const o1 = compute("Reserve\ninventory", 590, 160, 140, 55);
+  const o2 = compute("Charge\npayment", 760, 160, 140, 55);
+  const o3 = compute("Ship\norder", 930, 160, 120, 55);
+  els.push(...flatten(o1, o2, o3));
+  els.push(...edge(o1, o2, "next"));
+  els.push(...edge(o2, o3, "next"));
+  const c1 = queue("Compensate\nrelease stock", 590, 280, 160, 55);
+  const c2 = queue("Compensate\nrefund", 780, 280, 140, 55);
+  els.push(...flatten(c1, c2));
+  els.push(...edge(o2, c1, "on fail", { dashed: true }));
+  els.push(...edge(o3, c2, "on fail", { dashed: true }));
+  els.push(
+    ...note(
+      "Local ACID steps + compensations\nChoreography (events) or\nOrchestration (conductor)",
+      590,
+      370,
+      13
+    )
+  );
+  return doc(els);
+}
+
+function nTier() {
+  const els = [...titleText("N-Tier Architecture"), ...subtitle()];
+  const pres = client("Presentation tier\nBrowser / mobile / UI", 300, 100, 420, 70);
+  const app = compute("Application tier\nBusiness logic / APIs", 300, 220, 420, 70);
+  const data = db("Data tier\nDatabases / caches / files", 300, 340, 420, 80);
+  els.push(...flatten(pres, app, data));
+  els.push(...edge(pres, app, "HTTPS"));
+  els.push(...edge(app, data, "SQL / drivers"));
+  els.push(
+    ...note(
+      "Classic split: UI ≠ logic ≠ storage. Microservices still often map to these concerns across many services.",
+      60,
+      460
+    )
+  );
+  return doc(els);
+}
+
+function cqrs() {
+  const els = [...titleText("CQRS — Separate Read & Write Models"), ...subtitle()];
+  const c = client("Clients", 60, 220, 110, 55);
+  const api = compute("API", 220, 220, 100, 55);
+  const wr = compute("Write model\ncommands", 380, 120, 180, 70);
+  const rd = compute("Read model\nqueries", 380, 300, 180, 70);
+  const wdb = db("Write DB\nnormalized", 620, 110, 160, 80);
+  const rdb = db("Read DB /\ncache / search", 620, 290, 160, 80);
+  const bus = queue("Events", 420, 220, 100, 50);
+  els.push(...flatten(c, api, wr, rd, wdb, rdb, bus));
+  els.push(...edge(c, api));
+  els.push(...edge(api, wr, "commands"));
+  els.push(...edge(api, rd, "queries"));
+  els.push(...edge(wr, wdb));
+  els.push(...edge(rd, rdb));
+  els.push(...edge(wr, bus, "publish"));
+  els.push(...edge(bus, rdb, "project", { dashed: true }));
+  els.push(
+    ...note(
+      "Writes optimized for integrity; reads optimized for screens. Often pairs with event sourcing — not mandatory.",
+      40,
+      420
+    )
+  );
+  return doc(els);
+}
+
+function geohashQuadtree() {
+  const els = [...titleText("Geohash & Quadtrees (Nearby Search)"), ...subtitle()];
+  els.push(...groupFrame(40, 90, 480, 360, "Geohash grid"));
+  for (let r = 0; r < 3; r++) {
+    for (let c = 0; c < 3; c++) {
+      const cell = box(
+        `cell\n${r}${c}`,
+        80 + c * 130,
+        140 + r * 90,
+        110,
+        70,
+        c === 1 && r === 1 ? HIGHLIGHT : CACHE,
+        13
+      );
+      els.push(...cell.els);
+    }
+  }
+  els.push(...note("Encode lat/lng → string prefix\nNearby = same/neighbor prefixes", 80, 410, 13));
+
+  els.push(...groupFrame(560, 90, 480, 360, "Quadtree"));
+  const root = box("World", 700, 130, 160, 50, NETWORK, 14);
+  const q1 = box("NW", 600, 220, 100, 45, COMPUTE, 13);
+  const q2 = box("NE", 760, 220, 100, 45, COMPUTE, 13);
+  const q3 = box("SW", 600, 300, 100, 45, COMPUTE, 13);
+  const q4 = box("SE hot", 760, 300, 100, 45, HIGHLIGHT, 13);
+  const q4a = box("split", 880, 360, 90, 40, QUEUE, 12);
+  els.push(...flatten(root, q1, q2, q3, q4, q4a));
+  els.push(...edge(root, q1));
+  els.push(...edge(root, q2));
+  els.push(...edge(root, q3));
+  els.push(...edge(root, q4));
+  els.push(...edge(q4, q4a, "dense"));
+  els.push(...note("Subdivide busy squares only\nAdaptive to density", 600, 410, 13));
+  return doc(els);
+}
+
+function redundantLoadBalancer() {
+  const els = [...titleText("Redundant Load Balancers (No SPOF)"), ...subtitle()];
+  const c = client("Clients", 60, 240, 110, 55);
+  const vip = network("VIP /\nDNS", 220, 240, 120, 60);
+  const active = network("LB Active", 400, 140, 140, 60);
+  const passive = network("LB Passive\nstandby", 400, 320, 140, 60);
+  const a1 = compute("App 1", 620, 120, 110, 50);
+  const a2 = compute("App 2", 620, 200, 110, 50);
+  const a3 = compute("App 3", 620, 280, 110, 50);
+  const a4 = compute("App 4", 620, 360, 110, 50);
+  els.push(...flatten(c, vip, active, passive, a1, a2, a3, a4));
+  els.push(...edge(c, vip));
+  els.push(...edge(vip, active));
+  els.push(...edge(vip, passive, "failover", { dashed: true }));
+  els.push(...edge(active, a1));
+  els.push(...edge(active, a2));
+  els.push(...edge(active, a3));
+  els.push(...edge(active, a4));
+  els.push(
+    ...note(
+      "Health-check between LBs; on active death, passive takes VIP. Multi-AZ active-active LBs also common in cloud.",
+      40,
+      450
+    )
+  );
+  return doc(els);
+}
+
+function cacheWritePolicies() {
+  const els = [...titleText("Cache Write Policies"), ...subtitle()];
+  // Write-through
+  els.push(...groupFrame(40, 90, 320, 280, "Write-through"));
+  const a1 = compute("App", 60, 150, 90, 45);
+  const c1 = cache("Cache", 170, 150, 90, 45);
+  const d1 = db("DB", 280, 145, 60, 55);
+  els.push(...flatten(a1, c1, d1));
+  els.push(...edge(a1, c1));
+  els.push(...edge(c1, d1, "sync"));
+  els.push(...note("Write hits both\nConsistent, slower writes", 60, 230, 13));
+
+  // Write-around
+  els.push(...groupFrame(380, 90, 320, 280, "Write-around"));
+  const a2 = compute("App", 400, 150, 90, 45);
+  const c2 = cache("Cache", 510, 150, 90, 45);
+  const d2 = db("DB", 620, 145, 60, 55);
+  els.push(...flatten(a2, c2, d2));
+  els.push(...edge(a2, d2, "write"));
+  els.push(...edge(a2, c2, "read miss", { dashed: true }));
+  els.push(...note("Skip cache on write\nAvoids write pollution", 400, 230, 13));
+
+  // Write-back
+  els.push(...groupFrame(720, 90, 320, 280, "Write-back / behind"));
+  const a3 = compute("App", 740, 150, 90, 45);
+  const c3 = cache("Cache", 850, 150, 90, 45);
+  const d3 = db("DB", 960, 200, 60, 55);
+  els.push(...flatten(a3, c3, d3));
+  els.push(...edge(a3, c3, "ack"));
+  els.push(...edge(c3, d3, "async", { dashed: true }));
+  els.push(...note("Fast writes; crash can\nlose unflushed data", 740, 230, 13));
+
+  els.push(
+    ...note(
+      "Eviction reminder: FIFO · LIFO · LRU · MRU · LFU · Random — LRU is the interview default unless access patterns say otherwise.",
+      40,
+      400
+    )
+  );
+  return doc(els);
+}
+
+
 // ─── registry ─────────────────────────────────────────────────────
 const DIAGRAMS = {
+  "osi-model": osiModel,
+  "tcp-vs-udp": tcpVsUdp,
+  "clustering-active-active-passive": clusteringActiveActivePassive,
+  "storage-file-block-object": storageFileBlockObject,
+  "saga-vs-2pc": sagaVs2pc,
+  "n-tier": nTier,
+  "cqrs": cqrs,
+  "geohash-quadtree": geohashQuadtree,
+  "redundant-load-balancer": redundantLoadBalancer,
+  "cache-write-policies": cacheWritePolicies,
   "api-aggregation": apiAggregation,
   "vertical-vs-horizontal-scale": verticalVsHorizontal,
   "cache-aside-vs-direct": cacheAsideVsDirect,

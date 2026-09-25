@@ -2,7 +2,7 @@
 
 A **free, original** curriculum that teaches system design from zero — plain-English foundations, a repeatable interview approach, whiteboard habits, 19 design walkthroughs, and timed practice. Everything lives in this single **README** with **inline Excalidraw-style PNG diagrams**.
 
-> **Disclaimer:** Free original curriculum for learning and interview practice. **Not affiliated** with DesignGurus, Educative, ByteByteGo, or any paid course. Industry-standard concepts in original wording. Product names in design titles (e.g. "Instagram-like") are familiar problem frames only.
+> **Disclaimer:** Free original curriculum for learning and interview practice. **Not affiliated** with DesignGurus, Educative, ByteByteGo, karanpratapsingh/system-design, or any paid course. Wording and diagrams are original — topic overlap with public curricula is expected. Industry-standard concepts in original wording. Product names in design titles (e.g. "Instagram-like") are familiar problem frames only.
 
 ## What is system design?
 
@@ -18,7 +18,7 @@ Work top to bottom. Each step links into this same README.
 
 1. **[What is system design?](#what-is-system-design)** — you are here; get the idea in plain language.
 2. **[System characteristics](#system-characteristics)** — what "fast," "available," and "consistent" mean with everyday examples.
-3. **[DNS](#dns) → [Load balancing](#load-balancing) → [Caching & CDN](#caching--cdn)** — how a request reaches your app and how you keep it quick.
+3. **[IP addresses](#ip-addresses) → [OSI model](#osi-model) → [DNS](#dns) → [Load balancing](#load-balancing) → [Caching & CDN](#caching--cdn)** — how a request finds your app and stays quick.
 4. **[API gateway](#api-gateway)** — the mobile "one call vs three calls" story (beginner-friendly comparison diagram).
 5. **[Databases](#databases) → [Replication](#replication) → [Messaging](#messaging)** — where data lives and how work is handed off.
 6. **[Whiteboard like a strong candidate](#whiteboard-like-a-strong-candidate)** + **[Interview Approach](#interview-approach)** — how to run a 45-minute conversation.
@@ -92,6 +92,16 @@ Diagrams appear **inline next to the section they teach** — not as a giant gal
 | [payments.png](diagrams/png/payments.png) | Payments |
 | [interview-flow.png](diagrams/png/interview-flow.png) | Interview flow |
 | [whiteboard-template.png](diagrams/png/whiteboard-template.png) | Whiteboard template |
+| [osi-model.png](diagrams/png/osi-model.png) | OSI model layers |
+| [tcp-vs-udp.png](diagrams/png/tcp-vs-udp.png) | TCP vs UDP |
+| [clustering-active-active-passive.png](diagrams/png/clustering-active-active-passive.png) | Clustering active-active / passive |
+| [storage-file-block-object.png](diagrams/png/storage-file-block-object.png) | File vs block vs object storage |
+| [saga-vs-2pc.png](diagrams/png/saga-vs-2pc.png) | Sagas vs 2PC |
+| [n-tier.png](diagrams/png/n-tier.png) | N-tier architecture |
+| [cqrs.png](diagrams/png/cqrs.png) | CQRS read/write models |
+| [geohash-quadtree.png](diagrams/png/geohash-quadtree.png) | Geohash & quadtrees |
+| [redundant-load-balancer.png](diagrams/png/redundant-load-balancer.png) | Redundant load balancers |
+| [cache-write-policies.png](diagrams/png/cache-write-policies.png) | Cache write-through / around / back |
 
 ## Table of Contents
 
@@ -110,21 +120,33 @@ Diagrams appear **inline next to the section they teach** — not as a giant gal
 ### 1. Foundations
 
 - [System characteristics](#system-characteristics)
+- [IP addresses](#ip-addresses)
+- [OSI model](#osi-model)
 - [Networking basics](#networking-basics)
+- [TCP and UDP](#tcp-and-udp)
 - [DNS](#dns)
+- [TLS, SSL, and mTLS](#tls-ssl-and-mtls)
 - [Proxies](#proxies)
 - [Real-time communication](#real-time-communication)
 - [Load balancing](#load-balancing)
+- [Clustering](#clustering)
+- [Storage fundamentals](#storage-fundamentals)
 - [API gateway](#api-gateway)
 - [Rate limiting](#rate-limiting)
 - [Caching & CDN](#caching-cdn)
 - [Databases](#databases)
+- [Normalization and denormalization](#normalization-and-denormalization)
+- [ACID and BASE](#acid-and-base)
+- [Transactions](#transactions)
+- [Distributed transactions](#distributed-transactions)
 - [Indexes](#indexes)
 - [Sharding](#sharding)
 - [Consistent hashing](#consistent-hashing)
 - [Replication](#replication)
+- [Database federation](#database-federation)
 - [CAP & PACELC](#cap-pacelc)
 - [Messaging](#messaging)
+- [Enterprise Service Bus (ESB)](#enterprise-service-bus-esb)
 - [Delivery guarantees](#delivery-guarantees)
 - [Coordination](#coordination)
 - [Bloom filters](#bloom-filters)
@@ -132,9 +154,18 @@ Diagrams appear **inline next to the section they teach** — not as a giant gal
 - [Distributed file systems](#distributed-file-systems)
 - [Circuit breakers and bulkheads](#circuit-breakers-and-bulkheads)
 - [SLA, SLO, and SLI](#sla-slo-and-sli)
+- [Disaster recovery](#disaster-recovery)
 - [Observability](#observability)
 - [REST vs GraphQL vs gRPC](#rest-vs-graphql-vs-grpc)
+- [N-tier architecture](#n-tier-architecture)
 - [Monolith vs microservices](#monolith-vs-microservices)
+- [Event-driven architecture (EDA)](#event-driven-architecture-eda)
+- [Event sourcing](#event-sourcing)
+- [CQRS](#cqrs)
+- [Service discovery](#service-discovery)
+- [VMs and containers](#vms-and-containers)
+- [Geohashing and Quadtrees](#geohashing-and-quadtrees)
+- [OAuth 2.0, OIDC, and SSO](#oauth-20-oidc-and-sso)
 - [Security](#security)
 
 ### 2. Interview Approach
@@ -801,6 +832,35 @@ High availability uses redundancy, health checks, failover, and multi-AZ deploym
 
 **Failure modes:** failover flapping, split brain, cascading retries that amplify outages.
 
+
+### Availability in depth
+
+Availability is often quoted in **nines**. Approximate downtime if the system must run all year:
+
+| Availability | Downtime per year (approx.) | Per month (approx.) |
+|--------------|-----------------------------|---------------------|
+| 99% (2 nines) | 3.65 days | ~7.2 hours |
+| 99.9% (3 nines) | 8.77 hours | ~43.8 minutes |
+| 99.99% (4 nines) | 52.6 minutes | ~4.4 minutes |
+| 99.999% (5 nines) | 5.26 minutes | ~26 seconds |
+
+(Numbers are standard public math from `downtime ≈ (1 − availability) × period`.)
+
+#### Sequence vs parallel intuition
+
+- Components in **sequence** (request must pass A then B): availabilities **multiply** → total gets worse (`0.999 × 0.999 ≈ 0.998`).
+- Components in **parallel** (either replica can serve): failure probabilities multiply → total gets better.
+
+#### Availability vs reliability
+
+**Reliability** is about doing the right job without failure for a period; **availability** is about being reachable to accept work. A flaky system with instant restarts can look “available” while still being unreliable for long jobs.
+
+#### HA vs fault tolerance
+
+- **High availability** — minimize downtime; brief failover blips may be OK.
+- **Fault tolerance** — continue without visible interruption, usually via fuller redundancy and higher cost.
+
+
 ### Latency & throughput
 
 - **Latency** — time for one request (p50/p95/p99 matter more than averages).
@@ -853,71 +913,196 @@ Write NFRs as numbers: “p99 read < 200 ms, 99.9% availability, RPO < 1 min.”
 3. Give a product feature that needs strong consistency and one that does not.
 
 
+## IP addresses
+
+**In plain English:** An IP address is a phone number for a machine on a network. Without it, packets do not know where to go. Interviews rarely ask you to subnet by hand — they care that you know public vs private, why NAT exists, and how IPs show up in allowlists, geo routing, and load balancers.
+
+> **Key takeaway:** Treat IPs as identity + location hints that networking, security, and geo features all depend on — not as trivia.
+
+### IPv4 vs IPv6
+
+| | **IPv4** | **IPv6** |
+|--|----------|----------|
+| Size | 32-bit (about 4 billion addresses) | 128-bit (vastly more) |
+| Look | `203.0.113.10` | `2001:db8::1` |
+| Reality | Still dominant on many edges | Growing; dual-stack common |
+
+Designs usually say “clients resolve A/AAAA records” and move on. Mention IPv6 when discussing dual-stack LBs or exhausting private IPv4 space inside huge VPCs.
+
+### Public vs private
+
+- **Public** — routable on the internet (your LB VIP, a user’s home egress IP as seen by your API).
+- **Private** — only meaningful inside a network (`10.x`, `172.16–31.x`, `192.168.x` and IPv6 ULAs). App servers often sit on private IPs; only the edge is public.
+
+**NAT (Network Address Translation)** lets many private devices share one public IP. That is why thousands of phone users may appear to come from a few carrier IPs — painful for naive per-IP rate limits.
+
+### Static vs dynamic
+
+- **Static** — stays the same (servers, allowlisted partner IPs, some geo assumptions).
+- **Dynamic** — assigned by DHCP; common for laptops and phones. Do not build security that assumes a user’s IP never changes.
+
+### Why interviews care
+
+1. **Allowlists / deny lists** — admin tools, webhooks, or partner APIs may pin IPs (brittle with NAT and roaming).
+2. **Geo and compliance** — coarse location from IP; useful for CDN steering, bad as the only fraud signal.
+3. **Load balancers & DNS** — traffic lands on virtual IPs; backends use private IPs.
+4. **Logging & abuse** — IP is a weak identity; combine with accounts, device signals, and rate keys.
+
+### When to emphasize
+
+Multi-region, zero-trust edges, “block this country,” webhook security, or carrier-grade NAT breaking IP quotas.
+
+### Tradeoffs
+
+IP-based controls are simple and cheap but unfair under shared NATs and useless for mobile users who change networks. Application identity (tokens) beats IP for authz.
+
+### Failure modes
+
+- Rate limiting only by IP → punishing whole cafés / mobile carriers
+- Assuming client IP headers are trustworthy without a trusted proxy hop
+- Hard-coding static IPs that change after a cloud failover
+
+### Interview tip
+
+On the board: “Public VIP on the LB; private IPs for app and DB. Rate limit by user id first, IP second.” That shows you understand NAT.
+
+### Self-check
+
+1. Why can two users share one public IP?
+2. When is a static IP worth paying for?
+3. Why is IP a poor sole auth signal?
+
+
+## OSI model
+
+**In plain English:** The OSI model is a seven-layer teaching stack for “how data travels.” Real internet traffic mostly follows TCP/IP, but interviews still say **L4** and **L7** because those labels map cleanly to “dumb fast load balancer” vs “HTTP-aware load balancer.”
+
+![OSI model stack](diagrams/png/osi-model.png)
+
+<sub>Editable source: [osi-model.excalidraw](diagrams/excalidraw/osi-model.excalidraw)</sub>
+
+> **Key takeaway:** You will almost never design layers 1–3 in an interview — you *will* use L4/L7 language for load balancers and gateways.
+
+### The seven layers (plain English)
+
+| Layer | Name | Everyday idea | Interview touchpoint |
+|-------|------|---------------|----------------------|
+| 7 | Application | What the app speaks (HTTP, gRPC) | API design, L7 routing |
+| 6 | Presentation | Encoding, compression, encryption framing | TLS discussed near the edge |
+| 5 | Session | Conversations spanning requests | Less explicit in web designs |
+| 4 | Transport | TCP/UDP ports, reliability | **L4 load balancers** |
+| 3 | Network | IP addresses and routing | VPC, subnets (ops depth) |
+| 2 | Data link | Frames on a local link | Rarely drawn |
+| 1 | Physical | Cables, radio, bits | Rarely drawn |
+
+### Why L4 vs L7 language exists
+
+- **L4 LB** — forwards TCP/UDP connections based on IP/port (and maybe connection counts). Blazing fast; cannot read `/api/payments`.
+- **L7 LB / reverse proxy** — understands HTTP: host, path, headers, cookies, canaries. Slightly more CPU; far more control.
+
+### When it matters
+
+Explaining CDN vs LB vs API gateway placement; choosing network vs application load balancing in cloud consoles; debugging “TLS works but HTTP route 404s.”
+
+### Tradeoffs
+
+Teaching model ≠ implementation. Do not spend five minutes reciting all seven layers — map straight to L4/L7 decisions.
+
+### Failure modes
+
+Cargo-culting “we need L7” when L4 + service mesh is enough (or the reverse: needing path routing but picking a pure L4 NLB).
+
+### Interview tip
+
+Say: “Edge L7 for host/path routing and TLS; internal L4 for raw TCP to databases if needed.” Move on.
+
+### Self-check
+
+1. Can an L4 LB route by URL path? Why or why not?
+2. Which layer do TCP and UDP live in?
+3. Name one reason to prefer L7 at the public edge.
+
 ## Networking basics
 
 **In plain English:** Networking is how phones, browsers, and servers find each other and talk safely. You do not need to configure routers in an interview — you do need to place DNS, TLS, and load balancers on the diagram in the right order.
 
 > **Key takeaway:** Clients hit DNS, then a secure edge (TLS), then a load balancer — put those boxes before your app logic.
 
-### DNS
+### How the pieces connect
 
-Clients resolve hostnames to IPs. TTL controls cache duration. Geo-DNS can steer users to regions. DNS is not a perfect load balancer—TTLs and client caches lag.
+Typical public request path:
 
-**Failure modes:** low TTL increases DNS QPS; high TTL slows failover. Single DNS provider outages happen—know the dependency.
+`Client → DNS → CDN (optional) → TLS-terminating LB / gateway → services → cache / DB`
 
-### TLS & termination
-
-Encrypt in transit. Terminate TLS at the load balancer or gateway for efficiency, or end-to-end to the app for higher assurance. Certificates need rotation automation.
-
-### HTTP APIs
-
-REST/JSON is the interview default. gRPC helps internal service meshes (protobuf, streaming, strict schemas). GraphQL centralizes aggregation but shifts complexity to the BFF and caching.
-
-Idempotent methods (GET, PUT) behave differently under retry than POST—design write APIs with idempotency keys when needed.
-
-### TCP vs UDP
-
-TCP: reliable ordered streams (HTTP, most DBs). UDP: lower overhead, app handles loss (gaming, some WebRTC media). QUIC/HTTP3 blurs lines with reliability over UDP.
-
-### WebSockets & long polling
-
-![WebSocket vs SSE vs Polling](diagrams/png/websocket-vs-polling.png)
-
-For server push (chat, collab cursors), WebSockets keep a bidirectional channel. They stress connection-count limits and need sticky routing or a pub/sub fan-out layer. Long polling is a simpler fallback.
-
-### Service communication
-
-- **Sync** (HTTP/gRPC): simple mental model; couples availability.
-- **Async** (queues/events): decouples; eventual processing.
-
-Prefer sync for user-waiting reads; async for side effects (email, analytics).
-
-### Latency budget
-
-A mobile user → CDN → LB → gateway → service → cache → DB can burn tens of milliseconds per hop. Count hops in deep dives.
-
-### When to emphasize networking
-
-Chat, streaming, multiplayer, IoT, and anything cross-region. Less so for a CRUD admin tool.
-
-### Tradeoffs
-
-Edge termination vs origin TLS; HTTP/1.1 connection limits vs HTTP/2; sticky WebSockets vs redis pub/sub broadcast.
-
-### Failure modes
-
-SYN floods, slowloris, DNS cache poisoning (rare in interview), asymmetric routes, MTU black holes (ops deep dive), connection exhaustion.
+Deep dives live in the next sections: [TCP and UDP](#tcp-and-udp), [DNS](#dns), [TLS, SSL, and mTLS](#tls-ssl-and-mtls), [Proxies](#proxies), [Real-time communication](#real-time-communication), [Load balancing](#load-balancing).
 
 ### Interview tip
 
-Label protocol on arrows: `HTTPS`, `gRPC`, `Kafka`, `Redis PUB/SUB`. It signals precision.
+Label protocols on arrows (`HTTPS`, `gRPC`, `Kafka`, `Redis PUB/SUB`). Count hops when talking about latency budgets.
 
 ### Self-check
 
-1. Where would you terminate TLS for a public API and why?
-2. When are WebSockets justified over polling?
-3. How does DNS TTL interact with blue/green cutover?
+1. Name the boxes, in order, between a mobile user and your primary database.
+2. Where would you terminate TLS for a public API and why?
+3. When are WebSockets justified over polling?
 
+## TCP and UDP
+
+**In plain English:** TCP and UDP are two ways to send bytes. **TCP** is the careful courier that confirms delivery and order. **UDP** is the speedy postcard that might get lost — fine when a new packet will replace an old one anyway (live video, games).
+
+![TCP vs UDP](diagrams/png/tcp-vs-udp.png)
+
+<sub>Editable source: [tcp-vs-udp.excalidraw](diagrams/excalidraw/tcp-vs-udp.excalidraw)</sub>
+
+> **Key takeaway:** Default to TCP for APIs and databases; choose UDP (or UDP-based stacks like QUIC) when latency beats perfect reliability.
+
+### Connection vs connectionless
+
+- **TCP** — three-way handshake, connection state, streams of bytes, acknowledgments, retransmission, congestion control.
+- **UDP** — independent datagrams, no handshake, no built-in retry or ordering.
+
+### Comparison
+
+| Question | TCP | UDP |
+|----------|-----|-----|
+| Setup cost | Handshake + state | Almost none |
+| Delivery | Reliable (retries) | Best-effort |
+| Order | Preserved | Not guaranteed |
+| Speed / overhead | Higher overhead | Lower overhead |
+| Head-of-line blocking | Yes (classic TCP) | No (per datagram) |
+| Typical uses | HTTP/1–2, SQL, SSH | DNS queries, VoIP, gaming, video realtime |
+| Broadcast/multicast | Not really | Natural fit |
+
+**QUIC / HTTP/3** runs reliability features over UDP to reduce some TCP pain (e.g. connection migration, multiplex without TCP HOL blocking). In interviews, “HTTP/3 uses QUIC over UDP” is enough.
+
+### When to pick which
+
+| Situation | Lean |
+|-----------|------|
+| CRUD API, payments, DB links | TCP |
+| Live sports video frames | UDP (+ app FEC) or specialized media stack |
+| DNS lookup | Usually UDP (TCP fallback for large answers) |
+| “Never lose this financial event” | TCP + app-level idempotency |
+
+### Tradeoffs
+
+Reliability mechanisms add latency and CPU. UDP shifts complexity into your application (sequence numbers, retransmission, congestion — reinvent carefully).
+
+### Failure modes
+
+- Using TCP for lossy realtime media → huge latency under loss (retransmit + HOL)
+- Using raw UDP for money movement → silent loss
+- Ignoring middlebox pain (some corporates break UDP/QUIC)
+
+### Interview tip
+
+Label arrows: `HTTPS (TCP)` vs `media (UDP/WebRTC)`. If someone asks “why not UDP for everything?” — answer with reliability and congestion control.
+
+### Self-check
+
+1. Why does TCP feel slower on lossy mobile networks for live video?
+2. Is DNS always UDP? When might it use TCP?
+3. What problem does QUIC aim to improve vs HTTP/2 over TCP?
 
 ## DNS
 
@@ -1002,6 +1187,46 @@ On the whiteboard, draw **Clients → DNS → CDN/LB** and say: “DNS gets them
 3. What does anycast buy you for DNS that unicast does not?
 
 ---
+
+## TLS, SSL, and mTLS
+
+**In plain English:** **TLS** (successor to older **SSL** branding) encrypts traffic on the wire so eavesdroppers see ciphertext, not passwords and tokens. Certificates prove a server (and sometimes a client) is who it claims to be. **mTLS** means **both** sides present certificates — common service-to-service inside a mesh.
+
+> **Key takeaway:** HTTPS at the edge is non-negotiable; mTLS is the interview answer for zero-trust service identity inside the cluster.
+
+### Encrypt in transit
+
+Client ↔ edge (and ideally further) uses TLS. You choose where to **terminate** TLS: CDN, load balancer, or all the way to the app. Re-encrypting to upstreams (“TLS all the way”) raises assurance at some CPU/ops cost.
+
+### Certificates (intuition)
+
+A certificate binds a public key to a name (`api.example.com`) and is signed by a trusted **Certificate Authority**. Browsers/OS trust stores decide who to believe. Automate issuance/rotation (ACME); expired certs are a classic outage.
+
+### mTLS for service-to-service
+
+In mutual TLS, the server also verifies the **client certificate**. Sidecar meshes often mint short-lived certs per workload identity so `payments` only accepts calls from `checkout`. Complements — does not replace — application AuthZ.
+
+### When to emphasize
+
+Every public design (TLS). Microservice / zero-trust / PCI-ish designs (mTLS + least privilege).
+
+### Tradeoffs
+
+Termination convenience vs end-to-end confidentiality; mTLS identity vs operational cert sprawl without a mesh/platform.
+
+### Failure modes
+
+Expired certs; half-configured TLS leaving internal cleartext on shared networks; trusting client certs without revocation/rotation story.
+
+### Interview tip
+
+Label the edge box “TLS termination” and, for meshes, “mTLS east-west.” Mention certificate rotation in failure modes if time allows.
+
+### Self-check
+
+1. What does “TLS termination at the LB” mean for upstream traffic?
+2. How does mTLS differ from ordinary HTTPS to a browser?
+3. Why automate certificate renewal?
 
 ## Proxies
 
@@ -1163,6 +1388,53 @@ Ask: “Do we need client→server messages at high rate, or mostly server push?
 
 > **Key takeaway:** Put an LB in front of a stateless app tier; health checks remove bad instances so users never notice one death.
 
+### Why load balancers exist
+
+Two jobs: **scale** (spread work across many machines) and **hide failures** (stop sending traffic to dead or sick instances). Without an LB, clients pin to one IP and that host becomes both bottleneck and SPOF.
+
+### Workload distribution styles
+
+- **Host-based** — `api.example.com` vs `admin.example.com` → different pools
+- **Path-based** — `/payments/*` → payments service
+- **Content-based** — inspect headers/body (e.g. API version, tenant) at L7
+
+### Types of load balancers
+
+| Type | Idea | Limitations |
+|------|------|-------------|
+| **Software** | NGINX, HAProxy, Envoy, cloud L7 | You operate config/CPU |
+| **Hardware** | Appliance in a datacenter | Costly, less flexible |
+| **DNS LB** | Multiple A/AAAA answers or weighted DNS | Poor health awareness; TTL lag; not request-aware |
+
+DNS balancing is a coarse geo/steer tool — not a substitute for an application LB.
+
+### Algorithms (expanded)
+
+| Algorithm | Idea | Watch-outs |
+|-----------|------|------------|
+| Round robin | Rotate through backends | Uneven if backends differ |
+| Weighted RR | Capacity-aware rotation | Weights drift as machines change |
+| Least connections | Prefer quieter node | Needs good connection accounting |
+| Least response time | Prefer fast + quiet | Measurement noise; herd effects |
+| Least bandwidth | Prefer lowest Mbps | Needs traffic meters |
+| Hashing / consistent hash | Stick by IP, cookie, URL key | Hot keys; rebalance on pool change |
+| Random | Pick at random | Surprisingly robust at scale |
+
+### Redundant load balancers
+
+A lone LB is itself a SPOF. Run **active-passive** pairs (VIP failover) or **active-active** LBs in multiple AZs.
+
+![Redundant load balancers](diagrams/png/redundant-load-balancer.png)
+
+<sub>Editable source: [redundant-load-balancer.excalidraw](diagrams/excalidraw/redundant-load-balancer.excalidraw)</sub>
+
+### Features checklist (say these aloud)
+
+Sticky sessions · health checks · TLS termination · autoscaling integration · access logs / tracing IDs · HTTP redirects · connection draining on deploy · optional response compression/caching at L7
+
+Prefer externalizing session state so sticky sessions are optional, not mandatory.
+
+
 ### Layers
 
 - **L4 (transport)** — TCP/UDP 5-tuple; fast, little app awareness.
@@ -1170,17 +1442,7 @@ Ask: “Do we need client→server messages at high rate, or mostly server push?
 
 CDN and DNS-based balancing sit even further out (geo / Anycast).
 
-### Algorithms
-
-| Algorithm | Idea | Watch-outs |
-|-----------|------|------------|
-| Round robin | Rotate | Uneven if backends differ |
-| Least connections | Prefer quieter | Needs accurate counts |
-| Weighted | Capacity-aware | Manual weights drift |
-| Consistent hash | Stick by key | Rebalance on ring change |
-| Random | Simple | Surprisingly robust |
-
-Sticky sessions (cookie or IP affinity) keep a client on one backend—useful for local state, hostile to elasticity. Prefer externalizing session state.
+Sticky sessions (cookie or IP affinity) keep a client on one backend—useful for local state, hostile to elasticity. Prefer externalizing session state. See algorithms table above.
 
 ### Health checks
 
@@ -1216,6 +1478,127 @@ Say “stateless app servers behind an L7 LB” early; it unlocks horizontal sca
 2. L4 vs L7 for path-based routing—which and why?
 3. How can consistent hashing still create hotspots?
 
+
+## Clustering
+
+**In plain English:** A **cluster** is a group of machines that work together so they look like one stronger, safer system. Think of several cashiers who share one queue — if one goes on break, the line still moves.
+
+![Active-active vs active-passive clustering](diagrams/png/clustering-active-active-passive.png)
+
+<sub>Editable source: [clustering-active-active-passive.excalidraw](diagrams/excalidraw/clustering-active-active-passive.excalidraw)</sub>
+
+> **Key takeaway:** Clusters give capacity and/or failover; say whether nodes are all active or some are standing by — and do not confuse clustering with load balancing.
+
+### What a cluster is
+
+Nodes share a goal (serve the website, run the database, train a model). They need a network between them, membership/health awareness, and often shared or replicated storage. Ideally users treat the cluster as one system.
+
+### Active-active vs active-passive
+
+| Mode | Behavior | Good for |
+|------|----------|----------|
+| **Active-active** | Multiple nodes serve traffic at once | Throughput + HA; needs careful state sharing |
+| **Active-passive** | One (or a few) active; others warm/cold standby | Simpler failover for stateful systems |
+
+### Cluster “flavors” you may name
+
+- **HA / failover clusters** — survive node death with minimal downtime
+- **Load-balancing clusters** — spread work for capacity (often paired with an LB)
+- **HPC clusters** — parallel compute jobs (less common in product design interviews)
+
+### Load balancing vs clustering
+
+| | **Load balancing** | **Clustering** |
+|--|--------------------|----------------|
+| Awareness | Backends usually unaware of each other | Nodes know peers / share state or work |
+| Goal | Distribute requests | Cooperate for capacity, HA, or compute |
+| Together? | Yes — LB in front of a cluster is normal | |
+
+### When to use
+
+Databases in HA pairs, Redis clusters, Kubernetes node pools, Kafka brokers — anywhere “one box” is not enough for availability or size.
+
+### Tradeoffs
+
+More nodes → more ops surface (deployments, versions, split brain). Active-active needs conflict rules; active-passive wastes standby capacity.
+
+### Failure modes
+
+Split brain (two actives), failed failover, unclean shutdown leaving locks, “cluster” that is actually a single shared disk SPOF.
+
+### Interview tip
+
+“App tier is an active-active set behind an LB; the primary DB is active-passive with a sync replica.” Clear and credible.
+
+### Self-check
+
+1. When would you choose active-passive over active-active?
+2. How is a cluster different from “three unrelated servers behind nginx”?
+3. What is split brain?
+
+
+## Storage fundamentals
+
+**In plain English:** Storage is where bits sit when RAM forgets them. Interviews care less about brand names and more about **file vs block vs object**, a little **RAID** intuition, and when a distributed file system idea (like HDFS) shows up for huge analytics files.
+
+![File vs block vs object storage](diagrams/png/storage-file-block-object.png)
+
+<sub>Editable source: [storage-file-block-object.excalidraw](diagrams/excalidraw/storage-file-block-object.excalidraw)</sub>
+
+> **Key takeaway:** Match access pattern to storage type — databases love block volumes; photos and backups love object stores; shared POSIX folders love file/NAS.
+
+### RAID levels (overview)
+
+RAID combines disks for speed and/or survival. You will not size arrays in most interviews; you should recognize the patterns:
+
+| Level | Idea | Fault tolerance (typical) | Notes |
+|-------|------|---------------------------|-------|
+| **0** | Striping | None | Fast; one disk dies → data gone |
+| **1** | Mirroring | Survive 1 disk (in a pair) | Simple; 50% capacity |
+| **5** | Striping + parity | Survive 1 disk | Needs ≥3 disks; rebuild cost |
+| **6** | Striping + double parity | Survive 2 disks | Safer rebuilds; more parity overhead |
+| **10** | Stripe of mirrors | Strong; depends on layout | Popular for DB performance + safety |
+
+Cloud “managed disks” hide RAID — still useful vocabulary when discussing on-prem or performance tradeoffs.
+
+### File vs block vs object
+
+| Type | Interface | Everyday use |
+|------|-----------|--------------|
+| **File** | Paths and folders (NFS/SMB) | Shared uploads, lift-and-shift apps needing POSIX |
+| **Block** | Raw volumes (like a disk) | Database data directories, VM boot disks |
+| **Object** | Bucket + key, HTTP APIs | Images, video, logs, backups, data lakes |
+
+### NAS vs local disk
+
+- **Local** — attached to one machine; lowest latency; dies with the host unless replicated higher up.
+- **NAS (network-attached storage)** — file share over the network; multiple servers can mount; watch latency and lock semantics.
+
+### HDFS idea (brief)
+
+**HDFS**-style systems split large files into blocks, place replicas on different nodes, and optimize for fat sequential scans on commodity hardware. Great for batch analytics; awkward as a general low-latency OLTP disk. In interviews: “cold analytical files on a distributed FS or object store; hot OLTP on managed block + DB.”
+
+### When to emphasize
+
+Dropbox-like, video, data platform, or any design with multi-TB blobs.
+
+### Tradeoffs
+
+Object storage scales cheaply but is not a POSIX disk. Block is fast for DBs but you manage growth. File shares are friendly and easy to misuse as a distributed DB.
+
+### Failure modes
+
+Single NAS as SPOF; RAID rebuild storms; treating object store like a low-latency queue; no backup beyond RAID (RAID ≠ backup).
+
+### Interview tip
+
+“Metadata in the DB; bytes in object storage with signed URLs.” That sentence covers most media designs.
+
+### Self-check
+
+1. Why is RAID not a substitute for backups?
+2. When would you pick object storage over a file share?
+3. What workload fits an HDFS-like system?
 
 ## API gateway
 
@@ -1353,6 +1736,52 @@ Ask “per user or per IP?” and “burst allowed?” Then pick token bucket + 
 
 > **Key takeaway:** Cache what is read often and expensive to recompute; always have a plan for stale data (TTL or invalidate on write).
 
+### Write policies (clear definitions)
+
+![Cache write policies](diagrams/png/cache-write-policies.png)
+
+<sub>Editable source: [cache-write-policies.excalidraw](diagrams/excalidraw/cache-write-policies.excalidraw)</sub>
+
+| Policy | Behavior | Upside | Downside |
+|--------|----------|--------|----------|
+| **Write-through** | Write cache and DB together | Cache stays warm & consistent | Slower writes |
+| **Write-around** | Write DB only; cache fills on read | Avoids flooding cache with one-time writes | Immediate re-read may miss |
+| **Write-back / write-behind** | Write cache first; flush DB async | Fast write path | Crash can lose unflushed data |
+
+### Eviction policies
+
+When the cache is full, something must leave:
+
+| Policy | Evicts… | Typical use |
+|--------|---------|-------------|
+| **FIFO** | Oldest inserted | Simple queues of entries |
+| **LIFO** | Newest inserted | Rare for general caches |
+| **LRU** | Least recently used | Interview default |
+| **MRU** | Most recently used | Some scan-resistant patterns |
+| **LFU** | Least frequently used | Hot-key heavy workloads |
+| **RR** | Random victim | Cheap approx under huge keyspaces |
+
+### Distributed vs global cache
+
+- **Distributed cache** — shard data across many cache nodes (client hash or proxy); scales memory horizontally.
+- **Global / shared cache** — logical one-cache service many apps call (still may be a cluster underneath). On miss, the cache tier or the app loads the DB — clarify who owns the load.
+
+### CDN push vs pull
+
+| | **Pull CDN** | **Push CDN** |
+|--|--------------|--------------|
+| How content arrives | Edge fetches origin on miss | You upload to the CDN |
+| Ops | Little; origin must handle misses | You control what lives on edge |
+| Fits | Large sites, long-tail assets | Small/stable catalogs, pre-positioned releases |
+
+### When NOT to cache
+
+- Data changes every request and must be exact (live inventory countdown with strong consistency needs)
+- No repeat access (pure one-off randomness)
+- Cache latency ≈ origin latency (no win)
+- Sensitive per-user data on a shared edge without proper cache keys / auth
+
+
 ### Cache placements
 
 1. **Client / browser** — HTTP cache headers.
@@ -1412,6 +1841,33 @@ Always specify **key, TTL, and invalidation**. “Add Redis” without those thr
 **In plain English:** A database is where your durable truth lives — users, orders, messages. The big interview choice is not brand names; it is matching how you read and write data to the store's strengths (tables and transactions vs flexible documents vs specialized indexes).
 
 > **Key takeaway:** Start from access patterns (lookups, joins, writes, retention), then pick storage — not the other way around.
+
+### SQL vs NoSQL (tight comparison)
+
+| Dimension | SQL (relational) | NoSQL (family) |
+|-----------|------------------|----------------|
+| Shape | Tables, fixed schema | Documents, KV, wide-column, graph, … |
+| Queries | Rich SQL, joins | Usually key/partition-centric |
+| Transactions | Strong multi-row ACID (typical) | Varies; often per-partition |
+| Scale story | Vertical + replicas; sharding is hard-mode | Often designed for horizontal scale |
+| Best at | Relationships + invariants | Specific access patterns at high scale |
+
+**N+1 query problem:** an ORM loads a list (1 query) then hits the DB once per row for a child relation (N queries). Fix with joins, batch loaders, or curated read models / **materialized views** (precomputed query results stored for fast read — refresh on a schedule or on events).
+
+### NoSQL types (short paragraphs)
+
+**Document stores** keep JSON-like documents (profiles, product catalogs) when most reads fetch one aggregate. Great flexibility; watch unbounded arrays and multi-document transactions.
+
+**Key-value stores** map a key to an opaque value at extreme speed (sessions, feature flags, Redis-style). Secondary queries need extra indexes or other systems.
+
+**Wide-column stores** organize data by row key and column families for huge sparse tables and time-series-like access (Cassandra/HBase patterns). Design partition keys around queries first.
+
+**Graph databases** optimize multi-hop relationships (social graphs, fraud rings). Use when “who is connected within N hops?” dominates; not a default CRUD store.
+
+**Time-series databases** compress and query timestamped metrics/events efficiently (monitoring, IoT). Prefer them over general SQL for high-ingest metrics.
+
+**Multi-model databases** expose more than one model (document + graph, etc.) in one product. Convenient, but verify each model’s depth before betting the farm.
+
 
 ### Relational (SQL)
 
@@ -1483,6 +1939,232 @@ Say “Postgres for source of truth; Redis for cache; S3 for media; OpenSearch f
 2. Give a query that screams for relational joins.
 3. What breaks if a document store doc grows without bound?
 
+
+## Normalization and denormalization
+
+**In plain English:** **Normalization** means storing each fact once so updates do not disagree with themselves. **Denormalization** means copying data on purpose so reads stay fast — common in feeds and timelines.
+
+> **Key takeaway:** Normalize to protect write integrity; denormalize when a read path cannot afford joins — and document how copies stay fresh.
+
+### Anomalies (why we normalize)
+
+Imagine one wide spreadsheet of employees + teams:
+
+- **Insert anomaly** — cannot add a new team until someone joins it
+- **Update anomaly** — rename a team in one row, forget the others → inconsistency
+- **Delete anomaly** — removing the last person on a team deletes the team facts too
+
+Normalization splits tables so each fact has one home.
+
+### 1NF / 2NF / 3NF intuition (not a textbook dump)
+
+| Form | Gut check |
+|------|-----------|
+| **1NF** | Atomic cells; no repeating groups stuffed in one column |
+| **2NF** | No partial dependency on part of a composite key |
+| **3NF** | Non-key columns do not depend on other non-key columns (no transitive “fact via fact”) |
+
+In interviews, “third normal form for the write model” beats reciting dependency theory.
+
+### When to denormalize
+
+Read-heavy screens (home feed, product cards) often store a **ready-to-render** row or document: author name next to post id, price next to order line. You pay with:
+
+- More complex writes / fan-out
+- Risk of stale copies
+- Larger storage
+
+**Patterns:** cache tables, materialized views, document aggregates, CQRS read models.
+
+### When to stay normalized
+
+Money, inventory counts, permissions — places where two conflicting truths are unacceptable.
+
+### Tradeoffs
+
+Clean writes vs fast reads; join CPU vs duplication bugs; migration pain when denormalized shapes spread.
+
+### Failure modes
+
+Accidental denormalization without invalidation; updating one copy of “username” and leaving old posts wrong forever with no repair job.
+
+### Interview tip
+
+Draw a normalized source of truth, then a denormalized read model updated via events or async workers — classic feed design.
+
+### Self-check
+
+1. Give an update anomaly example in one sentence.
+2. Why might a news feed denormalize author display names?
+3. Does denormalization mean “undo all normalization”?
+
+
+## ACID and BASE
+
+**In plain English:** **ACID** is the classic promise of relational transactions: a bank transfer either fully happens or not at all. **BASE** is a looser style common in large distributed stores: the system stays mostly up and becomes consistent soon enough.
+
+> **Key takeaway:** Pick ACID when conflicting writes must not create illegal states; pick BASE-style systems when availability and scale dominate — and do not confuse ACID’s “C” with CAP’s “C.”
+
+### ACID letters
+
+| Letter | Meaning | Tiny example |
+|--------|---------|--------------|
+| **A**tomicity | All-or-nothing unit of work | Debit and credit both apply or neither |
+| **C**onsistency | DB rules/invariants hold after commit | No negative unique-key violations left behind |
+| **I**solation | Concurrent transactions do not stomp each other (to the chosen level) | Two checkouts do not sell the same last seat |
+| **D**urability | After commit, data survives crashes | Power loss does not erase a committed order |
+
+### BASE letters
+
+| Letter | Meaning |
+|--------|---------|
+| **B**asically **A**vailable | System responds most of the time |
+| **S**oft state | Replicas may differ temporarily |
+| **E**ventual consistency | Given time and no new writes, replicas converge |
+
+BASE is a *mindset* for scalable stores, not a strict checklist like ACID.
+
+### ACID vs BASE vs CAP’s C
+
+- **ACID Consistency** — about **invariants and rules** inside a database after a transaction.
+- **CAP Consistency** — about **all nodes seeing the same latest data** (strong consistency across a distributed system) under partitions.
+
+You can have ACID on one primary and still face CAP choices when you replicate across regions.
+
+### When to use which
+
+| Lean ACID | Lean BASE-style |
+|-----------|-----------------|
+| Ledger, bookings, inventory reservation | Social counters, activity streams, large shopping catalogs |
+| Single-row correctness critical | Multi-region low-latency reads with staleness OK |
+
+### Tradeoffs
+
+ACID simplifies app reasoning but can limit horizontal write scale. BASE scales out more easily but pushes conflict handling into the application.
+
+### Failure modes
+
+Assuming “NoSQL ⇒ no transactions” (many now offer limited transactions); assuming “eventual” means “users never notice.”
+
+### Interview tip
+
+“Checkout uses ACID transactions on inventory; the public like counter is eventually consistent.” Product-specific and clear.
+
+### Self-check
+
+1. Expand ACID in your own words.
+2. How does ACID’s C differ from CAP’s C?
+3. Name one feature that tolerates BASE-style lag.
+
+
+## Transactions
+
+**In plain English:** A **transaction** is a shopping-basket of database steps that must succeed together — place order, decrement stock, record payment intent. Either the whole basket completes or the database rolls back as if nothing happened.
+
+> **Key takeaway:** Interviews ask about transactions whenever money, seats, or inventory can be wrong if two steps interleave.
+
+### Unit of work
+
+```text
+BEGIN
+  check seat available
+  mark seat held
+  insert booking row
+COMMIT  -- or ROLLBACK on any failure
+```
+
+Without a transaction, a crash between steps leaves orphan holds or double bookings.
+
+### States (intuition)
+
+Think of a transaction moving through: **active** (running) → **partially committed** (work done, not final) → **committed** (durable success) or **failed/aborted** (rolled back). You do not need to memorize every textbook state diagram — you need to say what happens on crash mid-way.
+
+### Isolation (light touch)
+
+Higher isolation prevents more anomalies (dirty reads, phantom reads) but increases lock contention and latency. Many apps use a default like “read committed” and add selective locks or `SELECT … FOR UPDATE` for hot rows (seats, inventory).
+
+### Why checkout appears in interviews
+
+Checkout combines **read → decide → write** on contended rows. Candidates who forget transactions invent race conditions; candidates who wrap everything in huge serializable transactions invent timeouts. Balance: small critical sections + idempotent payment keys.
+
+### When to use
+
+Multi-step writes that must preserve invariants. Not every read needs a heavyweight transaction.
+
+### Tradeoffs
+
+Safety vs throughput; long transactions hold locks and cause pile-ups.
+
+### Failure modes
+
+Transactions spanning remote HTTP calls (holding DB locks while calling Stripe); giant transactions; ignoring idempotency on retries after commit uncertainty.
+
+### Interview tip
+
+“Single-row or single-partition transaction for the seat; payment with idempotency key; reconcile with an async job if the provider times out.”
+
+### Self-check
+
+1. What does ROLLBACK undo?
+2. Why is “HTTP call inside an open DB transaction” risky?
+3. How does an idempotency key help checkout retries?
+
+
+## Distributed transactions
+
+**In plain English:** When one business action touches **two databases or services** (inventory service + payments service), a single local `BEGIN/COMMIT` is not enough. You need a strategy so you do not charge a card and fail to reserve stock — or the reverse.
+
+![Sagas vs two-phase commit](diagrams/png/saga-vs-2pc.png)
+
+<sub>Editable source: [saga-vs-2pc.excalidraw](diagrams/excalidraw/saga-vs-2pc.excalidraw)</sub>
+
+> **Key takeaway:** Prefer **sagas** (local transactions + compensations) in microservice interviews; mention 2PC so you can explain why it is painful.
+
+### Two-phase commit (2PC)
+
+1. **Prepare** — coordinator asks every participant: “Can you commit?” Each locks resources and answers yes/no.
+2. **Commit (or abort)** — if all yes, coordinator tells everyone to commit; otherwise abort.
+
+**Blocking problem:** if the coordinator dies after prepare, participants may hold locks indefinitely until human/ops recovery. 2PC also couples availability: one slow participant stalls all.
+
+### Three-phase commit (idea only)
+
+3PC inserts a **pre-commit** phase and timeouts to reduce some blocking cases. It is more complex, still imperfect under real networks, and rarely what modern product teams implement by hand. Enough to say: “3PC tries to fix blocking; still hard; we usually avoid distributed commit protocols.”
+
+### Sagas — the practical interview answer
+
+A **saga** is a sequence of **local** transactions. Each step publishes an event or calls the next service. If step N fails, run **compensating** actions to undo steps 1…N−1 (release seat, refund payment).
+
+| Style | How coordination works |
+|-------|------------------------|
+| **Choreography** | Services react to each other’s domain events |
+| **Orchestration** | A conductor/workflow service tells participants what to do |
+
+### When to use what
+
+| Approach | Use when |
+|----------|----------|
+| Single DB transaction | All data fits one ACID store |
+| Saga | Cross-service business flows (orders, onboarding) |
+| 2PC | Rare; tightly coupled systems that accept blocking |
+
+### Tradeoffs
+
+Sagas accept temporary inconsistency and need careful compensations (some actions are hard to undo). 2PC offers stronger atomicity with availability and ops costs.
+
+### Failure modes
+
+Missing compensations; non-idempotent steps; orchestrator SPOF without HA; choreography event spaghetti.
+
+### Interview tip
+
+Narrate checkout as a saga: `ReserveInventory → ChargeCard → ConfirmOrder` with compensations `ReleaseInventory` / `Refund`. State at-least-once + idempotency.
+
+### Self-check
+
+1. What makes 2PC “blocking”?
+2. Choreography vs orchestration — one pro each?
+3. Name a real-world action that is awkward to compensate.
 
 ## Indexes
 
@@ -1703,6 +2385,23 @@ Draw a ring, place 3 nodes, show adding a fourth and which keys move. Say “vir
 
 > **Key takeaway:** Sync replication protects against data loss but slows writes; async is faster but can lose the last few seconds on failover.
 
+### Primary-replica vs multi-primary (crystal clear)
+
+| Mode | Writers | Readers | Failure story |
+|------|---------|---------|---------------|
+| **Primary–replica** (master–slave) | Single primary | Replicas (lag possible) | Promote a replica; fence old primary |
+| **Multi-primary** (master–master) | Several writable nodes | Any | Higher write availability; **conflict resolution** required |
+
+### Sync vs async (crystal clear)
+
+| Mode | When client gets “success” | RPO vibe |
+|------|----------------------------|----------|
+| **Synchronous** | After N replicas durable | Low data-loss risk; higher write latency |
+| **Asynchronous** | After primary durable | Fast writes; may lose the last seconds on crash |
+
+Semi-sync hybrids exist (wait for at least one ack). Always state which you mean on the whiteboard.
+
+
 ### Primary-secondary (leader-follower)
 
 One primary accepts writes; secondaries replicate the log. Reads can go to secondaries (stale possible) or primary (fresher).
@@ -1750,6 +2449,54 @@ Draw primary + at least one replica and say whether replication is sync or async
 2. Why is fencing important during failover?
 3. Interpret W=3, R=2, N=5 at a high level.
 
+
+## Database federation
+
+**In plain English:** **Federation** splits data by **domain or function** into separate databases — orders DB, users DB, inventory DB — rather than (or before) slicing one table by hash key. It is an organizational and scaling pattern: different teams own different stores.
+
+> **Key takeaway:** Federation = split by **what** the data means; sharding = split by **which key range/hash** inside one logical dataset.
+
+### Federation vs sharding
+
+| | **Federation** | **Sharding** |
+|--|----------------|--------------|
+| Split axis | Domain / bounded context | Key (user_id, tenant_id, …) |
+| Schema | Often different schemas | Same schema pattern per shard |
+| Cross access | Application joins across DBs (painful) | Cross-shard queries (also painful) |
+| Ownership | Maps to team boundaries | Maps to capacity |
+
+You can federate **and** shard (orders DB sharded by `order_id`).
+
+### When federation helps
+
+- Different scaling profiles (write-heavy events vs read-heavy profiles)
+- Independent deploy/schema cadence per domain
+- Blast-radius reduction (bad migration in analytics DB does not lock auth DB)
+- Clear microservice data ownership
+
+### When it hurts
+
+- Reporting that needs wide joins across domains
+- Distributed transactions across federated DBs (see sagas)
+- “Distributed monolith” where every request fans out to eight federated stores synchronously
+
+### Tradeoffs
+
+Team autonomy vs operational sprawl; smaller schemas vs cross-domain consistency challenges.
+
+### Failure modes
+
+Chatty sync joins across federated DBs; duplicating reference data without a sync plan; treating federation as a free lunch for consistency.
+
+### Interview tip
+
+“We’ll federate identity vs social graph vs media metadata; shard only the huge message table.” Shows layered thinking.
+
+### Self-check
+
+1. Is splitting `users` and `orders` into two databases sharding or federation?
+2. Why might finance refuse to share a DB with the feed service?
+3. How do you query across federated stores without JOINs?
 
 ## CAP & PACELC
 
@@ -1826,6 +2573,15 @@ Prefer concrete language: “On region failure we serve stale reads for 2 minute
 
 > **Key takeaway:** Use queues to absorb spikes and decouple failures; choose queue vs pub/sub based on one-consumer vs many-subscribers.
 
+### Broker vs queue vs pub/sub (naming)
+
+- **Message broker** — the platform (RabbitMQ, Kafka, SQS/SNS, Pulsar) that moves messages.
+- **Queue** — competing consumers; each message goes to **one** worker (task distribution).
+- **Pub/sub** — each subscription gets a copy (fan-out to email, search, analytics).
+
+Kafka-style **logs** are durable, ordered partitions with offset-based consumers — great for replay. Classic queues delete or ack-away messages after processing. See also the short [Enterprise Service Bus (ESB)](#enterprise-service-bus-esb) note for the older heavyweight alternative.
+
+
 ### Queues vs streams vs pub/sub
 
 - **Work queue** — each message processed by one consumer (task distribution).
@@ -1873,6 +2629,40 @@ Draw the queue on the **write path** for side effects, and state consumer idempo
 2. How do you preserve per-user message order at scale?
 3. What is a DLQ for?
 
+
+## Enterprise Service Bus (ESB)
+
+**In plain English:** An **ESB** was a heavyweight “universal adapter” in the SOA era — one bus to transform, route, and integrate every enterprise system. Modern designs usually prefer **lighter message brokers** and explicit APIs instead of a smart central bus that knows everyone’s business logic.
+
+> **Key takeaway:** Know the term historically; in interviews prefer queues/streams + dumb pipes / smart endpoints over a giant ESB.
+
+### What it tried to solve
+
+Many legacy systems, different protocols, need for transformation and orchestration in one place.
+
+### Why teams moved on
+
+- Smart buses become organizational bottlenecks and SPOFs
+- Hard to version and test central transformation logic
+- Cloud-native style: **smart endpoints, dumb pipes** (Kafka/SQS/Rabbit + small services)
+
+### When a brief mention helps
+
+Brownfield enterprise prompts (“integrate SAP + CRM + custom apps”). Propose an event backbone or API layer rather than recreating a classic ESB.
+
+### Tradeoffs
+
+Central control vs autonomy; rich built-in mediators vs opaque failure domains.
+
+### Interview tip
+
+“We might have used an ESB historically; I’d use a message broker plus bounded-context services and keep transforms local.”
+
+### Self-check
+
+1. What problem did ESBs aim to solve?
+2. Why can a smart bus become a bottleneck?
+3. What is a lighter modern alternative?
 
 ## Delivery guarantees
 
@@ -2330,6 +3120,58 @@ Write on the board: “SLO: 99.9% successful redirects, p99 < 50 ms; SLI: non-5x
 
 ---
 
+## Disaster recovery
+
+**In plain English:** **Disaster recovery (DR)** is the plan for when a whole zone or region fails — not just one disk. You decide how much data you can lose and how long you can be down, then buy the architecture that matches.
+
+> **Key takeaway:** State **RPO** and **RTO** as numbers before proposing multi-region; backups alone are not a DR strategy if you never rehearsed restore.
+
+### RPO and RTO
+
+| Term | Meaning | Question it answers |
+|------|---------|---------------------|
+| **RPO** (Recovery Point Objective) | How much data you may lose | “Is losing the last 5 minutes of writes OK?” |
+| **RTO** (Recovery Time Objective) | How long until service is back | “Can we be down for 1 hour?” |
+
+### Example targets (illustrative)
+
+| Tier | Example RPO | Example RTO | Typical techniques |
+|------|-------------|-------------|--------------------|
+| Bronze | 24 h | 24–48 h | Daily backups, cold restore |
+| Silver | Minutes–1 h | 1–4 h | Async cross-region replicas, runbooks |
+| Gold | Seconds–minutes | Minutes | Sync or near-sync replication, automated failover |
+| Platinum | ≈0 | ≈0 | Active-active multi-region, conflict design |
+
+### Building blocks
+
+- **Backups** — periodic snapshots; test restores!
+- **Replication** — streaming copies in another AZ/region
+- **Multi-region failover** — DNS/Geo steer away from a bad region
+- **Chaos / game days** — prove the runbook before Black Friday
+
+### When to emphasize
+
+Senior prompts, payments, health, globally critical consumer apps. For a toy URL shortener MVP, mention backups + single-region HA first.
+
+### Tradeoffs
+
+Tighter RPO/RTO ⇒ exponential cost and complexity (esp. active-active).
+
+### Failure modes
+
+Untested backups; DNS TTL delaying failover; failing over without fencing the old primary (split brain); region failover that forgets async workers.
+
+### Interview tip
+
+Write “RPO ≤ 1 min, RTO ≤ 15 min → async cross-region replica + runbook DNS cutover” in the NFR corner.
+
+### Self-check
+
+1. Difference between RPO and RTO?
+2. Why is RAID not DR?
+3. What goes wrong if DNS TTL is 24h during regional failover?
+
+
 ## Observability
 
 **In plain English:** Observability is how you explain why the system is sick using metrics, logs, and traces — the difference between "CPU is high" and "checkout is slow because payments p99 spiked after deploy."
@@ -2470,6 +3312,50 @@ flowchart LR
 
 ---
 
+## N-tier architecture
+
+**In plain English:** **N-tier** means splitting a system into layers with jobs — usually **presentation** (what users see), **application** (business rules), and **data** (storage). A classic three-tier web app is the interview archetype.
+
+![N-tier architecture](diagrams/png/n-tier.png)
+
+<sub>Editable source: [n-tier.excalidraw](diagrams/excalidraw/n-tier.excalidraw)</sub>
+
+> **Key takeaway:** Separate UI, logic, and storage so you can scale and deploy them differently — even when microservices later subdivide the middle tier.
+
+### Typical tiers
+
+1. **Presentation** — browsers, mobile apps, desktop UIs, sometimes server-rendered pages
+2. **Application / logic** — APIs, domain rules, orchestration
+3. **Data** — relational DBs, caches, object storage, search indexes
+
+You may hear **2-tier** (client ↔ DB — fragile at scale) or more tiers (edge CDN, gateway, workers).
+
+### How it shows up today
+
+Microservices do not abolish tiers; they repeat presentation/logic/data concerns across many services. A BFF may sit in the presentation-adjacent layer; workers may extend the logic tier asynchronously.
+
+### When to use
+
+Almost every CRUD product starts here. Teach it when candidates jump straight to twenty microservices.
+
+### Tradeoffs
+
+Clear separation vs extra network hops; fat middle tier becoming a monolith; over-tiering tiny apps.
+
+### Failure modes
+
+Business logic in the UI; presentation tier talking straight to DB; data tier exposed to the internet.
+
+### Interview tip
+
+Sketch three boxes left-to-right or top-to-bottom before subdividing the app tier. It calms the board.
+
+### Self-check
+
+1. Name the three classic tiers.
+2. Where should authorization checks live?
+3. How does a CDN relate to the presentation tier?
+
 ## Monolith vs microservices
 
 **In plain English:** A monolith is one deployable app (still fine — and often wise — early on). Microservices split the product into independently deployable pieces that talk over the network. The senior move is usually: start modular, split when scale or team boundaries demand it.
@@ -2534,11 +3420,338 @@ For URL shortener / typeahead: “Modular monolith is fine.” For Uber/Netflix-
 2. Why is data split harder than code split?
 3. Give a case where a monolith is the mature recommendation.
 
+## Event-driven architecture (EDA)
+
+**In plain English:** In **event-driven** designs, something important happens (“OrderPaid”) and other parts **react** — send email, update search, start shipping — instead of one API call synchronously doing everything.
+
+> **Key takeaway:** Use events to decouple side effects from the user-facing request; keep the synchronous path thin.
+
+### Events vs request/response
+
+| | **Request/response** | **Event-driven** |
+|--|----------------------|------------------|
+| Coupling | Caller waits on callee | Producer does not wait on all consumers |
+| Failure | Callee down → caller errors | Consumers retry independently |
+| Fan-out | Extra calls per dependency | Many subscribers per event |
+| Mental model | Easy step-through | Harder tracing (needs correlation ids) |
+
+### When EDA shines
+
+Notifications, search indexing, analytics, workflow kickoffs, integrating many domains after a state change.
+
+### When to stay synchronous
+
+The user is blocked on the answer (login, price quote, seat availability). You can still **emit events after** the synchronous commit (transactional outbox).
+
+### Tradeoffs
+
+Scalable decoupling vs eventual consistency and debugging complexity. Need schemas, versioning, and DLQs.
+
+### Failure modes
+
+Event storms; missing consumers; dual-write bugs (DB updated but event never published); ambiguous event names.
+
+### Interview tip
+
+“API writes order → outbox → `OrderCreated` on the bus → email, fraud, warehouse consumers.” Ties Messaging + EDA together.
+
+### Self-check
+
+1. Why prefer events for “send welcome email”?
+2. What problem does a transactional outbox solve?
+3. Give a step that should stay request/response.
+
+
+## Event sourcing
+
+**In plain English:** Instead of storing only the **latest** balance or document, **event sourcing** stores the **history of facts** (“credited 10,” “debited 3”) and builds current state by replaying those events.
+
+> **Key takeaway:** Powerful for audit and temporal queries; heavy for everyday CRUD — do not force it onto every service.
+
+### How it works
+
+1. Commands validate and append immutable events to a log/store.
+2. Current state = fold/reduce over events (often snapshotted).
+3. Optional **projections** build read tables for screens (pairs well with CQRS).
+
+### Pros
+
+- Full audit trail; explain “how did we get here?”
+- Time travel / rebuild read models
+- Natural fit for domains with rich behavioral history
+
+### Cons
+
+- Versioning events forever is hard
+- PII deletion / GDPR-style erasure needs careful design (crypto shredding, etc.)
+- Not intuitive for every team; easy to over-engineer
+
+### When to use / when not
+
+**Use:** banking ledgers, collaborative history, systems that already think in domain events.  
+**Avoid:** simple profile stores, high-churn settings flags, anything where “latest row” is enough.
+
+### Tradeoffs
+
+Analytical power vs complexity; storage growth; need for snapshots.
+
+### Failure modes
+
+Huge streams without snapshots; leaking PII in immutable logs; treating the event store as a general query DB.
+
+### Interview tip
+
+Mention event sourcing only when audit/history is a first-class requirement — then pair with a CQRS read side.
+
+### Self-check
+
+1. How do you get “current balance” in an event-sourced account?
+2. Why can GDPR “delete my data” be awkward?
+3. How do snapshots help?
+
+
+## CQRS
+
+**In plain English:** **CQRS** (Command Query Responsibility Segregation) means **writes and reads use different models** — maybe even different databases. The write side cares about rules; the read side cares about fast screens.
+
+![CQRS read vs write models](diagrams/png/cqrs.png)
+
+<sub>Editable source: [cqrs.excalidraw](diagrams/excalidraw/cqrs.excalidraw)</sub>
+
+> **Key takeaway:** Split when read and write shapes disagree badly; otherwise a single normalized model is simpler.
+
+### How it works
+
+- **Commands** change state through the write model (validated, transactional).
+- **Queries** read from denormalized views, caches, or search indexes.
+- Updates to read models often flow via **events** (EDA / event sourcing optional).
+
+### When it helps
+
+- Complex domains with simple read DTOs needed at high QPS
+- Feed/timeline style products
+- Different scaling for write ingest vs read fan-out
+
+### When it hurts
+
+- Small apps where two models double the work
+- Teams that forget read-model lag and promise strong read-after-write without a plan
+
+### Pairing with events
+
+CQRS ♥ events: after a successful command, publish facts that projectors apply to read stores. Event sourcing is optional — you can CQRS with a regular write DB.
+
+### Tradeoffs
+
+Independent scale/optimize vs more moving parts and consistency windows.
+
+### Failure modes
+
+Dual writes without a single source of truth; forever-lagging projectors; overusing CQRS as a buzzword.
+
+### Interview tip
+
+“Write path: normalized order DB. Read path: order history view updated asynchronously. Users may wait a second to see history — OK for this product.”
+
+### Self-check
+
+1. What problem does CQRS solve that caching alone might not?
+2. Must CQRS include event sourcing?
+3. How do you handle read-your-writes after a command?
+
+
+## Service discovery
+
+**In plain English:** When you have many service copies that come and go, callers need a way to **find healthy addresses**. That is service discovery — the “phone book” inside your datacenter.
+
+> **Key takeaway:** Pick DNS, a registry (Consul/etcd/K8s), or client-side load balancing — and always combine with health checks.
+
+### Common approaches
+
+| Approach | Idea | Watch-outs |
+|----------|------|------------|
+| **DNS** | Name → list of IPs; TTL caching | Slow failover if TTL high; little app logic |
+| **Registry + sidecar/proxy** | Services register; Envoy/NGINX watch and route | Registry HA matters |
+| **Client-side LB** | Client library queries registry and picks instance | Every language needs a good client |
+| **Platform native** | Kubernetes Services / Service mesh | Great in-cluster; still need story for egress |
+
+### How it fits with load balancing
+
+Discovery answers “who exists?”; load balancing answers “whom do I call **now**?” Often one component does both (mesh, cloud LB with target groups).
+
+### When to emphasize
+
+Microservice designs, multi-instance gateways, anything with frequent deploys/autoscaling.
+
+### Tradeoffs
+
+Simple DNS vs richer registries; clients smarter vs proxies smarter.
+
+### Failure modes
+
+Stale registry entries; thundering reconnects after outage; discovery outage blocking all calls (cache last-known-good carefully).
+
+### Interview tip
+
+“Services register with the platform; callers use the mesh/DNS name, not raw pod IPs.” Avoid hard-coded hosts on the whiteboard.
+
+### Self-check
+
+1. Why are pod IPs a bad hard dependency?
+2. How does TTL affect DNS-based discovery failover?
+3. Client-side vs proxy-side LB — one benefit each?
+
+
+## VMs and containers
+
+**In plain English:** A **VM** virtualizes a whole computer (guest OS and all). A **container** packages an app with its libraries and shares the host OS kernel — lighter and denser. **Orchestrators** (Kubernetes at interview level) schedule containers across machines, restart them, and expose services.
+
+> **Key takeaway:** Containers = fast packing and deploys; VMs = stronger isolation boundaries; K8s = “where containers run and heal,” not magic scalability by itself.
+
+### Isolation vs density
+
+| | **VMs** | **Containers** |
+|--|---------|----------------|
+| Isolation | Stronger (own kernel) | Process-level; shared kernel |
+| Density | Fewer per host | Many per host |
+| Boot / start | Slower | Seconds or less |
+| Use | Strong multi-tenant isolation, legacy OS needs | Microservices, CI, most cloud-native apps |
+
+### Orchestration (interview level)
+
+Kubernetes (or cloud cousins) give you:
+
+- Desired state (“run 6 replicas of payments”)
+- Health probes + restarts
+- Service discovery / load balancing inside the cluster
+- Rolling deploys
+
+You still design **data** carefully — K8s will not fix a hot database partition.
+
+### When to mention
+
+Almost any modern deploy story. Contrast “pets vs cattle,” rolling updates, and autoscaling groups.
+
+### Tradeoffs
+
+Container breakout risk vs VM overhead; orchestrator complexity vs VM snowflakes.
+
+### Failure modes
+
+Huge images; no resource limits (noisy neighbors); treating the orchestrator as the database HA story.
+
+### Interview tip
+
+“Stateless services in containers behind a Service/LB; stateful data on managed DB/disk.” Keep K8s details shallow unless asked.
+
+### Self-check
+
+1. Why can containers start faster than VMs?
+2. Does Kubernetes replace the need for replication in Postgres?
+3. What is a liveness probe for?
+
+
+## Geohashing and Quadtrees
+
+**In plain English:** Finding “coffee near me” means searching by location without scanning the whole planet. **Geohashes** turn latitude/longitude into grid cell strings. **Quadtrees** recursively split the map into four squares, subdividing busy areas. Both power nearby search (see [Nearby places](#nearby-places-yelp-like)).
+
+![Geohash grid vs quadtree](diagrams/png/geohash-quadtree.png)
+
+<sub>Editable source: [geohash-quadtree.excalidraw](diagrams/excalidraw/geohash-quadtree.excalidraw)</sub>
+
+> **Key takeaway:** Index space into cells; query this cell plus neighbors; pick fixed grids (geohash/H3) vs adaptive trees (quadtree) based on density skew.
+
+### Geohash / grid idea
+
+- Encode lat/lng → string; **shared prefixes ⇒ nearby points**
+- Longer string ⇒ smaller cell
+- Nearby query: compute cell(s) covering the radius, look up POIs in those cells, then precise distance filter
+- Watch **cell edges** — always include neighbor cells
+
+### Quadtrees
+
+- Start with the world square; split into four when a node holds too many points
+- Adapts to cities vs oceans (dense leaves only where needed)
+- Variants: R-trees, geohash-backed indexes, H3 hex grids (same interview idea)
+
+### Tradeoffs
+
+| Approach | Strength | Weakness |
+|----------|----------|----------|
+| Fixed geohash/H3 | Simple sharding keys; easy prefixes | Uneven POI density per cell |
+| Quadtree | Adaptive density | Harder to shard; more implementation care |
+| “Just Postgres distance” | Fine at small N | Falls over at global scale without index |
+
+### When to use
+
+Yelp-like, Uber driver matching (with time), delivery radius, any geo query at scale.
+
+### Failure modes
+
+Forgetting neighbor cells at boundaries; huge downtown cells melting one shard; using only geohash equality without radius refinement.
+
+### Interview tip
+
+Cross-link: “Geo index as in Nearby places — geohash rings + in-memory precise filter; cache hot tiles.”
+
+### Self-check
+
+1. Why query neighbor geohash cells?
+2. When does a quadtree beat a uniform grid?
+3. After cell lookup, why still compute exact distance?
+
+
+## OAuth 2.0, OIDC, and SSO
+
+**In plain English:** **OAuth 2.0** lets an app access a user’s data on another system **without taking their password** (e.g. “allow this calendar app to read my Google Calendar”). **OIDC** adds a standard **login identity** layer on top. **SSO** means you sign in once and reach several company apps.
+
+> **Key takeaway:** Access tokens authorize APIs; ID tokens tell the app who you are; SSO is the “one login, many apps” experience — interview depth only, not legal advice.
+
+### Authorization code flow (intuition)
+
+Browser app redirects the user to the **identity provider (IdP)**. User authenticates there. IdP redirects back with a short-lived **authorization code**. The app’s backend exchanges the code (plus a secret or PKCE) for tokens. Passwords never pass through your app.
+
+### ID token vs access token
+
+| Token | Job |
+|-------|-----|
+| **Access token** | Presented to APIs as proof of authorization (scopes/permissions) |
+| **ID token** (OIDC) | Tells *your app* who logged in (subject, email claims, etc.) |
+| **Refresh token** | Used to obtain new access tokens without re-prompting every minute |
+
+### SSO (single sign-on)
+
+A corporate IdP (or social IdP) authenticates once; connected apps trust its tokens/assertions (OIDC, SAML in enterprises). Users stop juggling passwords per tool; IT gains central revoke/MFA.
+
+### When to use in designs
+
+Any user-facing system with “Login with …”, multi-app product suites, B2B enterprise features. Machine-to-machine uses client credentials — different flow, same token idea.
+
+### Tradeoffs
+
+Great UX and security delegation vs dependency on IdP availability; token theft risks; complexity of session logout/revoke across apps.
+
+### Failure modes
+
+Storing forever-lived tokens in localStorage carelessly; trusting ID token signatures without JWKS verification; confusing “logged into UI” with “authorized for this object” (still need AuthZ).
+
+### Interview tip
+
+Draw **Client → IdP → Auth code → Backend token exchange → API calls with access token**. Mention PKCE for public/mobile clients.
+
+### Self-check
+
+1. Why is the authorization code exchanged on the backend?
+2. Does an ID token replace AuthZ checks on your API?
+3. What does SSO buy an employee using five internal tools?
+
 ## Security
 
 **In plain English:** Security means knowing who is calling (authentication), what they are allowed to do (authorization), and keeping data safe in transit and at rest. In interviews, a short practical checklist beats a fear monologue.
 
 > **Key takeaway:** TLS everywhere, authn/authz on the server, least-privilege secrets, and rate-limit auth endpoints — mention these on every user-facing design.
+
+See also [OAuth 2.0, OIDC, and SSO](#oauth-20-oidc-and-sso) and [TLS, SSL, and mTLS](#tls-ssl-and-mtls) for deeper interview vocabulary.
 
 ### Authentication (AuthN)
 
@@ -3177,6 +4390,8 @@ Set a 10-minute timer. Apply only the ideas from this page to the prompt **“De
 Say them deliberately in mocks until natural.
 
 # Design Walkthroughs
+
+Topic map for common interview families (our walkthrough titles): **URL shortener** → **Chat & messaging** (WhatsApp-like) → **News feed** (Twitter-like) → **Video streaming** (Netflix-like) → **Uber-like** dispatch. Use them as progressive practice after Foundations.
 
 ## URL shortener
 
