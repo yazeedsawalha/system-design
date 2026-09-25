@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="560"
+     viewBox="0 0 1100 560" role="img" aria-label="Circuit Breaker States">
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5F6368"/>
+    </marker>
+  </defs>
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+<text x="36" y="36" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#202124">Circuit Breaker States</text>
+<text x="36" y="56" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#5F6368">System Design Interview Guide</text>
+<rect x="80" y="200" width="180" height="90" rx="10" ry="10" fill="#E6F4EA" stroke="#34A853" stroke-width="1.5"/>
+<text x="170.0" y="235.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#202124">CLOSED</text>
+<text x="170.0" y="249.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="400" fill="#202124">pass through</text>
+<text x="170.0" y="263.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="400" fill="#202124">count failures</text>
+<path d="M 420,210 L 420,280 A 90.0,10 0 0 0 600,280 L 600,210 A 90.0,10 0 0 0 420,210 Z" fill="#FCE8E6" stroke="#D93025" stroke-width="1.5"/>
+<ellipse cx="510.0" cy="210" rx="90.0" ry="10" fill="#FCE8E6" stroke="#D93025" stroke-width="1.5"/>
+<text x="510.0" y="235.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#202124">OPEN</text>
+<text x="510.0" y="249.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="400" fill="#202124">fail fast</text>
+<text x="510.0" y="263.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="400" fill="#202124">cooldown</text>
+<rect x="760" y="200" width="180" height="90" rx="10" ry="10" fill="#FEF7E0" stroke="#F9AB00" stroke-width="1.5"/>
+<text x="850.0" y="242.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#202124">HALF-OPEN</text>
+<text x="850.0" y="256.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="400" fill="#202124">probe subset</text>
+<path d="M 260,245.0 L 420,245.0" fill="none" stroke="#5F6368" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="340.0" y="239.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#5F6368">failures ≥ threshold</text>
+<path d="M 600,245.0 L 760,245.0" fill="none" stroke="#5F6368" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="680.0" y="239.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#5F6368">timer elapsed</text>
+<path d="M 760,245.0 L 260,245.0" fill="none" stroke="#5F6368" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="510.0" y="239.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#5F6368">probe OK</text>
+<path d="M 760,245.0 L 600,245.0" fill="none" stroke="#5F6368" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+<text x="680.0" y="239.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#5F6368">probe fail</text>
+<text x="80" y="384" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#5F6368">Pair with timeouts, bulkheads, retries with jitter · prevent retry storms</text>
+<rect x="36" y="490" width="365" height="50" rx="8" ry="8" fill="#FFFFFF" stroke="#DADCE0" stroke-width="1"/>
+<text x="46" y="504" font-family="Helvetica,Arial,sans-serif" font-size="10" font-weight="700" fill="#5F6368">Legend</text>
+<rect x="48" y="514" width="16" height="16" rx="4" ry="4" fill="#E6F4EA" stroke="#34A853" stroke-width="1.5"/>
+<text x="70" y="527" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#202124">Closed / healthy</text>
+<rect x="163" y="514" width="16" height="16" rx="4" ry="4" fill="#FCE8E6" stroke="#D93025" stroke-width="1.5"/>
+<text x="185" y="527" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#202124">Open / trip</text>
+<rect x="278" y="514" width="16" height="16" rx="4" ry="4" fill="#FEF7E0" stroke="#F9AB00" stroke-width="1.5"/>
+<text x="300" y="527" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#202124">Half-open</text>
+</svg>

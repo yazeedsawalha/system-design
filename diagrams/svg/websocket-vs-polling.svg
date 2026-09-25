@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="600"
+     viewBox="0 0 1100 600" role="img" aria-label="WebSocket vs SSE vs Polling">
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5F6368"/>
+    </marker>
+  </defs>
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+<text x="36" y="36" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#202124">WebSocket vs SSE vs Polling</text>
+<text x="36" y="56" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#5F6368">System Design Interview Guide</text>
+<rect x="40" y="90" width="320" height="200" rx="8" ry="8" fill="none" stroke="#DADCE0" stroke-width="1" stroke-dasharray="6 4"/>
+<text x="50" y="106" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#5F6368">Short polling</text>
+<rect x="60" y="140" width="90" height="50" rx="10" ry="10" fill="#E8F0FE" stroke="#1A73E8" stroke-width="1.5"/>
+<text x="105.0" y="169.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#202124">Client</text>
+<rect x="200" y="140" width="100" height="50" rx="10" ry="10" fill="#FEF7E0" stroke="#F9AB00" stroke-width="1.5"/>
+<text x="250.0" y="169.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#202124">Server</text>
+<path d="M 150,165.0 L 200,165.0" fill="none" stroke="#5F6368" stroke-width="1.5" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="175.0" y="159.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#5F6368">GET…GET…</text>
+<text x="60" y="234" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#5F6368">Simple · wasteful</text>
+<rect x="380" y="90" width="320" height="200" rx="8" ry="8" fill="none" stroke="#DADCE0" stroke-width="1" stroke-dasharray="6 4"/>
+<text x="390" y="106" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#5F6368">Long polling</text>
+<rect x="400" y="140" width="90" height="50" rx="10" ry="10" fill="#E8F0FE" stroke="#1A73E8" stroke-width="1.5"/>
+<text x="445.0" y="169.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#202124">Client</text>
+<rect x="540" y="140" width="100" height="50" rx="10" ry="10" fill="#FEF7E0" stroke="#F9AB00" stroke-width="1.5"/>
+<text x="590.0" y="169.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#202124">Server</text>
+<path d="M 490,165.0 L 540,165.0" fill="none" stroke="#5F6368" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="515.0" y="159.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#5F6368">hold until event</text>
+<text x="400" y="234" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#5F6368">HTTP-friendly</text>
+<rect x="720" y="90" width="340" height="200" rx="8" ry="8" fill="none" stroke="#DADCE0" stroke-width="1" stroke-dasharray="6 4"/>
+<text x="730" y="106" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#5F6368">WebSocket / SSE</text>
+<rect x="740" y="140" width="90" height="50" rx="10" ry="10" fill="#E8F0FE" stroke="#1A73E8" stroke-width="1.5"/>
+<text x="785.0" y="169.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#202124">Client</text>
+<rect x="890" y="140" width="100" height="50" rx="10" ry="10" fill="#FEF7E0" stroke="#F9AB00" stroke-width="1.5"/>
+<text x="940.0" y="169.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#202124">Server</text>
+<path d="M 830,165.0 L 890,165.0" fill="none" stroke="#5F6368" stroke-width="1.5" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="860.0" y="159.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#5F6368">WS bi / SSE ↓</text>
+<text x="740" y="234" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#5F6368">WS: chat · SSE: feeds</text>
+<text x="40" y="364" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#5F6368">Pick by directionality, firewall friendliness, fan-out fan-in, and reconnect story</text>
+<rect x="36" y="530" width="250" height="50" rx="8" ry="8" fill="#FFFFFF" stroke="#DADCE0" stroke-width="1"/>
+<text x="46" y="544" font-family="Helvetica,Arial,sans-serif" font-size="10" font-weight="700" fill="#5F6368">Legend</text>
+<rect x="48" y="554" width="16" height="16" rx="4" ry="4" fill="#E8F0FE" stroke="#1A73E8" stroke-width="1.5"/>
+<text x="70" y="567" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#202124">Client</text>
+<rect x="163" y="554" width="16" height="16" rx="4" ry="4" fill="#FEF7E0" stroke="#F9AB00" stroke-width="1.5"/>
+<text x="185" y="567" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#202124">Compute</text>
+</svg>

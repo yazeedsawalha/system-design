@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="560"
+     viewBox="0 0 1100 560" role="img" aria-label="CAP &amp; PACELC">
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5F6368"/>
+    </marker>
+  </defs>
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+<text x="36" y="36" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#202124">CAP &amp; PACELC</text>
+<text x="36" y="56" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#5F6368">System Design Interview Guide</text>
+<rect x="40" y="90" width="500" height="220" rx="8" ry="8" fill="none" stroke="#DADCE0" stroke-width="1" stroke-dasharray="6 4"/>
+<text x="50" y="106" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#5F6368">Under partition (CAP)</text>
+<rect x="70" y="150" width="160" height="70" rx="10" ry="10" fill="#FEF7E0" stroke="#F9AB00" stroke-width="1.5"/>
+<text x="150.0" y="182.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#202124">CP</text>
+<text x="150.0" y="196.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="400" fill="#202124">refuse / block</text>
+<rect x="300" y="150" width="180" height="80" rx="10" ry="10" fill="#E6F4EA" stroke="#34A853" stroke-width="1.5"/>
+<text x="390.0" y="180.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#202124">AP</text>
+<text x="390.0" y="194.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="400" fill="#202124">serve possibly</text>
+<text x="390.0" y="208.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="400" fill="#202124">stale</text>
+<text x="70" y="274" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#5F6368">C vs A when P happens</text>
+<rect x="560" y="90" width="500" height="220" rx="8" ry="8" fill="none" stroke="#DADCE0" stroke-width="1" stroke-dasharray="6 4"/>
+<text x="570" y="106" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#5F6368">Else (PACELC)</text>
+<rect x="590" y="150" width="160" height="70" rx="10" ry="10" fill="#F3E8FD" stroke="#A142F4" stroke-width="1.5"/>
+<text x="670.0" y="182.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#202124">Prefer</text>
+<text x="670.0" y="196.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="400" fill="#202124">Latency</text>
+<path d="M 820,160 L 820,210 A 80.0,10 0 0 0 980,210 L 980,160 A 80.0,10 0 0 0 820,160 Z" fill="#FCE8E6" stroke="#D93025" stroke-width="1.5"/>
+<ellipse cx="900.0" cy="160" rx="80.0" ry="10" fill="#FCE8E6" stroke="#D93025" stroke-width="1.5"/>
+<text x="900.0" y="182.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#202124">Prefer</text>
+<text x="900.0" y="196.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="400" fill="#202124">Consistency</text>
+<text x="590" y="274" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#5F6368">When no partition: L vs C</text>
+<text x="40" y="374" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#5F6368">Interview use: name the tradeoff for THIS design under partition AND in steady state — don&#x27;t recite the acronym alone</text>
+<rect x="36" y="490" width="480" height="50" rx="8" ry="8" fill="#FFFFFF" stroke="#DADCE0" stroke-width="1"/>
+<text x="46" y="504" font-family="Helvetica,Arial,sans-serif" font-size="10" font-weight="700" fill="#5F6368">Legend</text>
+<rect x="48" y="514" width="16" height="16" rx="4" ry="4" fill="#FEF7E0" stroke="#F9AB00" stroke-width="1.5"/>
+<text x="70" y="527" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#202124">CP / Compute</text>
+<rect x="163" y="514" width="16" height="16" rx="4" ry="4" fill="#E6F4EA" stroke="#34A853" stroke-width="1.5"/>
+<text x="185" y="527" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#202124">AP / Cache</text>
+<rect x="278" y="514" width="16" height="16" rx="4" ry="4" fill="#F3E8FD" stroke="#A142F4" stroke-width="1.5"/>
+<text x="300" y="527" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#202124">Latency</text>
+<rect x="393" y="514" width="16" height="16" rx="4" ry="4" fill="#FCE8E6" stroke="#D93025" stroke-width="1.5"/>
+<text x="415" y="527" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#202124">Consistency</text>
+</svg>

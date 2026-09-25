@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="600"
+     viewBox="0 0 1100 600" role="img" aria-label="Uber-like Dispatch">
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5F6368"/>
+    </marker>
+  </defs>
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+<text x="36" y="36" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#202124">Uber-like Dispatch</text>
+<text x="36" y="56" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#5F6368">System Design Interview Guide</text>
+<rect x="40" y="120" width="110" height="56" rx="10" ry="10" fill="#E8F0FE" stroke="#1A73E8" stroke-width="1.5"/>
+<text x="95.0" y="152.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#202124">Rider app</text>
+<rect x="40" y="280" width="110" height="56" rx="10" ry="10" fill="#E8F0FE" stroke="#1A73E8" stroke-width="1.5"/>
+<text x="95.0" y="312.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#202124">Driver app</text>
+<rect x="190" y="200" width="120" height="56" rx="10" ry="10" fill="#F3E8FD" stroke="#A142F4" stroke-width="1.5"/>
+<text x="250.0" y="232.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#202124">API / WS</text>
+<rect x="350" y="100" width="120" height="56" rx="10" ry="10" fill="#FEF7E0" stroke="#F9AB00" stroke-width="1.5"/>
+<text x="410.0" y="125.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#202124">Location</text>
+<text x="410.0" y="139.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="400" fill="#202124">ingest</text>
+<rect x="350" y="220" width="120" height="56" rx="10" ry="10" fill="#FEF7E0" stroke="#F9AB00" stroke-width="1.5"/>
+<text x="410.0" y="252.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#202124">Matching</text>
+<rect x="350" y="340" width="120" height="56" rx="10" ry="10" fill="#FEF7E0" stroke="#F9AB00" stroke-width="1.5"/>
+<text x="410.0" y="372.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#202124">Trips</text>
+<rect x="530" y="100" width="130" height="56" rx="10" ry="10" fill="#E6F4EA" stroke="#34A853" stroke-width="1.5"/>
+<text x="595.0" y="125.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#202124">Geo index</text>
+<text x="595.0" y="139.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="400" fill="#202124">(quad/H3)</text>
+<rect x="530" y="220" width="110" height="50" rx="10" ry="10" fill="#FFF8E1" stroke="#F57C00" stroke-width="1.5"/>
+<text x="585.0" y="249.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#202124">Events</text>
+<path d="M 530,340 L 530,384 A 60.0,10 0 0 0 650,384 L 650,340 A 60.0,10 0 0 0 530,340 Z" fill="#FCE8E6" stroke="#D93025" stroke-width="1.5"/>
+<ellipse cx="590.0" cy="340" rx="60.0" ry="10" fill="#FCE8E6" stroke="#D93025" stroke-width="1.5"/>
+<text x="590.0" y="366.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#202124">Trips DB</text>
+<path d="M 150,148.0 L 170.0,148.0 L 170.0,228.0 L 190,228.0" fill="none" stroke="#5F6368" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M 150,308.0 L 170.0,308.0 L 170.0,228.0 L 190,228.0" fill="none" stroke="#5F6368" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M 310,228.0 L 330.0,228.0 L 330.0,128.0 L 350,128.0" fill="none" stroke="#5F6368" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M 310,228.0 L 330.0,228.0 L 330.0,248.0 L 350,248.0" fill="none" stroke="#5F6368" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M 310,228.0 L 330.0,228.0 L 330.0,368.0 L 350,368.0" fill="none" stroke="#5F6368" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M 470,128.0 L 530,128.0" fill="none" stroke="#5F6368" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M 470,248.0 L 500.0,248.0 L 500.0,128.0 L 530,128.0" fill="none" stroke="#5F6368" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="500.0" y="182.0" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#5F6368">nearby</text>
+<path d="M 470,248.0 L 530,245.0" fill="none" stroke="#5F6368" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M 470,368.0 L 530,362.0" fill="none" stroke="#5F6368" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M 470,368.0 L 500.0,368.0 L 500.0,245.0 L 530,245.0" fill="none" stroke="#5F6368" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="40" y="464" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#5F6368">Update location sparsely · match in geo cells · trip state machine · surge as pricing service</text>
+<rect x="36" y="530" width="710" height="50" rx="8" ry="8" fill="#FFFFFF" stroke="#DADCE0" stroke-width="1"/>
+<text x="46" y="544" font-family="Helvetica,Arial,sans-serif" font-size="10" font-weight="700" fill="#5F6368">Legend</text>
+<rect x="48" y="554" width="16" height="16" rx="4" ry="4" fill="#E8F0FE" stroke="#1A73E8" stroke-width="1.5"/>
+<text x="70" y="567" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#202124">Client</text>
+<rect x="163" y="554" width="16" height="16" rx="4" ry="4" fill="#F3E8FD" stroke="#A142F4" stroke-width="1.5"/>
+<text x="185" y="567" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#202124">Network</text>
+<rect x="278" y="554" width="16" height="16" rx="4" ry="4" fill="#FEF7E0" stroke="#F9AB00" stroke-width="1.5"/>
+<text x="300" y="567" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#202124">Compute</text>
+<rect x="393" y="554" width="16" height="16" rx="4" ry="4" fill="#E6F4EA" stroke="#34A853" stroke-width="1.5"/>
+<text x="415" y="567" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#202124">Cache</text>
+<rect x="508" y="554" width="16" height="16" rx="4" ry="4" fill="#FCE8E6" stroke="#D93025" stroke-width="1.5"/>
+<text x="530" y="567" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#202124">Database</text>
+<rect x="623" y="554" width="16" height="16" rx="4" ry="4" fill="#FFF8E1" stroke="#F57C00" stroke-width="1.5"/>
+<text x="645" y="567" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#202124">Queue</text>
+</svg>
