@@ -11,7 +11,7 @@ A **free, original** curriculum for system design interview prep — deep founda
 3. Read **[Whiteboard like a strong candidate](#whiteboard-like-a-strong-candidate)** before timed mocks.
 4. Internalize the **[Interview Approach](#interview-approach)** template; use it on every design.
 5. Study **[Design Walkthroughs](#design-walkthroughs)** — junior path: URL shortener → rate limiter → typeahead → nearby places; then feed, chat, checkout; senior: Uber, video, collab doc, recommendations.
-6. Open `.drawio` files in [diagrams.net](https://app.diagrams.net) or the VS Code draw.io extension while you practice drawing.
+6. Open `.drawio` files in [diagrams.net](https://app.diagrams.net) (File → Open) or the VS Code Draw.io extension while you practice drawing — white BG + Google/AWS-style palette; see [Diagrams index](#diagrams-index).
 7. Run **[Practice](#practice)** under a timer; score yourself with the mock rubric.
 
 ### Study paths by level
@@ -24,15 +24,68 @@ A **free, original** curriculum for system design interview prep — deep founda
 
 See [Study plan](#study-plan) for 2 / 4 / 8 week schedules and [Level expectations](#level-expectations) for self-calibration.
 
----
 
+## Diagrams index
 
----
+All diagrams live under [`diagrams/`](diagrams/) as editable **draw.io** / diagrams.net XML. Open with [https://app.diagrams.net](https://app.diagrams.net) (File → Open) or the **VS Code Draw.io** extension. Every file uses a **white background** (`#FFFFFF`) and a Google Cloud / AWS–style palette (Client blue, Network purple, Compute amber, Cache green, Database red, Queue orange) with a legend on each canvas.
+
+### Foundations & patterns
+
+| Diagram | What it shows |
+|---------|----------------|
+| [dns-resolution.drawio](diagrams/dns-resolution.drawio) | Browser → stub → root/TLD/auth → CDN/origin |
+| [foundations-traffic-tier.drawio](diagrams/foundations-traffic-tier.drawio) | Edge path: clients → DNS → CDN → LB → gateway → services |
+| [foundations-data-tier.drawio](diagrams/foundations-data-tier.drawio) | Cache, primary/replicas, shards, queue, object store, search |
+| [load-balancing-patterns.drawio](diagrams/load-balancing-patterns.drawio) | L4 vs L7; RR / least-conn / consistent hash / sticky |
+| [caching-strategies.drawio](diagrams/caching-strategies.drawio) | Cache-aside, read-through, write-through, write-behind |
+| [sharding-consistent-hash.drawio](diagrams/sharding-consistent-hash.drawio) | Hash ring, virtual nodes, hotspot |
+| [replication-failover.drawio](diagrams/replication-failover.drawio) | Primary–replica, health monitor, promote path |
+| [cap-pacelc.drawio](diagrams/cap-pacelc.drawio) | CAP (C vs A under partition) and PACELC axes |
+| [messaging-pubsub-vs-queue.drawio](diagrams/messaging-pubsub-vs-queue.drawio) | Competing consumers vs fan-out topic |
+| [rate-limiting-algorithms.drawio](diagrams/rate-limiting-algorithms.drawio) | Token bucket, sliding window, fixed window |
+| [websocket-vs-sse-vs-polling.drawio](diagrams/websocket-vs-sse-vs-polling.drawio) | Directionality and when to pick each |
+| [bloom-filter.drawio](diagrams/bloom-filter.drawio) | Hash → bit array; maybe vs definitely-not |
+| [circuit-breaker-states.drawio](diagrams/circuit-breaker-states.drawio) | Closed → open → half-open transitions |
+| [sla-slo-error-budget.drawio](diagrams/sla-slo-error-budget.drawio) | SLA vs SLO vs SLI and error budget |
+| [observability-three-pillars.drawio](diagrams/observability-three-pillars.drawio) | Metrics, logs, traces → dashboards / on-call |
+| [microservices-vs-monolith.drawio](diagrams/microservices-vs-monolith.drawio) | Single deployable vs gateway + services + events |
+
+### Design walkthroughs
+
+| Diagram | What it shows |
+|---------|----------------|
+| [url-shortener.drawio](diagrams/url-shortener.drawio) | Create/redirect API, Redis, Postgres, analytics queue |
+| [rate-limiter.drawio](diagrams/rate-limiter.drawio) | Gateway → limiter service → Redis counters |
+| [notification-system.drawio](diagrams/notification-system.drawio) | Priority queues → workers → push/email/SMS/in-app |
+| [news-feed.drawio](diagrams/news-feed.drawio) | Hybrid fan-out, feed cache, follow graph |
+| [chat-messaging.drawio](diagrams/chat-messaging.drawio) | WS gateway, chat service, presence, message store |
+| [group-chat.drawio](diagrams/group-chat.drawio) | Channel/message/membership services + fan-out |
+| [uber-dispatch.drawio](diagrams/uber-dispatch.drawio) | Geo ingest, matching, trips, events |
+| [video-streaming.drawio](diagrams/video-streaming.drawio) | Upload → transcode → packaged HLS/DASH → CDN |
+| [dropbox.drawio](diagrams/dropbox.drawio) | Chunk upload, metadata, dedup, sync notify |
+| [nearby-places.drawio](diagrams/nearby-places.drawio) | Geo index, business DB, ranker, result cache |
+| [ecommerce-checkout.drawio](diagrams/ecommerce-checkout.drawio) | Cart, inventory locks, orders, payments, fulfillment |
+| [recommendation-feed.drawio](diagrams/recommendation-feed.drawio) | Candidates → ranker → filters + feature store |
+| [collab-doc.drawio](diagrams/collab-doc.drawio) | OT/CRDT engine, op log, snapshots, presence |
+| [web-crawler.drawio](diagrams/web-crawler.drawio) | Frontier, fetchers, seen-URL Bloom, parser |
+| [typeahead.drawio](diagrams/typeahead.drawio) | Edge prefix cache, trie, ranker |
+| [search-inverted-index.drawio](diagrams/search-inverted-index.drawio) | Analyzer, inverted index, query + ranking |
+| [ticket-booking-concurrency.drawio](diagrams/ticket-booking-concurrency.drawio) | Seat locks, optimistic inventory, payment confirm |
+| [payment-idempotency.drawio](diagrams/payment-idempotency.drawio) | Idempotency-Key store, ledger, PSP, webhooks |
+
+### Interview practice
+
+| Diagram | What it shows |
+|---------|----------------|
+| [whiteboard-starter-template.drawio](diagrams/whiteboard-starter-template.drawio) | Blank left→right scaffold + NFR box |
+| [interview-clarify-to-hld.drawio](diagrams/interview-clarify-to-hld.drawio) | Four-step interview flow: clarify → capacity → HLD → deep dive |
 
 
 ---
 
 ## Table of Contents
+
+- [Diagrams index](#diagrams-index)
 
 ### 0. Getting Started
 
@@ -910,6 +963,8 @@ Keep a one-sentence answer ready for each foundations topic you study.
 ## DNS
 
 DNS maps human-readable names to addresses and is the first hop almost every client makes. In interviews you rarely configure BIND, but you **must** place DNS correctly, reason about TTL, and know when GeoDNS / anycast matters for failover and latency.
+**Diagram:** [DNS resolution](diagrams/dns-resolution.drawio) — open in [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension.
+
 
 ### How resolution works (interview level)
 
@@ -1051,6 +1106,8 @@ Say “reverse proxy / L7 LB” when you mean edge routing; reserve “forward p
 ## Real-time communication
 
 “Real-time” in interviews usually means **server-initiated updates** with low latency: chat, presence, live scores, collab cursors, notifications. Pick the transport deliberately — do not default to WebSockets for everything.
+**Diagram:** [WebSocket vs SSE vs polling](diagrams/websocket-vs-sse-vs-polling.drawio) — open in [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension.
+
 
 ### Options compared
 
@@ -1127,6 +1184,8 @@ Ask: “Do we need client→server messages at high rate, or mostly server push?
 ## Load balancing
 
 Load balancers (LBs) distribute traffic across healthy backends so no single instance is overwhelmed and failures are hidden from clients.
+**Diagram:** [Load balancing patterns](diagrams/load-balancing-patterns.drawio) — open in [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension.
+
 
 ### Layers
 
@@ -1267,6 +1326,8 @@ Keep a one-sentence answer ready for each foundations topic you study.
 ## Rate limiting
 
 Rate limiting protects systems and tenants from abuse and accidental overload by capping request rates per key (IP, user, API token, tenant).
+**Diagram:** [Rate limiting algorithms](diagrams/rate-limiting-algorithms.drawio) — open in [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension.
+
 
 ### Algorithms
 
@@ -1345,6 +1406,8 @@ Keep a one-sentence answer ready for each foundations topic you study.
 ## Caching & CDN
 
 Caching stores expensive-to-compute or slow-to-fetch data closer to the consumer. A CDN is a geographically distributed cache for static (and sometimes dynamic) content.
+**Diagram:** [Caching strategies](diagrams/caching-strategies.drawio) — open in [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension.
+
 
 ### Cache placements
 
@@ -1586,6 +1649,8 @@ Keep a one-sentence answer ready for each foundations topic you study.
 ## Sharding
 
 Sharding (horizontal partitioning) splits data across multiple database nodes so each holds a subset of rows. It is how single-cluster storage ceilings get broken—at the cost of complexity.
+**Diagram:** [Sharding & consistent hashing](diagrams/sharding-consistent-hash.drawio) — open in [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension.
+
 
 ### Shard key selection
 
@@ -1662,6 +1727,8 @@ Keep a one-sentence answer ready for each foundations topic you study.
 ## Consistent hashing
 
 Consistent hashing maps keys to nodes on a ring so that when nodes are added/removed, **most keys stay put** — only keys near the change move. It is the go-to answer for cache clusters, partitioners, and some DHT-style stores. Virtual nodes fix imbalance.
+**Diagram:** [Consistent hashing ring](diagrams/sharding-consistent-hash.drawio) — open in [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension.
+
 
 ### Ring intuition
 
@@ -1738,6 +1805,8 @@ Draw a ring, place 3 nodes, show adding a fourth and which keys move. Say “vir
 ## Replication
 
 Replication copies data to multiple nodes for durability, availability, and read scale. The consistency you get depends on *when* replicas acknowledge writes.
+**Diagram:** [Replication & failover](diagrams/replication-failover.drawio) — open in [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension.
+
 
 ### Primary-secondary (leader-follower)
 
@@ -1807,6 +1876,8 @@ Keep a one-sentence answer ready for each foundations topic you study.
 ## CAP & PACELC
 
 CAP and PACELC are thinking tools for distributed tradeoffs—not rigid laws you recite to sound smart. Use them to frame *which* property you sacrifice under which condition.
+**Diagram:** [CAP & PACELC](diagrams/cap-pacelc.drawio) — open in [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension.
+
 
 ### CAP (briefly)
 
@@ -1881,6 +1952,8 @@ Keep a one-sentence answer ready for each foundations topic you study.
 ## Messaging
 
 Message queues and event streams decouple producers from consumers so spikes buffer and work continues when downstream is slow.
+**Diagram:** [Pub/Sub vs queue](diagrams/messaging-pubsub-vs-queue.drawio) — open in [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension.
+
 
 ### Queues vs streams vs pub/sub
 
@@ -2098,6 +2171,8 @@ Keep a one-sentence answer ready for each foundations topic you study.
 ## Bloom filters
 
 A Bloom filter is a **space-efficient probabilistic set**. It can say “definitely not present” or “probably present” (with a tunable false-positive rate). It never has false negatives for membership of inserted items (unless you implement deletion carelessly with counting variants).
+**Diagram:** [Bloom filter](diagrams/bloom-filter.drawio) — open in [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension.
+
 
 ### How it works (intuition)
 
@@ -2290,6 +2365,8 @@ If designing Dropbox: prefer **chunked object storage + metadata service** over 
 ## Circuit breakers and bulkheads
 
 Resilience patterns stop failures from cascading. Timeouts and retries alone can **amplify** outages; circuit breakers and bulkheads contain blast radius.
+**Diagram:** [Circuit breaker states](diagrams/circuit-breaker-states.drawio) — open in [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension.
+
 
 ### Circuit breaker states
 
@@ -2360,6 +2437,8 @@ On deep-dive failures: “Timeouts + limited retries with jitter; circuit breake
 ## SLA, SLO, and SLI
 
 These terms separate **contracts**, **targets**, and **measurements**. Senior interviews expect precise use — not “we want high availability” hand-waving.
+**Diagram:** [SLA / SLO / error budget](diagrams/sla-slo-error-budget.drawio) — open in [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension.
+
 
 ### Definitions
 
@@ -2416,6 +2495,8 @@ Write on the board: “SLO: 99.9% successful redirects, p99 < 50 ms; SLI: non-5x
 ## Observability
 
 Observability is the ability to explain **why** the system is sick from its external outputs. Metrics, logs, and traces are the three pillars — plus continuous profiling and topology in mature orgs.
+**Diagram:** [Observability pillars](diagrams/observability-three-pillars.drawio) — open in [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension.
+
 
 ### Metrics
 
@@ -2547,6 +2628,8 @@ flowchart LR
 ## Monolith vs microservices
 
 This is an organizational and scaling-axis decision, not a badge of seniority. Strong candidates often **start modular monolith** and split on clear seams.
+**Diagram:** [Monolith vs microservices](diagrams/microservices-vs-monolith.drawio) — open in [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension.
+
 
 ### Definitions
 
@@ -2826,6 +2909,8 @@ Diagram: [diagrams/news-feed.drawio](diagrams/news-feed.drawio).
 ## Clarify requirements
 
 The first five minutes decide whether your design solves the right problem. Clarifying is not stalling—it is product thinking under pressure.
+**Diagram:** [Clarify → HLD flow](diagrams/interview-clarify-to-hld.drawio) — open in [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension.
+
 
 ### Goals of clarification
 
@@ -4607,6 +4692,8 @@ State what user experience should be in each case.
 ## Web crawler
 
 Polite, scalable URL fetcher for search/index pipelines. Focus on frontier, politeness, dedup, and failure isolation—not building Google.
+**Diagram:** [Web crawler](diagrams/web-crawler.drawio) — open in [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension.
+
 
 ### 1. Clarify
 
@@ -4706,6 +4793,8 @@ Add headless render pool for JS sites; change-detection recrawl; integrate with 
 ## Typeahead
 
 Suggest queries or entities as the user types, with very low latency.
+**Diagram:** [Typeahead](diagrams/typeahead.drawio) — open in [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension.
+
 
 ### 1. Clarify
 
@@ -4836,6 +4925,8 @@ State what user experience should be in each case.
 ## Search
 
 Full-text search over documents (products, web pages, or app content) with ranking and filters.
+**Diagram:** [Search inverted index](diagrams/search-inverted-index.drawio) — open in [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension.
+
 
 ### 1. Clarify
 
@@ -4963,6 +5054,8 @@ State what user experience should be in each case.
 ## Ticket booking
 
 Concert/stadium seats (or airline-style inventory) with holds, payments, and no double booking.
+**Diagram:** [Ticket booking concurrency](diagrams/ticket-booking-concurrency.drawio) — open in [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension.
+
 
 ### 1. Clarify
 
@@ -5096,6 +5189,8 @@ State what user experience should be in each case.
 ## Payments
 
 Move money (or ledger entries) between parties with idempotency, webhooks, and auditability—marketplace or merchant payments.
+**Diagram:** [Payment idempotency](diagrams/payment-idempotency.drawio) — open in [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension.
+
 
 ### 1. Clarify
 
