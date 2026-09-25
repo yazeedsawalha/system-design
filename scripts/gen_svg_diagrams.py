@@ -23,6 +23,13 @@ LEGEND_BORDER = "#DADCE0"
 ARROW = "#5F6368"
 WHITE = "#FFFFFF"
 
+# Comparison teaching panels (Without = red, With = green)
+WITHOUT_STROKE = "#D93025"
+WITHOUT_FILL = "#FCE8E6"
+WITH_STROKE = "#34A853"
+WITH_FILL = "#E6F4EA"
+HIGHLIGHT = ("#F3E8FD", "#A142F4")  # purple for new component
+
 
 class SvgDiagram:
     def __init__(self, name: str, title: str, w: int = 1100, h: int = 640):
@@ -128,6 +135,33 @@ class SvgDiagram:
             f'<text x="{x + 10}" y="{y + 16}" font-family="Helvetica,Arial,sans-serif" '
             f'font-size="11" fill="{SUB_COLOR}">{self.esc(label)}</text>'
         )
+
+
+    def panel(self, label: str, x: float, y: float, w: float, h: float, *, kind: str = "without"):
+        """Dashed comparison panel. kind: without (red) or with (green)."""
+        stroke = WITHOUT_STROKE if kind == "without" else WITH_STROKE
+        tint = WITHOUT_FILL if kind == "without" else WITH_FILL
+        self.parts.append(
+            f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="12" ry="12" '
+            f'fill="{tint}" fill-opacity="0.35" stroke="{stroke}" stroke-width="2" '
+            f'stroke-dasharray="8 5"/>'
+        )
+        self.parts.append(
+            f'<text x="{x + 16}" y="{y + 24}" font-family="Helvetica,Arial,sans-serif" '
+            f'font-size="14" font-weight="700" fill="{stroke}">{self.esc(label)}</text>'
+        )
+
+    def caption(self, text: str, cx: float, y: float, *, color: str = SUB_COLOR, size: int = 12):
+        self.parts.append(
+            f'<text x="{cx}" y="{y}" text-anchor="middle" '
+            f'font-family="Helvetica,Arial,sans-serif" font-size="{size}" '
+            f'font-weight="600" fill="{color}">{self.esc(text)}</text>'
+        )
+
+    def highlight_box(self, label: str, x: float, y: float, w: float, h: float, font_size: int = 12):
+        """Purple highlight for the new/important component in a comparison."""
+        return self.box(label, x, y, w, h, *HIGHLIGHT, font_size=font_size)
+
 
     def _anchor(self, bid: str, side: str) -> Tuple[float, float]:
         cx, cy, x, y, w, h = self._boxes[bid]
@@ -442,32 +476,33 @@ def cap_pacelc():
 
 
 def messaging():
-    d = SvgDiagram("messaging", "Messaging: Queue vs Pub/Sub", 1100, 600)
-    prod = compute(d, "Producer", 40, 200, 110, 56)
-
-    d.group("Work queue (competing)", 190, 90, 400, 220)
-    q = queue(d, "Queue", 220, 160, 110, 50)
+    d = SvgDiagram("messaging", "Messaging: Queue vs Pub/Sub", 1100, 620)
+    d.panel("Without fan-out (work queue)", 40, 80, 500, 300, kind="without")
+    prod = compute(d, "Producer", 70, 160, 110, 56)
+    q = queue(d, "Queue", 220, 165, 110, 50)
     w1 = compute(d, "Worker 1", 380, 120, 110, 50)
-    w2 = compute(d, "Worker 2", 380, 200, 110, 50)
+    w2 = compute(d, "Worker 2", 380, 210, 110, 50)
     d.edge(prod, q)
     d.edge(q, w1, "1 msg → 1")
     d.edge(q, w2)
+    d.caption("Competing workers · each job done once", 290, 350, color=WITHOUT_STROKE)
 
-    d.group("Pub/Sub (fan-out)", 620, 90, 440, 220)
-    topic = queue(d, "Topic /\nstream", 650, 160, 120, 56)
-    s1 = compute(d, "Sub A\nemail", 820, 110, 110, 50)
-    s2 = compute(d, "Sub B\nsearch", 820, 180, 110, 50)
-    s3 = compute(d, "Sub C\nanalytics", 820, 250, 120, 50)
-    # second producer edge visually from shared
-    p2 = compute(d, "Producer", 40, 360, 110, 50)
+    d.panel("With fan-out (pub/sub)", 560, 80, 500, 300, kind="with")
+    p2 = compute(d, "Producer", 590, 160, 110, 50)
+    topic = queue(d, "Topic", 740, 160, 100, 50)
+    s1 = compute(d, "Email", 890, 100, 100, 45)
+    s2 = compute(d, "Search", 890, 165, 100, 45)
+    s3 = compute(d, "Analytics", 890, 230, 110, 45)
     d.edge(p2, topic)
     d.edge(topic, s1)
     d.edge(topic, s2)
     d.edge(topic, s3)
+    d.caption("One publish · many independent subscribers", 810, 350, color=WITH_STROKE)
 
-    d.note("At-least-once + idempotent consumers · poison messages → DLQ · Kafka: offsets + replay", 40, 450, 800, 40)
+    d.note("At-least-once + idempotent consumers · poison → DLQ · streams add replay via offsets", 40, 430, 900, 40)
     d.legend(items=[("Compute", COMPUTE), ("Queue / Topic", QUEUE)])
     d.write()
+
 
 
 def rate_limiting():
@@ -489,28 +524,26 @@ def rate_limiting():
 
 
 def websocket_vs_polling():
-    d = SvgDiagram("websocket-vs-polling", "WebSocket vs SSE vs Polling", 1100, 600)
-    d.group("Short polling", 40, 90, 320, 200)
-    c1 = client(d, "Client", 60, 140, 90, 50)
-    s1 = compute(d, "Server", 200, 140, 100, 50)
-    d.edge(c1, s1, "GET…GET…", bidi=True)
-    d.note("Simple · wasteful", 60, 220, 200, 30)
+    d = SvgDiagram("websocket-vs-polling", "WebSocket vs SSE vs Polling", 1100, 620)
+    d.panel("Without a live channel", 40, 80, 340, 260, kind="without")
+    c1 = client(d, "Client", 70, 140, 90, 50)
+    s1 = compute(d, "Server", 210, 140, 100, 50)
+    d.edge(c1, s1, "poll… poll…", bidi=True)
+    d.caption("Many empty requests · simple but wasteful", 210, 310, color=WITHOUT_STROKE)
 
-    d.group("Long polling", 380, 90, 320, 200)
-    c2 = client(d, "Client", 400, 140, 90, 50)
-    s2 = compute(d, "Server", 540, 140, 100, 50)
-    d.edge(c2, s2, "hold until event")
-    d.note("HTTP-friendly", 400, 220, 200, 30)
+    d.panel("With long-lived stream", 400, 80, 660, 260, kind="with")
+    c2 = client(d, "Client", 430, 130, 90, 50)
+    s2 = compute(d, "Server", 580, 130, 100, 50)
+    d.edge(c2, s2, "SSE ↓ one-way")
+    c3 = client(d, "Client", 730, 200, 90, 50)
+    s3 = compute(d, "Server", 880, 200, 100, 50)
+    d.edge(c3, s3, "WS ↔ chat", bidi=True)
+    d.caption("Server pushes when something happens · fewer wasted calls", 730, 310, color=WITH_STROKE)
 
-    d.group("WebSocket / SSE", 720, 90, 340, 200)
-    c3 = client(d, "Client", 740, 140, 90, 50)
-    s3 = compute(d, "Server", 890, 140, 100, 50)
-    d.edge(c3, s3, "WS bi / SSE ↓", bidi=True)
-    d.note("WS: chat · SSE: feeds", 740, 220, 250, 30)
-
-    d.note("Pick by directionality, firewall friendliness, fan-out fan-in, and reconnect story", 40, 350, 900, 40)
+    d.note("Pick by direction (one-way vs two-way), proxies/firewalls, and reconnect story", 40, 390, 900, 40)
     d.legend(items=[("Client", CLIENT), ("Compute", COMPUTE)])
     d.write()
+
 
 
 def bloom_filter():
@@ -570,15 +603,15 @@ def observability():
 
 
 def microservices_vs_monolith():
-    d = SvgDiagram("microservices-vs-monolith", "Monolith vs Microservices", 1100, 620)
-    d.group("Monolith", 40, 90, 480, 280)
-    mono = compute(d, "Single deployable\nmodules / packages", 80, 160, 200, 80)
+    d = SvgDiagram("microservices-vs-monolith", "Monolith vs Microservices", 1100, 640)
+    d.panel("Without service split", 40, 80, 500, 320, kind="without")
+    mono = compute(d, "Single app\nall modules", 80, 160, 180, 80)
     mdb = db(d, "Shared DB", 320, 165, 140, 70)
-    d.edge(mono, mdb)
-    d.note("Simple txns · one deploy", 80, 280, 250, 30)
+    d.edge(mono, mdb, "SQL / txns")
+    d.caption("Simple to build · scale the whole app together", 290, 370, color=WITHOUT_STROKE)
 
-    d.group("Microservices", 560, 90, 500, 280)
-    gw = network(d, "API Gateway", 590, 140, 130, 50)
+    d.panel("With service split", 560, 80, 500, 320, kind="with")
+    gw = d.highlight_box("API Gateway", 590, 140, 130, 50)
     s1 = compute(d, "Svc A", 760, 110, 100, 45)
     s2 = compute(d, "Svc B", 760, 175, 100, 45)
     s3 = compute(d, "Svc C", 760, 240, 100, 45)
@@ -588,15 +621,13 @@ def microservices_vs_monolith():
     d.edge(gw, s3)
     d.edge(s1, bus, dashed=True)
     d.edge(bus, s3, dashed=True)
+    d.caption("Scale hot paths alone · more network & ops work", 810, 370, color=WITH_STROKE)
 
-    d.note("Senior move: start modular monolith; extract when team/scale demand clear seams", 40, 420, 900, 40)
+    d.note("Senior move: start modular monolith; extract when team/scale demand clear seams", 40, 440, 900, 40)
     d.legend()
     d.write()
 
 
-# ═══════════════════════════════════════════════════════════════════════════
-# DESIGN WALKTHROUGHS
-# ═══════════════════════════════════════════════════════════════════════════
 
 def url_shortener():
     d = SvgDiagram("url-shortener", "URL Shortener", 1100, 560)
@@ -973,6 +1004,85 @@ def whiteboard_template():
     d.write()
 
 
+def api_aggregation():
+    """Teaching comparison: mobile without aggregation vs with API gateway / BFF."""
+    d = SvgDiagram("api-aggregation", "API Aggregation: Without vs With Gateway", 1100, 640)
+
+    d.panel("Without aggregation", 40, 80, 500, 420, kind="without")
+    phone = client(d, "Mobile app", 70, 140, 120, 64)
+    p = compute(d, "Profile\nservice", 300, 120, 130, 56)
+    o = compute(d, "Orders\nservice", 300, 220, 130, 56)
+    r = compute(d, "Recs\nservice", 300, 320, 130, 56)
+    d.edge(phone, p, "1. profile")
+    d.edge(phone, o, "2. orders")
+    d.edge(phone, r, "3. recs")
+    d.caption("Three calls over a flaky mobile network", 290, 470, color=WITHOUT_STROKE)
+
+    d.panel("With API gateway / BFF", 560, 80, 500, 420, kind="with")
+    phone2 = client(d, "Mobile app", 590, 200, 120, 64)
+    gw = d.highlight_box("API Gateway\n(aggregates)", 760, 190, 150, 70)
+    p2 = compute(d, "Profile", 940, 110, 90, 48)
+    o2 = compute(d, "Orders", 940, 200, 90, 48)
+    r2 = compute(d, "Recs", 940, 290, 90, 48)
+    d.edge(phone2, gw, "1 call")
+    d.edge(gw, p2)
+    d.edge(gw, o2)
+    d.edge(gw, r2)
+    d.caption("One call · gateway fans out on the fast datacenter network", 810, 470, color=WITH_STROKE)
+
+    d.note("Gateway / BFF aggregates for the screen; keep domain logic in the services", 40, 540, 950, 40)
+    d.legend(items=[("Client", CLIENT), ("Gateway (new)", HIGHLIGHT), ("Compute", COMPUTE)])
+    d.write()
+
+
+def vertical_vs_horizontal_scale():
+    d = SvgDiagram("vertical-vs-horizontal-scale", "Vertical vs Horizontal Scaling", 1100, 600)
+
+    d.panel("Without horizontal scale (scale up)", 40, 80, 500, 360, kind="without")
+    c1 = client(d, "Users", 70, 200, 100, 56)
+    big = compute(d, "One bigger\nmachine", 250, 160, 160, 100)
+    d.edge(c1, big, "all traffic")
+    d.caption("Simple · hits a ceiling · big blast radius", 290, 410, color=WITHOUT_STROKE)
+
+    d.panel("With horizontal scale (scale out)", 560, 80, 500, 360, kind="with")
+    c2 = client(d, "Users", 590, 200, 100, 56)
+    lb = d.highlight_box("Load\nbalancer", 720, 200, 110, 56)
+    a = compute(d, "App 1", 880, 120, 100, 48)
+    b = compute(d, "App 2", 880, 190, 100, 48)
+    c = compute(d, "App 3", 880, 260, 100, 48)
+    d.edge(c2, lb)
+    d.edge(lb, a)
+    d.edge(lb, b)
+    d.edge(lb, c)
+    d.caption("Add machines · needs stateless apps + partitioned data", 810, 410, color=WITH_STROKE)
+
+    d.note("Interviews: name which tier scales which way — web tier out, early DB often up first", 40, 480, 900, 40)
+    d.legend(items=[("Client", CLIENT), ("LB / new piece", HIGHLIGHT), ("Compute", COMPUTE)])
+    d.write()
+
+
+def cache_aside_vs_direct():
+    d = SvgDiagram("cache-aside-vs-direct", "Without Cache vs Cache-Aside", 1100, 600)
+
+    d.panel("Without a cache", 40, 80, 500, 360, kind="without")
+    app1 = compute(d, "App", 80, 200, 110, 56)
+    db1 = db(d, "Database", 280, 190, 140, 70)
+    d.edge(app1, db1, "every read")
+    d.caption("Every request hits the database · slow under load", 290, 410, color=WITHOUT_STROKE)
+
+    d.panel("With cache-aside", 560, 80, 500, 360, kind="with")
+    app2 = compute(d, "App", 590, 200, 110, 56)
+    ca = d.highlight_box("Cache\n(Redis)", 740, 120, 130, 64)
+    db2 = db(d, "Database", 740, 260, 140, 70)
+    d.edge(app2, ca, "1. get")
+    d.edge(app2, db2, "2. miss → load")
+    d.caption("Hot keys served from memory · app owns read/write path", 810, 410, color=WITH_STROKE)
+
+    d.note("Invalidate or TTL on write · watch stampedes on popular keys", 40, 480, 900, 40)
+    d.legend(items=[("Compute", COMPUTE), ("Cache (new)", HIGHLIGHT), ("Database", DB)])
+    d.write()
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     generators = [
@@ -989,6 +1099,9 @@ def main():
         circuit_breaker,
         observability,
         microservices_vs_monolith,
+        api_aggregation,
+        vertical_vs_horizontal_scale,
+        cache_aside_vs_direct,
         url_shortener,
         news_feed,
         chat_messaging,

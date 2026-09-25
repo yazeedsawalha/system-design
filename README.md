@@ -1,164 +1,102 @@
 # System Design Interview Guide
 
-A **free, original** curriculum for system design interview prep — deep foundations, a repeatable approach, a whiteboard masterclass, 19 full design walkthroughs, and timed practice. Everything lives in this single **README** with **inline SVG diagrams** (GitHub renders `![…](diagrams/svg/….svg)`), Mermaid where useful, plus editable **draw.io** sources under [`diagrams/`](diagrams/) (for diagrams.net / VS Code).
+A **free, original** curriculum that teaches system design from zero — plain-English foundations, a repeatable interview approach, whiteboard habits, 19 design walkthroughs, and timed practice. Everything lives in this single **README** with **inline SVG diagrams**.
 
-> **Disclaimer:** This is a free original curriculum for interview practice. **Not affiliated** with DesignGurus, Educative, ByteByteGo, or any paid course. Industry-standard concepts in original wording. Product names in design titles (e.g. “Instagram-like”) are familiar problem frames only.
+> **Disclaimer:** Free original curriculum for learning and interview practice. **Not affiliated** with DesignGurus, Educative, ByteByteGo, or any paid course. Industry-standard concepts in original wording. Product names in design titles (e.g. "Instagram-like") are familiar problem frames only.
 
-## How to use this guide
+## What is system design?
 
-1. Start with **[Getting Started](#getting-started)** — especially pitfalls and level expectations.
-2. Work through **[Foundations](#foundations)**; answer self-checks out loud.
-3. Read **[Whiteboard like a strong candidate](#whiteboard-like-a-strong-candidate)** before timed mocks.
-4. Internalize the **[Interview Approach](#interview-approach)** template; use it on every design.
-5. Study **[Design Walkthroughs](#design-walkthroughs)** — junior path: URL shortener → rate limiter → typeahead → nearby places; then feed, chat, checkout; senior: Uber, video, collab doc, recommendations.
-6. Study the **inline SVG diagrams** in each section (they render on GitHub). Open matching `.drawio` sources in [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension to edit / practice drawing — white BG + Google/AWS-style palette; see [Diagrams index](#diagrams-index).
-7. Run **[Practice](#practice)** under a timer; score yourself with the mock rubric.
+**System design** is deciding how the pieces of a product talk to each other, where data lives, and how the whole thing stays fast and alive when lots of people use it — or when something breaks.
+
+Tiny example: a URL shortener looks simple ("turn a long link into a short one"), but you still choose how to store millions of mappings, how redirects stay quick worldwide, and what happens if one database dies. Another everyday example: Instagram-style feed — who can post, how followers see new photos quickly, and how you avoid rebuilding the feed from scratch on every open.
+
+You are not memorizing one company's architecture. You are learning a way to **clarify goals, draw a clear picture, and discuss tradeoffs**.
+
+## If you know nothing, start here
+
+Work top to bottom. Each step links into this same README.
+
+1. **[What is system design?](#what-is-system-design)** — you are here; get the idea in plain language.
+2. **[System characteristics](#system-characteristics)** — what "fast," "available," and "consistent" mean with everyday examples.
+3. **[DNS](#dns) → [Load balancing](#load-balancing) → [Caching & CDN](#caching--cdn)** — how a request reaches your app and how you keep it quick.
+4. **[API gateway](#api-gateway)** — the mobile "one call vs three calls" story (beginner-friendly comparison diagram).
+5. **[Databases](#databases) → [Replication](#replication) → [Messaging](#messaging)** — where data lives and how work is handed off.
+6. **[Whiteboard like a strong candidate](#whiteboard-like-a-strong-candidate)** + **[Interview Approach](#interview-approach)** — how to run a 45-minute conversation.
+7. **First designs:** [URL shortener](#url-shortener) → [Rate limiter](#rate-limiter) → [Typeahead](#typeahead) → [Nearby places](#nearby-places-yelp-like).
+
+Then deepen Foundations as needed and take on harder walkthroughs (feed, chat, Uber-like, video, etc.).
 
 ### Study paths by level
 
 | Path | Focus | Suggested order |
 |------|--------|-----------------|
-| **Junior** | Building blocks + simple HLD | Getting Started → Foundations (DNS, LB, cache, DB, queue, CDN, proxies) → Whiteboard → URL shortener, rate limiter, typeahead, nearby places → timed drills |
-| **Mid** | Full loop + consistency & failures | All Foundations → Approach → core designs (feed, group chat, notifications, Instagram, checkout) → Practice with rubric |
-| **Senior** | SLOs, multi-region, ops, ranking | Foundations deep dives (CAP, circuit breakers, observability, SLA/SLO) → hard designs (Uber, video, Dropbox, collab doc, recommendations, payments) → mocks every other day |
+| **Junior** | Building blocks + simple HLD | Start-here path above → URL shortener, rate limiter, typeahead, nearby places → timed drills |
+| **Mid** | Full loop + consistency & failures | All Foundations → Approach → feed, group chat, notifications, Instagram-like, checkout → Practice rubric |
+| **Senior** | SLOs, multi-region, ops, ranking | CAP, circuit breakers, observability, SLA/SLO → Uber, video, Dropbox, collab doc, recommendations, payments → mocks |
 
 See [Study plan](#study-plan) for 2 / 4 / 8 week schedules and [Level expectations](#level-expectations) for self-calibration.
 
+## How to use this guide
+
+Even if you are **not** interviewing yet, complete Foundations before jumping to full designs — the vocabulary makes every walkthrough easier.
+
+1. Follow **[If you know nothing, start here](#if-you-know-nothing-start-here)** (or the level table above).
+2. Skim **[Getting Started](#getting-started)** for interview format and pitfalls when you are interview-bound.
+3. Read **[Whiteboard like a strong candidate](#whiteboard-like-a-strong-candidate)** before timed mocks.
+4. Use the **[Interview Approach](#interview-approach)** template on every design.
+5. Study **[Design Walkthroughs](#design-walkthroughs)**; practice under a timer in **[Practice](#practice)**.
+
+Diagrams render on GitHub as `![…](diagrams/svg/….svg)`. Editable `.drawio` sources live under [`diagrams/`](diagrams/). Regenerate SVGs with `python3 scripts/gen_svg_diagrams.py`.
 
 ## Diagrams index
 
-Inline **SVG** diagrams under [`diagrams/svg/`](diagrams/svg/) render directly on GitHub via Markdown image syntax (for example `![URL Shortener](diagrams/svg/url-shortener.svg)`), same pattern as [karanpratapsingh/system-design](https://github.com/karanpratapsingh/system-design). Editable **`.drawio`** sources remain under [`diagrams/`](diagrams/) for [diagrams.net](https://app.diagrams.net) / the VS Code Draw.io extension. Every canvas uses a **white background** (`#FFFFFF`) and a Google Cloud / AWS–style palette (Client blue, Network purple, Compute amber, Cache green, Database red, Queue orange) with a legend.
+Diagrams appear **inline next to the section they teach** — not as a giant gallery up front. Below is a compact filename → topic map. Open any SVG on GitHub; edit the matching `.drawio` in [diagrams.net](https://app.diagrams.net).
 
-### Gallery (foundations)
+**Example (API aggregation — the teaching style used throughout Foundations):**
 
-![DNS Resolution](diagrams/svg/dns-resolution.svg)
+![API aggregation without vs with gateway](diagrams/svg/api-aggregation.svg)
 
-![Load Balancing](diagrams/svg/load-balancing.svg)
-
-![Caching Strategies](diagrams/svg/caching-strategies.svg)
-
-![Sharding & Consistent Hashing](diagrams/svg/sharding-consistent-hash.svg)
-
-![Replication & Failover](diagrams/svg/replication-failover.svg)
-
-![CAP & PACELC](diagrams/svg/cap-pacelc.svg)
-
-![Messaging](diagrams/svg/messaging.svg)
-
-![Rate Limiting](diagrams/svg/rate-limiting.svg)
-
-![WebSocket vs Polling](diagrams/svg/websocket-vs-polling.svg)
-
-![Bloom Filter](diagrams/svg/bloom-filter.svg)
-
-![Circuit Breaker](diagrams/svg/circuit-breaker.svg)
-
-![Observability](diagrams/svg/observability.svg)
-
-![Monolith vs Microservices](diagrams/svg/microservices-vs-monolith.svg)
-
-### Gallery (design walkthroughs)
-
-![URL Shortener](diagrams/svg/url-shortener.svg)
-
-![News Feed](diagrams/svg/news-feed.svg)
-
-![Chat & Messaging](diagrams/svg/chat-messaging.svg)
-
-![Uber Dispatch](diagrams/svg/uber-dispatch.svg)
-
-![Video Streaming](diagrams/svg/video-streaming.svg)
-
-![Dropbox](diagrams/svg/dropbox.svg)
-
-![Notification System](diagrams/svg/notification-system.svg)
-
-![Nearby Places](diagrams/svg/nearby-places.svg)
-
-![Group Chat](diagrams/svg/group-chat.svg)
-
-![E-commerce Checkout](diagrams/svg/ecommerce-checkout.svg)
-
-![Recommendation Feed](diagrams/svg/recommendation-feed.svg)
-
-![Search Inverted Index](diagrams/svg/search-inverted-index.svg)
-
-![Typeahead](diagrams/svg/typeahead.svg)
-
-![Web Crawler](diagrams/svg/web-crawler.svg)
-
-![Ticket Booking](diagrams/svg/ticket-booking.svg)
-
-![Payments](diagrams/svg/payments.svg)
-
-### Gallery (interview practice)
-
-![Interview Flow](diagrams/svg/interview-flow.svg)
-
-![Whiteboard Template](diagrams/svg/whiteboard-template.svg)
-
-### Foundations & patterns (sources)
-
-| Diagram | SVG (renders on GitHub) | Editable `.drawio` |
-|---------|-------------------------|---------------------|
-| DNS resolution | [dns-resolution.svg](diagrams/svg/dns-resolution.svg) | [dns-resolution.drawio](diagrams/dns-resolution.drawio) |
-| Traffic tier | — | [foundations-traffic-tier.drawio](diagrams/foundations-traffic-tier.drawio) |
-| Data tier | — | [foundations-data-tier.drawio](diagrams/foundations-data-tier.drawio) |
-| Load balancing | [load-balancing.svg](diagrams/svg/load-balancing.svg) | [load-balancing-patterns.drawio](diagrams/load-balancing-patterns.drawio) |
-| Caching strategies | [caching-strategies.svg](diagrams/svg/caching-strategies.svg) | [caching-strategies.drawio](diagrams/caching-strategies.drawio) |
-| Sharding / consistent hash | [sharding-consistent-hash.svg](diagrams/svg/sharding-consistent-hash.svg) | [sharding-consistent-hash.drawio](diagrams/sharding-consistent-hash.drawio) |
-| Replication / failover | [replication-failover.svg](diagrams/svg/replication-failover.svg) | [replication-failover.drawio](diagrams/replication-failover.drawio) |
-| CAP & PACELC | [cap-pacelc.svg](diagrams/svg/cap-pacelc.svg) | [cap-pacelc.drawio](diagrams/cap-pacelc.drawio) |
-| Messaging | [messaging.svg](diagrams/svg/messaging.svg) | [messaging-pubsub-vs-queue.drawio](diagrams/messaging-pubsub-vs-queue.drawio) |
-| Rate limiting | [rate-limiting.svg](diagrams/svg/rate-limiting.svg) | [rate-limiting-algorithms.drawio](diagrams/rate-limiting-algorithms.drawio) |
-| WebSocket vs polling | [websocket-vs-polling.svg](diagrams/svg/websocket-vs-polling.svg) | [websocket-vs-sse-vs-polling.drawio](diagrams/websocket-vs-sse-vs-polling.drawio) |
-| Bloom filter | [bloom-filter.svg](diagrams/svg/bloom-filter.svg) | [bloom-filter.drawio](diagrams/bloom-filter.drawio) |
-| Circuit breaker | [circuit-breaker.svg](diagrams/svg/circuit-breaker.svg) | [circuit-breaker-states.drawio](diagrams/circuit-breaker-states.drawio) |
-| SLA / SLO | — | [sla-slo-error-budget.drawio](diagrams/sla-slo-error-budget.drawio) |
-| Observability | [observability.svg](diagrams/svg/observability.svg) | [observability-three-pillars.drawio](diagrams/observability-three-pillars.drawio) |
-| Microservices vs monolith | [microservices-vs-monolith.svg](diagrams/svg/microservices-vs-monolith.svg) | [microservices-vs-monolith.drawio](diagrams/microservices-vs-monolith.drawio) |
-
-### Design walkthroughs (sources)
-
-| Diagram | SVG | Editable `.drawio` |
-|---------|-----|---------------------|
-| URL shortener | [url-shortener.svg](diagrams/svg/url-shortener.svg) | [url-shortener.drawio](diagrams/url-shortener.drawio) |
-| Rate limiter | [rate-limiting.svg](diagrams/svg/rate-limiting.svg) | [rate-limiter.drawio](diagrams/rate-limiter.drawio) |
-| Notification system | [notification-system.svg](diagrams/svg/notification-system.svg) | [notification-system.drawio](diagrams/notification-system.drawio) |
-| News feed | [news-feed.svg](diagrams/svg/news-feed.svg) | [news-feed.drawio](diagrams/news-feed.drawio) |
-| Chat messaging | [chat-messaging.svg](diagrams/svg/chat-messaging.svg) | [chat-messaging.drawio](diagrams/chat-messaging.drawio) |
-| Group chat | [group-chat.svg](diagrams/svg/group-chat.svg) | [group-chat.drawio](diagrams/group-chat.drawio) |
-| Uber dispatch | [uber-dispatch.svg](diagrams/svg/uber-dispatch.svg) | [uber-dispatch.drawio](diagrams/uber-dispatch.drawio) |
-| Video streaming | [video-streaming.svg](diagrams/svg/video-streaming.svg) | [video-streaming.drawio](diagrams/video-streaming.drawio) |
-| Dropbox | [dropbox.svg](diagrams/svg/dropbox.svg) | [dropbox.drawio](diagrams/dropbox.drawio) |
-| Nearby places | [nearby-places.svg](diagrams/svg/nearby-places.svg) | [nearby-places.drawio](diagrams/nearby-places.drawio) |
-| E-commerce checkout | [ecommerce-checkout.svg](diagrams/svg/ecommerce-checkout.svg) | [ecommerce-checkout.drawio](diagrams/ecommerce-checkout.drawio) |
-| Recommendation feed | [recommendation-feed.svg](diagrams/svg/recommendation-feed.svg) | [recommendation-feed.drawio](diagrams/recommendation-feed.drawio) |
-| Collab doc | — | [collab-doc.drawio](diagrams/collab-doc.drawio) |
-| Web crawler | [web-crawler.svg](diagrams/svg/web-crawler.svg) | [web-crawler.drawio](diagrams/web-crawler.drawio) |
-| Typeahead | [typeahead.svg](diagrams/svg/typeahead.svg) | [typeahead.drawio](diagrams/typeahead.drawio) |
-| Search inverted index | [search-inverted-index.svg](diagrams/svg/search-inverted-index.svg) | [search-inverted-index.drawio](diagrams/search-inverted-index.drawio) |
-| Ticket booking | [ticket-booking.svg](diagrams/svg/ticket-booking.svg) | [ticket-booking-concurrency.drawio](diagrams/ticket-booking-concurrency.drawio) |
-| Payments | [payments.svg](diagrams/svg/payments.svg) | [payment-idempotency.drawio](diagrams/payment-idempotency.drawio) |
-
-### Interview practice (sources)
-
-| Diagram | SVG | Editable `.drawio` |
-|---------|-----|---------------------|
-| Interview flow | [interview-flow.svg](diagrams/svg/interview-flow.svg) | [interview-clarify-to-hld.drawio](diagrams/interview-clarify-to-hld.drawio) |
-| Whiteboard template | [whiteboard-template.svg](diagrams/svg/whiteboard-template.svg) | [whiteboard-starter-template.drawio](diagrams/whiteboard-starter-template.drawio) |
-
-Regenerate SVGs anytime with:
-
-```bash
-python3 scripts/gen_svg_diagrams.py
-```
-
-
----
+| SVG | Teaches |
+|-----|---------|
+| [api-aggregation.svg](diagrams/svg/api-aggregation.svg) | API gateway — 3 calls vs 1 |
+| [vertical-vs-horizontal-scale.svg](diagrams/svg/vertical-vs-horizontal-scale.svg) | System characteristics — scale up vs out |
+| [cache-aside-vs-direct.svg](diagrams/svg/cache-aside-vs-direct.svg) | Caching — without cache vs cache-aside |
+| [dns-resolution.svg](diagrams/svg/dns-resolution.svg) | DNS |
+| [load-balancing.svg](diagrams/svg/load-balancing.svg) | Load balancing |
+| [caching-strategies.svg](diagrams/svg/caching-strategies.svg) | Caching strategies |
+| [sharding-consistent-hash.svg](diagrams/svg/sharding-consistent-hash.svg) | Sharding & consistent hashing |
+| [replication-failover.svg](diagrams/svg/replication-failover.svg) | Replication |
+| [cap-pacelc.svg](diagrams/svg/cap-pacelc.svg) | CAP & PACELC |
+| [messaging.svg](diagrams/svg/messaging.svg) | Messaging (queue vs pub/sub) |
+| [rate-limiting.svg](diagrams/svg/rate-limiting.svg) | Rate limiting |
+| [websocket-vs-polling.svg](diagrams/svg/websocket-vs-polling.svg) | Real-time: polling vs streams |
+| [bloom-filter.svg](diagrams/svg/bloom-filter.svg) | Bloom filters |
+| [circuit-breaker.svg](diagrams/svg/circuit-breaker.svg) | Circuit breakers |
+| [observability.svg](diagrams/svg/observability.svg) | Observability |
+| [microservices-vs-monolith.svg](diagrams/svg/microservices-vs-monolith.svg) | Monolith vs microservices |
+| [url-shortener.svg](diagrams/svg/url-shortener.svg) | URL shortener design |
+| [news-feed.svg](diagrams/svg/news-feed.svg) | News feed |
+| [chat-messaging.svg](diagrams/svg/chat-messaging.svg) | Chat |
+| [uber-dispatch.svg](diagrams/svg/uber-dispatch.svg) | Uber-like dispatch |
+| [video-streaming.svg](diagrams/svg/video-streaming.svg) | Video streaming |
+| [dropbox.svg](diagrams/svg/dropbox.svg) | Dropbox-like |
+| [notification-system.svg](diagrams/svg/notification-system.svg) | Notifications |
+| [nearby-places.svg](diagrams/svg/nearby-places.svg) | Nearby places |
+| [group-chat.svg](diagrams/svg/group-chat.svg) | Group chat |
+| [ecommerce-checkout.svg](diagrams/svg/ecommerce-checkout.svg) | Checkout |
+| [recommendation-feed.svg](diagrams/svg/recommendation-feed.svg) | Recommendations |
+| [search-inverted-index.svg](diagrams/svg/search-inverted-index.svg) | Search |
+| [typeahead.svg](diagrams/svg/typeahead.svg) | Typeahead |
+| [web-crawler.svg](diagrams/svg/web-crawler.svg) | Web crawler |
+| [ticket-booking.svg](diagrams/svg/ticket-booking.svg) | Ticket booking |
+| [payments.svg](diagrams/svg/payments.svg) | Payments |
+| [interview-flow.svg](diagrams/svg/interview-flow.svg) | Interview flow |
+| [whiteboard-template.svg](diagrams/svg/whiteboard-template.svg) | Whiteboard template |
 
 ## Table of Contents
 
+- [What is system design?](#what-is-system-design)
+- [If you know nothing, start here](#if-you-know-nothing-start-here)
 - [Diagrams index](#diagrams-index)
 
 ### 0. Getting Started
@@ -245,6 +183,9 @@ MIT — see [LICENSE](LICENSE). Contributions of original content welcome; do no
 
 
 ---
+
+
+> **Learning first:** If you have never studied system design, finish the [start-here path](#if-you-know-nothing-start-here) and core **Foundations** before optimizing for interview performance. The sections below assume you want the interview lens; the concepts are the same either way.
 
 ## How interviews work
 
@@ -468,14 +409,6 @@ They keep steering to basics. Do not force Raft. Nail clarity on cache, DB, and 
 
 Levels are noisy across companies. Use this page to choose study depth, not to spiral. Improvement shows up as cleaner boards and faster clarification—not as a title.
 
-### Checklist before an onsite loop
-
-- [ ] Redrew one core design from memory today
-- [ ] Reviewed personal miss list (idempotency, fan-out, etc.)
-- [ ] Slept; scheduled buffer between interviews
-- [ ] Prepared questions for them about real scale pain (shows curiosity)
-
-You cannot cram foundations the morning of—rely on the template muscle.
 
 ## Prerequisites
 
@@ -592,14 +525,6 @@ Write your own one-liners; do not memorize a vendor glossary.
 
 Stop expanding the list. If you can explain and sketch the must-haves above, start designs. Fill micro-gaps just-in-time when a prompt demands them (geo indexes for Uber, ABR for video).
 
-### Checklist before an onsite loop
-
-- [ ] Redrew one core design from memory today
-- [ ] Reviewed personal miss list (idempotency, fan-out, etc.)
-- [ ] Slept; scheduled buffer between interviews
-- [ ] Prepared questions for them about real scale pain (shows curiosity)
-
-You cannot cram foundations the morning of—rely on the template muscle.
 
 ## Study plan
 
@@ -723,14 +648,6 @@ Minimum viable week: two 45-min drills + one foundation topic. Consistency acros
 
 You are ready to interview when: median mock ≥7/10 across five varied prompts, clarification is automatic, and you can discuss failures without blanking. Titles and companies vary; that bar travels.
 
-### Checklist before an onsite loop
-
-- [ ] Redrew one core design from memory today
-- [ ] Reviewed personal miss list (idempotency, fan-out, etc.)
-- [ ] Slept; scheduled buffer between interviews
-- [ ] Prepared questions for them about real scale pain (shows curiosity)
-
-You cannot cram foundations the morning of—rely on the template muscle.
 
 ## Common pitfalls
 
@@ -848,20 +765,18 @@ Put the prevention phrase on your miss list.
 
 Pitfalls are normal. The difference between candidates is how quickly they notice and correct. Build notice-and-correct as a skill equal to knowing Redis.
 
-### Checklist before an onsite loop
-
-- [ ] Redrew one core design from memory today
-- [ ] Reviewed personal miss list (idempotency, fan-out, etc.)
-- [ ] Slept; scheduled buffer between interviews
-- [ ] Prepared questions for them about real scale pain (shows curiosity)
-
-You cannot cram foundations the morning of—rely on the template muscle.
-
-# Foundations
 
 ## System characteristics
 
-Interview designs live or die on non-functional characteristics. Name them early, pick targets, and let those targets drive architecture.
+**In plain English:** Before drawing boxes, decide what "good" means for the product — how fast, how reliable, how consistent. For an Instagram-like feed you might care more about quick loads than every like appearing instantly everywhere.
+
+![Vertical vs horizontal scaling](diagrams/svg/vertical-vs-horizontal-scale.svg)
+
+> **Key takeaway:** Name concrete targets (latency, availability, consistency) early; those numbers drive every later choice.
+
+### How it works
+
+Interview designs live or die on these non-functional traits. Name them early, pick targets, and let those targets drive architecture.
 
 ### Scalability
 
@@ -937,27 +852,12 @@ Write NFRs as numbers: “p99 read < 200 ms, 99.9% availability, RPO < 1 min.”
 2. Why can higher throughput increase p99 latency?
 3. Give a product feature that needs strong consistency and one that does not.
 
-### Worked interview moment
-
-Interviewer: “Where does this sit in the stack, and what breaks first at 10× load?”
-
-Answer with: (1) placement on the diagram, (2) the saturation signal you’d page on, (3) the scale-out step, (4) the tradeoff you accept. Example pattern: “This cache sits between API and DB; at 10× we’d see hit-rate drop and DB CPU rise; we’d add replicas and tighten TTLs; tradeoff is more stale reads unless we invalidate on write.”
-
-### Comparison table (quick)
-
-When two technologies seem interchangeable, draw a 3-row table: consistency, latency, ops cost. Fill it for *this* prompt’s NFRs—not generically. Interviewers remember the table tied to requirements.
-
-### Common follow-ups
-
-- “Sync or async replication?”
-- “What is the blast radius if this node dies?”
-- “How do you test this failure in staging?”
-
-Keep a one-sentence answer ready for each foundations topic you study.
 
 ## Networking basics
 
-You rarely configure BGP in a design interview, but you must place TLS, DNS, load balancers, and protocols correctly on the diagram.
+**In plain English:** Networking is how phones, browsers, and servers find each other and talk safely. You do not need to configure routers in an interview — you do need to place DNS, TLS, and load balancers on the diagram in the right order.
+
+> **Key takeaway:** Clients hit DNS, then a secure edge (TLS), then a load balancer — put those boxes before your app logic.
 
 ### DNS
 
@@ -1018,32 +918,17 @@ Label protocol on arrows: `HTTPS`, `gRPC`, `Kafka`, `Redis PUB/SUB`. It signals 
 2. When are WebSockets justified over polling?
 3. How does DNS TTL interact with blue/green cutover?
 
-### Worked interview moment
-
-Interviewer: “Where does this sit in the stack, and what breaks first at 10× load?”
-
-Answer with: (1) placement on the diagram, (2) the saturation signal you’d page on, (3) the scale-out step, (4) the tradeoff you accept. Example pattern: “This cache sits between API and DB; at 10× we’d see hit-rate drop and DB CPU rise; we’d add replicas and tighten TTLs; tradeoff is more stale reads unless we invalidate on write.”
-
-### Comparison table (quick)
-
-When two technologies seem interchangeable, draw a 3-row table: consistency, latency, ops cost. Fill it for *this* prompt’s NFRs—not generically. Interviewers remember the table tied to requirements.
-
-### Common follow-ups
-
-- “Sync or async replication?”
-- “What is the blast radius if this node dies?”
-- “How do you test this failure in staging?”
-
-Keep a one-sentence answer ready for each foundations topic you study.
 
 ## DNS
 
-DNS maps human-readable names to addresses and is the first hop almost every client makes. In interviews you rarely configure BIND, but you **must** place DNS correctly, reason about TTL, and know when GeoDNS / anycast matters for failover and latency.
+**In plain English:** DNS is the phone book of the internet: it turns a name like maps.example.com into an IP address your phone can dial. When you type a URL, DNS is usually the first hop.
 
 ![DNS Resolution](diagrams/svg/dns-resolution.svg)
 
 <sub>Editable source: [dns-resolution.drawio](diagrams/dns-resolution.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
 
+
+> **Key takeaway:** DNS gets users to the right edge; it is a blunt failover tool because caches hold answers for a TTL.
 
 ### How resolution works (interview level)
 
@@ -1120,7 +1005,9 @@ On the whiteboard, draw **Clients → DNS → CDN/LB** and say: “DNS gets them
 
 ## Proxies
 
-A proxy sits between a client and a server and forwards traffic — optionally terminating TLS, caching, filtering, or load balancing. Interviews care about **forward vs reverse** and **where** the proxy lives on your diagram.
+**In plain English:** A proxy is a middlebox that forwards traffic. A reverse proxy sits in front of your servers (what users hit). A forward proxy sits in front of clients going out to the internet (company egress, scrapers).
+
+> **Key takeaway:** In most designs you draw a reverse proxy / L7 load balancer at the edge — TLS, routing, and protection live there.
 
 ### Forward proxy
 
@@ -1184,12 +1071,14 @@ Say “reverse proxy / L7 LB” when you mean edge routing; reserve “forward p
 
 ## Real-time communication
 
-“Real-time” in interviews usually means **server-initiated updates** with low latency: chat, presence, live scores, collab cursors, notifications. Pick the transport deliberately — do not default to WebSockets for everything.
+**In plain English:** Sometimes the server needs to push updates to the user — a new chat message, a live score, a typing indicator — without the app constantly asking "anything new?". That is what WebSockets, SSE, and polling are about.
 
 ![WebSocket vs SSE vs Polling](diagrams/svg/websocket-vs-polling.svg)
 
 <sub>Editable source: [websocket-vs-sse-vs-polling.drawio](diagrams/websocket-vs-sse-vs-polling.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
 
+
+> **Key takeaway:** Do not default to WebSockets for everything; pick the transport by direction of data and how flaky the network is.
 
 ### Options compared
 
@@ -1265,12 +1154,14 @@ Ask: “Do we need client→server messages at high rate, or mostly server push?
 
 ## Load balancing
 
-Load balancers (LBs) distribute traffic across healthy backends so no single instance is overwhelmed and failures are hidden from clients.
+**In plain English:** A load balancer is a traffic cop in front of many identical servers. Instead of one machine melting under Black Friday traffic, requests are spread across healthy copies.
 
 ![Load Balancing](diagrams/svg/load-balancing.svg)
 
 <sub>Editable source: [load-balancing-patterns.drawio](diagrams/load-balancing-patterns.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
 
+
+> **Key takeaway:** Put an LB in front of a stateless app tier; health checks remove bad instances so users never notice one death.
 
 ### Layers
 
@@ -1325,64 +1216,55 @@ Say “stateless app servers behind an L7 LB” early; it unlocks horizontal sca
 2. L4 vs L7 for path-based routing—which and why?
 3. How can consistent hashing still create hotspots?
 
-### Worked interview moment
-
-Interviewer: “Where does this sit in the stack, and what breaks first at 10× load?”
-
-Answer with: (1) placement on the diagram, (2) the saturation signal you’d page on, (3) the scale-out step, (4) the tradeoff you accept. Example pattern: “This cache sits between API and DB; at 10× we’d see hit-rate drop and DB CPU rise; we’d add replicas and tighten TTLs; tradeoff is more stale reads unless we invalidate on write.”
-
-### Comparison table (quick)
-
-When two technologies seem interchangeable, draw a 3-row table: consistency, latency, ops cost. Fill it for *this* prompt’s NFRs—not generically. Interviewers remember the table tied to requirements.
-
-### Common follow-ups
-
-- “Sync or async replication?”
-- “What is the blast radius if this node dies?”
-- “How do you test this failure in staging?”
-
-Keep a one-sentence answer ready for each foundations topic you study.
 
 ## API gateway
 
-An API gateway is the front door for external clients: routing, auth, rate limits, request shaping, and often protocol translation. It is not a place to hide all business logic.
+**In plain English:** Imagine a mobile shopping app that needs the user's profile, recent orders, and recommendations to paint the home screen. Without help, the phone makes three separate calls over a flaky mobile network. An API gateway (or a Backend-for-Frontend) can turn that into one call: the phone asks once, and the gateway gathers the pieces on the fast datacenter network.
 
-### Common responsibilities
+![API aggregation without vs with gateway](diagrams/svg/api-aggregation.svg)
 
-- TLS termination and HTTP routing
-- Authentication (JWT validation, API keys) and coarse authorization
-- Rate limiting and quotas per key/tenant
-- Request/response transformation and aggregation (BFF-style, carefully)
-- Canary / blue-green traffic splitting
-- Observability: edge metrics, access logs, WAF integration
+> **Key takeaway:** A gateway is the front door — routing, auth, rate limits, and optional aggregation — not a dumping ground for all business logic.
 
-### Gateway vs service mesh vs BFF
+### How it works
 
-- **Gateway** — north-south (client → cluster).
-- **Mesh** — east-west (service → service) with mTLS and retries.
-- **BFF** — per-client-experience aggregation (mobile BFF vs web BFF).
+An **API gateway** sits at the edge between external clients and your internal services. Typical duties:
 
-Do not implement core domain workflows only in the gateway; keep it a perimeter and policy layer.
+- Terminate TLS and route HTTP paths to the right service
+- Check authentication (for example validate a JWT or API key)
+- Enforce **rate limits** and quotas
+- Optionally **aggregate** several backend calls into one response (BFF-style)
+- Emit edge metrics and access logs
 
-### When to use
+A **BFF** (Backend for Frontend) is a gateway-like service shaped for one client experience — for example a mobile BFF that returns exactly the home-screen payload. A **service mesh** is different: it handles service-to-service (east-west) traffic inside the cluster, not the public front door.
 
-Public or partner APIs, multiple backend services, need for centralized cross-cutting policy. Skip for a single small service if a load balancer + middleware suffices.
+### Why it matters in interviews
+
+Microservices designs almost always need a clear edge. Interviewers listen for whether you put **one** gateway in front, keep domain logic in services, and know that aggregation helps mobile networks without turning the gateway into a new monolith.
+
+### When to use / when not
+
+**Use** when you have public or partner clients, several backends, and shared policy (auth, rate limits, routing).
+
+**Skip or keep thin** when you have a single small service — a load balancer plus app middleware may be enough. Avoid stuffing core checkout or feed ranking logic only in the gateway.
 
 ### Tradeoffs
 
-Centralization eases policy but can become a bottleneck and a deploy chokepoint. Over-aggregation creates a monolith in disguise. Extra hop adds latency.
+| Choice | Gain | Cost |
+|--------|------|------|
+| Central gateway | One place for auth, RL, routing | Can become bottleneck or deploy chokepoint |
+| Aggregation / BFF | Fewer mobile round trips | Extra hop; risk of a "monolith in disguise" |
+| Mesh + gateway | Clear north-south vs east-west | More moving parts to operate |
 
-### Failure modes
+### Failure modes (what breaks)
 
-Gateway outage blocks everything—multi-AZ and capacity headroom matter. Auth outages cascade; cache JWKS and fail with clear 401/503 policy. Giant payloads / slow backends exhaust gateway workers.
-
-### Design sketch
-
-Clients → Gateway (auth, RL) → Service A/B/C. Internal calls bypass the public gateway.
+- Gateway outage blocks everything → multi-AZ, capacity headroom, health checks
+- Auth dependency down → cache JWKS keys; define fail-open vs fail-closed deliberately
+- Slow backends exhaust gateway workers → timeouts, bulkheads, circuit breakers
+- Over-aggregation → giant payloads and tangled releases
 
 ### Interview tip
 
-When drawing microservices, put **one** gateway at the edge and keep internal arrows direct. Mention rate limits and auth as gateway duties unless you dedicate services.
+Draw **Clients → Gateway (auth, rate limit) → Service A/B/C**. Say internal service calls skip the public gateway. If the prompt is mobile-heavy, mention aggregation with the without/with picture above.
 
 ### Self-check
 
@@ -1390,32 +1272,16 @@ When drawing microservices, put **one** gateway at the edge and keep internal ar
 2. How does a mobile BFF differ from a generic API gateway?
 3. What happens to availability if the gateway depends synchronously on a flaky auth service?
 
-### Worked interview moment
-
-Interviewer: “Where does this sit in the stack, and what breaks first at 10× load?”
-
-Answer with: (1) placement on the diagram, (2) the saturation signal you’d page on, (3) the scale-out step, (4) the tradeoff you accept. Example pattern: “This cache sits between API and DB; at 10× we’d see hit-rate drop and DB CPU rise; we’d add replicas and tighten TTLs; tradeoff is more stale reads unless we invalidate on write.”
-
-### Comparison table (quick)
-
-When two technologies seem interchangeable, draw a 3-row table: consistency, latency, ops cost. Fill it for *this* prompt’s NFRs—not generically. Interviewers remember the table tied to requirements.
-
-### Common follow-ups
-
-- “Sync or async replication?”
-- “What is the blast radius if this node dies?”
-- “How do you test this failure in staging?”
-
-Keep a one-sentence answer ready for each foundations topic you study.
-
 ## Rate limiting
 
-Rate limiting protects systems and tenants from abuse and accidental overload by capping request rates per key (IP, user, API token, tenant).
+**In plain English:** Rate limiting is a polite bouncer: it caps how many requests a user, IP, or API key can make so one noisy client cannot knock over the whole club.
 
 ![Rate Limiting](diagrams/svg/rate-limiting.svg)
 
 <sub>Editable source: [rate-limiting-algorithms.drawio](diagrams/rate-limiting-algorithms.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
 
+
+> **Key takeaway:** Protect shared resources with per-key limits; return 429 with Retry-After instead of letting the database melt.
 
 ### Algorithms
 
@@ -1473,32 +1339,19 @@ Ask “per user or per IP?” and “burst allowed?” Then pick token bucket + 
 2. Fail-open vs fail-closed when the limiter store is down?
 3. How would you rate-limit a distributed fleet without a single Redis? (hint: local + periodic reconcile)
 
-### Worked interview moment
-
-Interviewer: “Where does this sit in the stack, and what breaks first at 10× load?”
-
-Answer with: (1) placement on the diagram, (2) the saturation signal you’d page on, (3) the scale-out step, (4) the tradeoff you accept. Example pattern: “This cache sits between API and DB; at 10× we’d see hit-rate drop and DB CPU rise; we’d add replicas and tighten TTLs; tradeoff is more stale reads unless we invalidate on write.”
-
-### Comparison table (quick)
-
-When two technologies seem interchangeable, draw a 3-row table: consistency, latency, ops cost. Fill it for *this* prompt’s NFRs—not generically. Interviewers remember the table tied to requirements.
-
-### Common follow-ups
-
-- “Sync or async replication?”
-- “What is the blast radius if this node dies?”
-- “How do you test this failure in staging?”
-
-Keep a one-sentence answer ready for each foundations topic you study.
 
 ## Caching & CDN
 
-Caching stores expensive-to-compute or slow-to-fetch data closer to the consumer. A CDN is a geographically distributed cache for static (and sometimes dynamic) content.
+**In plain English:** A cache keeps a hot copy of slow-to-fetch data in fast memory so you do not ask the database every time. A CDN is the same idea for files (images, videos, JS) stored in many cities so users download from somewhere nearby.
 
 ![Caching Strategies](diagrams/svg/caching-strategies.svg)
 
 <sub>Editable source: [caching-strategies.drawio](diagrams/caching-strategies.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
 
+
+![Without cache vs cache-aside](diagrams/svg/cache-aside-vs-direct.svg)
+
+> **Key takeaway:** Cache what is read often and expensive to recompute; always have a plan for stale data (TTL or invalidate on write).
 
 ### Cache placements
 
@@ -1553,27 +1406,12 @@ Always specify **key, TTL, and invalidation**. “Add Redis” without those thr
 2. How do you prevent a viral key from melting the DB on expiry?
 3. When should private user data *not* sit on a shared CDN edge?
 
-### Worked interview moment
-
-Interviewer: “Where does this sit in the stack, and what breaks first at 10× load?”
-
-Answer with: (1) placement on the diagram, (2) the saturation signal you’d page on, (3) the scale-out step, (4) the tradeoff you accept. Example pattern: “This cache sits between API and DB; at 10× we’d see hit-rate drop and DB CPU rise; we’d add replicas and tighten TTLs; tradeoff is more stale reads unless we invalidate on write.”
-
-### Comparison table (quick)
-
-When two technologies seem interchangeable, draw a 3-row table: consistency, latency, ops cost. Fill it for *this* prompt’s NFRs—not generically. Interviewers remember the table tied to requirements.
-
-### Common follow-ups
-
-- “Sync or async replication?”
-- “What is the blast radius if this node dies?”
-- “How do you test this failure in staging?”
-
-Keep a one-sentence answer ready for each foundations topic you study.
 
 ## Databases
 
-Choosing storage is choosing your query patterns, consistency, and operational burden. Start from access patterns, not from brand names.
+**In plain English:** A database is where your durable truth lives — users, orders, messages. The big interview choice is not brand names; it is matching how you read and write data to the store's strengths (tables and transactions vs flexible documents vs specialized indexes).
+
+> **Key takeaway:** Start from access patterns (lookups, joins, writes, retention), then pick storage — not the other way around.
 
 ### Relational (SQL)
 
@@ -1645,27 +1483,12 @@ Say “Postgres for source of truth; Redis for cache; S3 for media; OpenSearch f
 2. Give a query that screams for relational joins.
 3. What breaks if a document store doc grows without bound?
 
-### Worked interview moment
-
-Interviewer: “Where does this sit in the stack, and what breaks first at 10× load?”
-
-Answer with: (1) placement on the diagram, (2) the saturation signal you’d page on, (3) the scale-out step, (4) the tradeoff you accept. Example pattern: “This cache sits between API and DB; at 10× we’d see hit-rate drop and DB CPU rise; we’d add replicas and tighten TTLs; tradeoff is more stale reads unless we invalidate on write.”
-
-### Comparison table (quick)
-
-When two technologies seem interchangeable, draw a 3-row table: consistency, latency, ops cost. Fill it for *this* prompt’s NFRs—not generically. Interviewers remember the table tied to requirements.
-
-### Common follow-ups
-
-- “Sync or async replication?”
-- “What is the blast radius if this node dies?”
-- “How do you test this failure in staging?”
-
-Keep a one-sentence answer ready for each foundations topic you study.
 
 ## Indexes
 
-Indexes trade write cost and storage for faster reads. Without the right index, your “scalable” service dies on table scans.
+**In plain English:** An index is like the index at the back of a book: it lets you jump to the right page instead of scanning every row. The tradeoff is that every write must update the index too.
+
+> **Key takeaway:** Index the columns you filter and join on in hot paths; too many indexes slow writes and waste disk.
 
 ### Primary intuition
 
@@ -1719,32 +1542,17 @@ After drawing tables, verbally add indexes for the top three queries. Interviewe
 2. Cost of adding five secondary indexes to a write-heavy table?
 3. Local vs global secondary index in a sharded store?
 
-### Worked interview moment
-
-Interviewer: “Where does this sit in the stack, and what breaks first at 10× load?”
-
-Answer with: (1) placement on the diagram, (2) the saturation signal you’d page on, (3) the scale-out step, (4) the tradeoff you accept. Example pattern: “This cache sits between API and DB; at 10× we’d see hit-rate drop and DB CPU rise; we’d add replicas and tighten TTLs; tradeoff is more stale reads unless we invalidate on write.”
-
-### Comparison table (quick)
-
-When two technologies seem interchangeable, draw a 3-row table: consistency, latency, ops cost. Fill it for *this* prompt’s NFRs—not generically. Interviewers remember the table tied to requirements.
-
-### Common follow-ups
-
-- “Sync or async replication?”
-- “What is the blast radius if this node dies?”
-- “How do you test this failure in staging?”
-
-Keep a one-sentence answer ready for each foundations topic you study.
 
 ## Sharding
 
-Sharding (horizontal partitioning) splits data across multiple database nodes so each holds a subset of rows. It is how single-cluster storage ceilings get broken—at the cost of complexity.
+**In plain English:** When one database can no longer hold all the rows or take all the writes, sharding splits the data across many databases — each holds a slice (for example, users A–M on shard 1, N–Z on shard 2).
 
 ![Sharding & Consistent Hashing](diagrams/svg/sharding-consistent-hash.svg)
 
 <sub>Editable source: [sharding-consistent-hash.drawio](diagrams/sharding-consistent-hash.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
 
+
+> **Key takeaway:** Pick a shard key that spreads load evenly and keeps related data together; hot keys are the classic failure mode.
 
 ### Shard key selection
 
@@ -1800,32 +1608,17 @@ State the shard key and the query that remains single-shard. Then name one cross
 2. How does salting help celebrity hot keys?
 3. What breaks about `UNIQUE(email)` after hash sharding by `user_id`?
 
-### Worked interview moment
-
-Interviewer: “Where does this sit in the stack, and what breaks first at 10× load?”
-
-Answer with: (1) placement on the diagram, (2) the saturation signal you’d page on, (3) the scale-out step, (4) the tradeoff you accept. Example pattern: “This cache sits between API and DB; at 10× we’d see hit-rate drop and DB CPU rise; we’d add replicas and tighten TTLs; tradeoff is more stale reads unless we invalidate on write.”
-
-### Comparison table (quick)
-
-When two technologies seem interchangeable, draw a 3-row table: consistency, latency, ops cost. Fill it for *this* prompt’s NFRs—not generically. Interviewers remember the table tied to requirements.
-
-### Common follow-ups
-
-- “Sync or async replication?”
-- “What is the blast radius if this node dies?”
-- “How do you test this failure in staging?”
-
-Keep a one-sentence answer ready for each foundations topic you study.
 
 ## Consistent hashing
 
-Consistent hashing maps keys to nodes on a ring so that when nodes are added/removed, **most keys stay put** — only keys near the change move. It is the go-to answer for cache clusters, partitioners, and some DHT-style stores. Virtual nodes fix imbalance.
+**In plain English:** Consistent hashing is a clever way to decide which shard owns a key so that when you add or remove a machine, only a small fraction of keys move — not everything.
 
 ![Sharding & Consistent Hashing](diagrams/svg/sharding-consistent-hash.svg)
 
 <sub>Editable source: [sharding-consistent-hash.drawio](diagrams/sharding-consistent-hash.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
 
+
+> **Key takeaway:** Use it for caches and shards when membership changes; virtual nodes help spread keys more evenly.
 
 ### Ring intuition
 
@@ -1901,12 +1694,14 @@ Draw a ring, place 3 nodes, show adding a fourth and which keys move. Say “vir
 
 ## Replication
 
-Replication copies data to multiple nodes for durability, availability, and read scale. The consistency you get depends on *when* replicas acknowledge writes.
+**In plain English:** Replication means keeping copies of the same data on more than one machine. If the primary dies, a replica can take over; replicas can also serve read traffic.
 
 ![Replication & Failover](diagrams/svg/replication-failover.svg)
 
 <sub>Editable source: [replication-failover.drawio](diagrams/replication-failover.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
 
+
+> **Key takeaway:** Sync replication protects against data loss but slows writes; async is faster but can lose the last few seconds on failover.
 
 ### Primary-secondary (leader-follower)
 
@@ -1955,32 +1750,17 @@ Draw primary + at least one replica and say whether replication is sync or async
 2. Why is fencing important during failover?
 3. Interpret W=3, R=2, N=5 at a high level.
 
-### Worked interview moment
-
-Interviewer: “Where does this sit in the stack, and what breaks first at 10× load?”
-
-Answer with: (1) placement on the diagram, (2) the saturation signal you’d page on, (3) the scale-out step, (4) the tradeoff you accept. Example pattern: “This cache sits between API and DB; at 10× we’d see hit-rate drop and DB CPU rise; we’d add replicas and tighten TTLs; tradeoff is more stale reads unless we invalidate on write.”
-
-### Comparison table (quick)
-
-When two technologies seem interchangeable, draw a 3-row table: consistency, latency, ops cost. Fill it for *this* prompt’s NFRs—not generically. Interviewers remember the table tied to requirements.
-
-### Common follow-ups
-
-- “Sync or async replication?”
-- “What is the blast radius if this node dies?”
-- “How do you test this failure in staging?”
-
-Keep a one-sentence answer ready for each foundations topic you study.
 
 ## CAP & PACELC
 
-CAP and PACELC are thinking tools for distributed tradeoffs—not rigid laws you recite to sound smart. Use them to frame *which* property you sacrifice under which condition.
+**In plain English:** When part of the network breaks, a distributed system often cannot be both fully consistent and fully available at the same time. CAP/PACELC are vocabulary for naming which side you lean toward — for this product, under partition and in steady state.
 
 ![CAP & PACELC](diagrams/svg/cap-pacelc.svg)
 
 <sub>Editable source: [cap-pacelc.drawio](diagrams/cap-pacelc.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
 
+
+> **Key takeaway:** Do not recite acronyms; say what your design does when a region is unreachable and what users see.
 
 ### CAP (briefly)
 
@@ -2034,32 +1814,17 @@ Prefer concrete language: “On region failure we serve stale reads for 2 minute
 2. Give a PACELC example for a multi-region user profile store.
 3. Why is ACID’s C different from CAP’s C?
 
-### Worked interview moment
-
-Interviewer: “Where does this sit in the stack, and what breaks first at 10× load?”
-
-Answer with: (1) placement on the diagram, (2) the saturation signal you’d page on, (3) the scale-out step, (4) the tradeoff you accept. Example pattern: “This cache sits between API and DB; at 10× we’d see hit-rate drop and DB CPU rise; we’d add replicas and tighten TTLs; tradeoff is more stale reads unless we invalidate on write.”
-
-### Comparison table (quick)
-
-When two technologies seem interchangeable, draw a 3-row table: consistency, latency, ops cost. Fill it for *this* prompt’s NFRs—not generically. Interviewers remember the table tied to requirements.
-
-### Common follow-ups
-
-- “Sync or async replication?”
-- “What is the blast radius if this node dies?”
-- “How do you test this failure in staging?”
-
-Keep a one-sentence answer ready for each foundations topic you study.
 
 ## Messaging
 
-Message queues and event streams decouple producers from consumers so spikes buffer and work continues when downstream is slow.
+**In plain English:** A message queue lets one part of the system hand work to another without waiting — like dropping a ticket in a inbox. Pub/sub is the same idea when many teams each need their own copy of an event (email, search indexer, analytics).
 
 ![Messaging](diagrams/svg/messaging.svg)
 
 <sub>Editable source: [messaging-pubsub-vs-queue.drawio](diagrams/messaging-pubsub-vs-queue.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
 
+
+> **Key takeaway:** Use queues to absorb spikes and decouple failures; choose queue vs pub/sub based on one-consumer vs many-subscribers.
 
 ### Queues vs streams vs pub/sub
 
@@ -2108,27 +1873,12 @@ Draw the queue on the **write path** for side effects, and state consumer idempo
 2. How do you preserve per-user message order at scale?
 3. What is a DLQ for?
 
-### Worked interview moment
-
-Interviewer: “Where does this sit in the stack, and what breaks first at 10× load?”
-
-Answer with: (1) placement on the diagram, (2) the saturation signal you’d page on, (3) the scale-out step, (4) the tradeoff you accept. Example pattern: “This cache sits between API and DB; at 10× we’d see hit-rate drop and DB CPU rise; we’d add replicas and tighten TTLs; tradeoff is more stale reads unless we invalidate on write.”
-
-### Comparison table (quick)
-
-When two technologies seem interchangeable, draw a 3-row table: consistency, latency, ops cost. Fill it for *this* prompt’s NFRs—not generically. Interviewers remember the table tied to requirements.
-
-### Common follow-ups
-
-- “Sync or async replication?”
-- “What is the blast radius if this node dies?”
-- “How do you test this failure in staging?”
-
-Keep a one-sentence answer ready for each foundations topic you study.
 
 ## Delivery guarantees
 
-Messaging systems advertise at-most-once, at-least-once, or exactly-once. Understanding what that means **end-to-end**—including your consumers—is an interview differentiator.
+**In plain English:** "Will this message arrive once, at least once, or maybe never?" Delivery guarantees answer that. In practice most systems are at-least-once, and your consumer must tolerate duplicates.
+
+> **Key takeaway:** True end-to-end exactly-once is rare; design idempotent consumers and clear dedupe keys.
 
 ### At-most-once
 
@@ -2184,27 +1934,12 @@ Say: “Broker is at-least-once; consumers upsert by event_id.” That sentence 
 2. Sketch a transactional outbox in three steps.
 3. Can you exactly-once send a push notification to APNS? What’s practical?
 
-### Worked interview moment
-
-Interviewer: “Where does this sit in the stack, and what breaks first at 10× load?”
-
-Answer with: (1) placement on the diagram, (2) the saturation signal you’d page on, (3) the scale-out step, (4) the tradeoff you accept. Example pattern: “This cache sits between API and DB; at 10× we’d see hit-rate drop and DB CPU rise; we’d add replicas and tighten TTLs; tradeoff is more stale reads unless we invalidate on write.”
-
-### Comparison table (quick)
-
-When two technologies seem interchangeable, draw a 3-row table: consistency, latency, ops cost. Fill it for *this* prompt’s NFRs—not generically. Interviewers remember the table tied to requirements.
-
-### Common follow-ups
-
-- “Sync or async replication?”
-- “What is the blast radius if this node dies?”
-- “How do you test this failure in staging?”
-
-Keep a one-sentence answer ready for each foundations topic you study.
 
 ## Coordination
 
-When multiple nodes must agree on leadership, locks, or configuration, you need coordination primitives. Misusing them creates outages; avoiding them when possible is often wiser.
+**In plain English:** Sometimes many servers must agree — who is the leader, who holds a lock, what is the latest config. Coordination systems (ZooKeeper, etcd, Consul) exist for that, but they are easy to overuse.
+
+> **Key takeaway:** Keep coordination off the hot request path; prefer leases with TTLs and clear fencing on failover.
 
 ### Leader election
 
@@ -2256,32 +1991,17 @@ For “only one worker should process this,” prefer a **queue with single-cons
 2. Why are distributed locks dangerous on the request path?
 3. Give an alternative to a global lock for unique username creation.
 
-### Worked interview moment
-
-Interviewer: “Where does this sit in the stack, and what breaks first at 10× load?”
-
-Answer with: (1) placement on the diagram, (2) the saturation signal you’d page on, (3) the scale-out step, (4) the tradeoff you accept. Example pattern: “This cache sits between API and DB; at 10× we’d see hit-rate drop and DB CPU rise; we’d add replicas and tighten TTLs; tradeoff is more stale reads unless we invalidate on write.”
-
-### Comparison table (quick)
-
-When two technologies seem interchangeable, draw a 3-row table: consistency, latency, ops cost. Fill it for *this* prompt’s NFRs—not generically. Interviewers remember the table tied to requirements.
-
-### Common follow-ups
-
-- “Sync or async replication?”
-- “What is the blast radius if this node dies?”
-- “How do you test this failure in staging?”
-
-Keep a one-sentence answer ready for each foundations topic you study.
 
 ## Bloom filters
 
-A Bloom filter is a **space-efficient probabilistic set**. It can say “definitely not present” or “probably present” (with a tunable false-positive rate). It never has false negatives for membership of inserted items (unless you implement deletion carelessly with counting variants).
+**In plain English:** A Bloom filter is a tiny, slightly forgetful checklist: it can say "this item is definitely not here" or "maybe it is." Crawlers and caches use it to skip expensive lookups for things they have never seen.
 
 ![Bloom Filter](diagrams/svg/bloom-filter.svg)
 
 <sub>Editable source: [bloom-filter.drawio](diagrams/bloom-filter.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
 
+
+> **Key takeaway:** Great for cheap negative checks; never treat a "maybe" as proof the item exists.
 
 ### How it works (intuition)
 
@@ -2343,7 +2063,9 @@ In crawler / dedup designs: “Bloom filter for cheap negative checks, authorita
 
 ## Checksums and data integrity
 
-Distributed systems move bytes across disks, NICs, and memory. **Silent corruption** is rare but real; interviews expect you to mention integrity checks for storage, replication, and uploads.
+**In plain English:** Bits flip. Disks lie. Checksums are fingerprints of data so you can notice corruption when bytes move across the network or sit on disk.
+
+> **Key takeaway:** Verify checksums at trust boundaries (upload, replication, restore); silent corruption is rare but interviewers expect the mention.
 
 ### Layers of integrity
 
@@ -2401,7 +2123,9 @@ For Dropbox/YouTube/backup designs: “chunk with content hash; verify on upload
 
 ## Distributed file systems
 
-Interview-level DFS (GFS/HDFS-inspired): large files split into **chunks/blocks**, a **metadata** service tracks the namespace and chunk locations, **chunk servers** store replicas, and clients read/write data **plane** separately from control plane.
+**In plain English:** A distributed file system stores huge files by chopping them into chunks across many machines, with a metadata service that remembers where each chunk lives — think videos, dataset dumps, backups.
+
+> **Key takeaway:** Separate metadata from chunk storage; plan for metadata HA and for re-replicating chunks when disks die.
 
 ### Core components
 
@@ -2473,12 +2197,14 @@ If designing Dropbox: prefer **chunked object storage + metadata service** over 
 
 ## Circuit breakers and bulkheads
 
-Resilience patterns stop failures from cascading. Timeouts and retries alone can **amplify** outages; circuit breakers and bulkheads contain blast radius.
+**In plain English:** If a dependency is on fire, blindly retrying can burn your service down too. A circuit breaker stops calling a sick dependency for a while; a bulkhead limits how much of your capacity any one dependency can consume.
 
 ![Circuit Breaker](diagrams/svg/circuit-breaker.svg)
 
 <sub>Editable source: [circuit-breaker-states.drawio](diagrams/circuit-breaker-states.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
 
+
+> **Key takeaway:** Pair timeouts, bounded retries with jitter, circuit breakers, and isolation — retries alone can amplify outages.
 
 ### Circuit breaker states
 
@@ -2548,9 +2274,9 @@ On deep-dive failures: “Timeouts + limited retries with jitter; circuit breake
 
 ## SLA, SLO, and SLI
 
-These terms separate **contracts**, **targets**, and **measurements**. Senior interviews expect precise use — not “we want high availability” hand-waving.
-**Diagram:** [SLA / SLO / error budget](diagrams/sla-slo-error-budget.drawio) — open in [diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension.
+**In plain English:** An SLI is what you measure (for example, the fraction of requests faster than 200 ms). An SLO is the target you aim for. An SLA is the customer-facing promise — often with credits if you miss.
 
+> **Key takeaway:** Pick a few user-visible SLIs, set SLOs, and use error budgets to decide when to ship features vs harden reliability.
 
 ### Definitions
 
@@ -2606,12 +2332,14 @@ Write on the board: “SLO: 99.9% successful redirects, p99 < 50 ms; SLI: non-5x
 
 ## Observability
 
-Observability is the ability to explain **why** the system is sick from its external outputs. Metrics, logs, and traces are the three pillars — plus continuous profiling and topology in mature orgs.
+**In plain English:** Observability is how you explain why the system is sick using metrics, logs, and traces — the difference between "CPU is high" and "checkout is slow because payments p99 spiked after deploy."
 
 ![Observability](diagrams/svg/observability.svg)
 
 <sub>Editable source: [observability-three-pillars.drawio](diagrams/observability-three-pillars.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
 
+
+> **Key takeaway:** Instrument golden signals, correlate with request IDs across services, and alert on symptoms users feel.
 
 ### Metrics
 
@@ -2679,7 +2407,9 @@ Add a small “metrics / tracing” note or say: “We’ll expose RED metrics, 
 
 ## REST vs GraphQL vs gRPC
 
-API style is a **product and performance** choice. Interviews reward “when,” not religion.
+**In plain English:** These are different styles of API. REST/JSON is the common public web default. GraphQL lets a client ask for exactly the fields it needs in one round trip. gRPC is a fast, typed option popular between internal services.
+
+> **Key takeaway:** Choose by clients and chattiness needs — not fashion; many systems use REST at the edge and gRPC inside.
 
 ### Quick comparison
 
@@ -2742,12 +2472,14 @@ flowchart LR
 
 ## Monolith vs microservices
 
-This is an organizational and scaling-axis decision, not a badge of seniority. Strong candidates often **start modular monolith** and split on clear seams.
+**In plain English:** A monolith is one deployable app (still fine — and often wise — early on). Microservices split the product into independently deployable pieces that talk over the network. The senior move is usually: start modular, split when scale or team boundaries demand it.
 
 ![Monolith vs Microservices](diagrams/svg/microservices-vs-monolith.svg)
 
 <sub>Editable source: [microservices-vs-monolith.drawio](diagrams/microservices-vs-monolith.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
 
+
+> **Key takeaway:** Do not split for resume points; split when you need independent scale, ownership, or blast-radius isolation.
 
 ### Definitions
 
@@ -2804,7 +2536,9 @@ For URL shortener / typeahead: “Modular monolith is fine.” For Uber/Netflix-
 
 ## Security
 
-Security is a first-class non-functional requirement for user-facing systems. You need a practical checklist, not a full red-team report.
+**In plain English:** Security means knowing who is calling (authentication), what they are allowed to do (authorization), and keeping data safe in transit and at rest. In interviews, a short practical checklist beats a fear monologue.
+
+> **Key takeaway:** TLS everywhere, authn/authz on the server, least-privilege secrets, and rate-limit auth endpoints — mention these on every user-facing design.
 
 ### Authentication (AuthN)
 
@@ -2860,23 +2594,6 @@ Add a box for **Auth service / IdP** and say “all data plane requests carry a 
 2. How do signed URLs protect direct-to-object uploads?
 3. Name two log redaction examples you would enforce.
 
-### Worked interview moment
-
-Interviewer: “Where does this sit in the stack, and what breaks first at 10× load?”
-
-Answer with: (1) placement on the diagram, (2) the saturation signal you’d page on, (3) the scale-out step, (4) the tradeoff you accept. Example pattern: “This cache sits between API and DB; at 10× we’d see hit-rate drop and DB CPU rise; we’d add replicas and tighten TTLs; tradeoff is more stale reads unless we invalidate on write.”
-
-### Comparison table (quick)
-
-When two technologies seem interchangeable, draw a 3-row table: consistency, latency, ops cost. Fill it for *this* prompt’s NFRs—not generically. Interviewers remember the table tied to requirements.
-
-### Common follow-ups
-
-- “Sync or async replication?”
-- “What is the blast radius if this node dies?”
-- “How do you test this failure in staging?”
-
-Keep a one-sentence answer ready for each foundations topic you study.
 
 # Interview Approach
 
@@ -3463,9 +3180,11 @@ Say them deliberately in mocks until natural.
 
 ## URL shortener
 
+**In plain English:** A URL shortener turns a long link into a short code (like short.ly/aB3xY9) and redirects people who open it. It is the classic warm-up design: easy to explain, rich enough to practice storage, caching, and abuse.
+
 ![URL Shortener](diagrams/svg/url-shortener.svg)
 
-Classic warm-up design. Focus on unique code generation, redirect latency, and abuse.
+> **Key takeaway:** Optimize the redirect path (cache first); generating unique codes and stopping spam are the real deep dives.
 
 ### 1. Clarify
 
@@ -3677,6 +3396,10 @@ State what user experience should be in each case.
 **You:** Scale API horizontally; shard by code hash when primary saturates.
 
 ## Rate limiter
+
+**In plain English:** A rate limiter decides whether to allow or reject a request based on how many you have already made — protecting APIs from accidental floods and abuse.
+
+> **Key takeaway:** Pick an algorithm (token bucket is a strong default), a key (user / IP / API key), and a place to store counters (often Redis).
 
 Build a service or middleware that enforces request quotas across a fleet. Classic mid-level design: algorithms, distributed counters, and fail-open vs fail-closed.
 
@@ -4950,6 +4673,10 @@ Add headless render pool for JS sites; change-detection recrawl; integrate with 
 
 ## Typeahead
 
+**In plain English:** Typeahead (autocomplete) suggests queries as you type "sys…" → "system design". It must feel instant, so the hot path is mostly prefix lookup and caching — not a full search crawl.
+
+> **Key takeaway:** Cache hot prefixes at the edge; limit candidates; rank by popularity with light personalization only if needed.
+
 Suggest queries or entities as the user types, with very low latency.
 
 ![Typeahead](diagrams/svg/typeahead.svg)
@@ -5510,6 +5237,10 @@ State what user experience should be in each case.
 
 
 ## Nearby places (Yelp-like)
+
+**In plain English:** "Show restaurants near me" sounds simple until you have millions of places and need fast geo queries. The design centers on indexing locations so "within this map box" is cheap.
+
+> **Key takeaway:** Use a geo index (geohash / quadtree / DB geo types); cache popular areas; keep ranking separate from the spatial lookup.
 
 Geospatial search: find businesses near a lat/lng, filter by category, sort by distance/rating. Interviewers probe geo indexes, hot downtown tiles, and ranking.
 
