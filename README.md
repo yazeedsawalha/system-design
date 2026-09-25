@@ -1,6 +1,6 @@
 # System Design Interview Guide
 
-A **free, original** curriculum for system design interview prep — foundations, a repeatable approach, 14 full design walkthroughs, and timed practice. Everything lives in this single README (Mermaid diagrams render natively on GitHub).
+A **free, original** curriculum for system design interview prep — deep foundations, a repeatable approach, a whiteboard masterclass, 19 full design walkthroughs, and timed practice. Everything lives in this single **README** (Mermaid renders on GitHub) plus editable **draw.io** diagrams under [`diagrams/`](diagrams/).
 
 > **Disclaimer:** This is a free original curriculum for interview practice. **Not affiliated** with DesignGurus, Educative, ByteByteGo, or any paid course. Industry-standard concepts in original wording. Product names in design titles (e.g. “Instagram-like”) are familiar problem frames only.
 
@@ -8,26 +8,33 @@ A **free, original** curriculum for system design interview prep — foundations
 
 1. Start with **[Getting Started](#getting-started)** — especially pitfalls and level expectations.
 2. Work through **[Foundations](#foundations)**; answer self-checks out loud.
-3. Internalize the **[Interview Approach](#interview-approach)** template; use it on every design.
-4. Study **[Design Walkthroughs](#design-walkthroughs)** in order: URL shortener → rate limiter → news feed → chat → then domain-specific ones.
-5. Run **[Practice](#practice)** under a timer; score yourself with the mock rubric.
+3. Read **[Whiteboard like a strong candidate](#whiteboard-like-a-strong-candidate)** before timed mocks.
+4. Internalize the **[Interview Approach](#interview-approach)** template; use it on every design.
+5. Study **[Design Walkthroughs](#design-walkthroughs)** — junior path: URL shortener → rate limiter → typeahead → nearby places; then feed, chat, checkout; senior: Uber, video, collab doc, recommendations.
+6. Open `.drawio` files in [diagrams.net](https://app.diagrams.net) or the VS Code draw.io extension while you practice drawing.
+7. Run **[Practice](#practice)** under a timer; score yourself with the mock rubric.
 
 ### Study paths by level
 
 | Path | Focus | Suggested order |
 |------|--------|-----------------|
-| **Junior** | Building blocks + simple HLD | Getting Started → Foundations (LB, cache, DB, queue, CDN) → Approach → URL shortener, rate limiter, typeahead → timed drills |
-| **Mid** | Full loop + consistency & failures | All Foundations → Approach → core designs (feed, chat, notifications, Instagram) → Practice with rubric |
-| **Senior** | SLOs, multi-region, ops, cost | Foundations deep dives (CAP, coordination, delivery) → Approach failures → hard designs (Uber, video, Dropbox, payments) → mocks every other day |
+| **Junior** | Building blocks + simple HLD | Getting Started → Foundations (DNS, LB, cache, DB, queue, CDN, proxies) → Whiteboard → URL shortener, rate limiter, typeahead, nearby places → timed drills |
+| **Mid** | Full loop + consistency & failures | All Foundations → Approach → core designs (feed, group chat, notifications, Instagram, checkout) → Practice with rubric |
+| **Senior** | SLOs, multi-region, ops, ranking | Foundations deep dives (CAP, circuit breakers, observability, SLA/SLO) → hard designs (Uber, video, Dropbox, collab doc, recommendations, payments) → mocks every other day |
 
 See [Study plan](#study-plan) for 2 / 4 / 8 week schedules and [Level expectations](#level-expectations) for self-calibration.
+
+---
+
+
+---
+
 
 ---
 
 ## Table of Contents
 
 ### 0. Getting Started
-
 
 - [How interviews work](#how-interviews-work)
 - [Level expectations](#level-expectations)
@@ -37,40 +44,50 @@ See [Study plan](#study-plan) for 2 / 4 / 8 week schedules and [Level expectatio
 
 ### 1. Foundations
 
-
 - [System characteristics](#system-characteristics)
 - [Networking basics](#networking-basics)
+- [DNS](#dns)
+- [Proxies](#proxies)
+- [Real-time communication](#real-time-communication)
 - [Load balancing](#load-balancing)
 - [API gateway](#api-gateway)
 - [Rate limiting](#rate-limiting)
-- [Caching & CDN](#caching--cdn)
+- [Caching & CDN](#caching-cdn)
 - [Databases](#databases)
 - [Indexes](#indexes)
 - [Sharding](#sharding)
+- [Consistent hashing](#consistent-hashing)
 - [Replication](#replication)
-- [CAP & PACELC](#cap--pacelc)
+- [CAP & PACELC](#cap-pacelc)
 - [Messaging](#messaging)
 - [Delivery guarantees](#delivery-guarantees)
 - [Coordination](#coordination)
+- [Bloom filters](#bloom-filters)
+- [Checksums and data integrity](#checksums-and-data-integrity)
+- [Distributed file systems](#distributed-file-systems)
+- [Circuit breakers and bulkheads](#circuit-breakers-and-bulkheads)
+- [SLA, SLO, and SLI](#sla-slo-and-sli)
+- [Observability](#observability)
+- [REST vs GraphQL vs gRPC](#rest-vs-graphql-vs-grpc)
+- [Monolith vs microservices](#monolith-vs-microservices)
 - [Security](#security)
 
 ### 2. Interview Approach
 
-
+- [Whiteboard like a strong candidate](#whiteboard-like-a-strong-candidate)
 - [Clarify requirements](#clarify-requirements)
 - [Capacity estimation](#capacity-estimation)
 - [Design template](#design-template)
-- [Deep dive & failures](#deep-dive--failures)
+- [Deep dive & failures](#deep-dive-failures)
 - [Tradeoffs cheatsheet](#tradeoffs-cheatsheet)
 
 ### 3. Design Walkthroughs
-
 
 - [URL shortener](#url-shortener)
 - [Rate limiter](#rate-limiter)
 - [Notification system](#notification-system)
 - [News feed](#news-feed)
-- [Chat & messaging](#chat--messaging)
+- [Chat & messaging](#chat-messaging)
 - [Instagram-like](#instagram-like)
 - [Uber-like](#uber-like)
 - [Video streaming](#video-streaming)
@@ -80,16 +97,18 @@ See [Study plan](#study-plan) for 2 / 4 / 8 week schedules and [Level expectatio
 - [Search](#search)
 - [Ticket booking](#ticket-booking)
 - [Payments](#payments)
+- [Nearby places (Yelp-like)](#nearby-places-yelp-like)
+- [Group chat (Slack / Discord-like)](#group-chat-slack-discord-like)
+- [Collaborative document](#collaborative-document)
+- [E-commerce checkout and inventory](#e-commerce-checkout-and-inventory)
+- [Recommendation and feed ranking (senior sketch)](#recommendation-and-feed-ranking-senior-sketch)
 
 ### 4. Practice
-
 
 - [Timed drill](#timed-drill)
 - [Practice prompts](#practice-prompts)
 - [Self-review](#self-review)
 - [Mock rubric](#mock-rubric)
-
----
 
 ## License
 
@@ -98,7 +117,7 @@ MIT — see [LICENSE](LICENSE). Contributions of original content welcome; do no
 ---
 
 
-# Getting Started
+---
 
 ## How interviews work
 
@@ -213,7 +232,6 @@ Each practice interview should produce one artifact: a one-page redraw plus thre
 - [ ] Prepared questions for them about real scale pain (shows curiosity)
 
 You cannot cram foundations the morning of—rely on the template muscle.
-
 
 ## Level expectations
 
@@ -331,7 +349,6 @@ Levels are noisy across companies. Use this page to choose study depth, not to s
 - [ ] Prepared questions for them about real scale pain (shows curiosity)
 
 You cannot cram foundations the morning of—rely on the template muscle.
-
 
 ## Prerequisites
 
@@ -456,7 +473,6 @@ Stop expanding the list. If you can explain and sketch the must-haves above, sta
 - [ ] Prepared questions for them about real scale pain (shows curiosity)
 
 You cannot cram foundations the morning of—rely on the template muscle.
-
 
 ## Study plan
 
@@ -589,7 +605,6 @@ You are ready to interview when: median mock ≥7/10 across five varied prompts,
 
 You cannot cram foundations the morning of—rely on the template muscle.
 
-
 ## Common pitfalls
 
 Avoiding these mistakes raises interview performance as much as learning new tech.
@@ -715,7 +730,6 @@ Pitfalls are normal. The difference between candidates is how quickly they notic
 
 You cannot cram foundations the morning of—rely on the template muscle.
 
-
 # Foundations
 
 ## System characteristics
@@ -814,7 +828,6 @@ When two technologies seem interchangeable, draw a 3-row table: consistency, lat
 
 Keep a one-sentence answer ready for each foundations topic you study.
 
-
 ## Networking basics
 
 You rarely configure BGP in a design interview, but you must place TLS, DNS, load balancers, and protocols correctly on the diagram.
@@ -894,6 +907,222 @@ When two technologies seem interchangeable, draw a 3-row table: consistency, lat
 
 Keep a one-sentence answer ready for each foundations topic you study.
 
+## DNS
+
+DNS maps human-readable names to addresses and is the first hop almost every client makes. In interviews you rarely configure BIND, but you **must** place DNS correctly, reason about TTL, and know when GeoDNS / anycast matters for failover and latency.
+
+### How resolution works (interview level)
+
+1. Client asks a **recursive resolver** (ISP or 1.1.1.1 / 8.8.8.8).
+2. Resolver walks **root → TLD → authoritative** name servers (or uses cache).
+3. Answer includes **records** and a **TTL** — caches may serve stale answers until TTL expires.
+
+You do not control every cache (OS, browser, recursive resolvers). That lag is why DNS is a blunt failover tool.
+
+### Record types you should name
+
+| Type | Role in designs |
+|------|-----------------|
+| **A / AAAA** | Hostname → IPv4 / IPv6 |
+| **CNAME** | Alias to another name (not on zone apex usually) |
+| **NS** | Delegates a zone to name servers |
+| **MX** | Mail routing |
+| **TXT** | Verification, SPF/DKIM, challenge tokens |
+| **SRV** | Service discovery (host+port+priority) |
+
+For most system-design prompts, A/AAAA + CNAME + understanding of apex constraints is enough.
+
+### TTL intuition
+
+- **Low TTL** (30–60s): faster cutover for blue/green or DR; higher DNS QPS; more dependency on DNS availability.
+- **High TTL** (hours): fewer lookups; **slow** failover — users stick to old IPs.
+- Interview move: “I’d use moderate TTL in steady state and **lower TTL ahead of a planned cutover**.”
+
+### Anycast intuition
+
+Anycast announces the **same IP** from many PoPs; BGP routes the client to a “nearby” announcement. Used by major DNS providers and some CDNs/LBs. Benefits: lower latency, DDoS absorption, regional failover. Caveats: routing is opaque; debugging “which PoP?” needs provider tooling; not application-layer load balancing by request content.
+
+### GeoDNS / latency-based routing
+
+Authoritative DNS can return different answers by client geography or health checks (route53-style policies). Good for steering to regions. Bad as a fine-grained LB: TTL + resolver location (not always user location) limit precision.
+
+### When to use / emphasize DNS
+
+- Multi-region active-passive or active-active
+- CDN origin / apex decisions
+- Planned migrations and incident failover stories
+- Anything where “users can’t reach us” is the failure mode
+
+### Tradeoffs
+
+| Choice | Gain | Cost |
+|--------|------|------|
+| Low TTL | Fast failover | More DNS load; cache misses |
+| GeoDNS | Regional steering | Complexity; wrong region if resolver ≠ user |
+| Multi-provider DNS | Survive provider outage | Sync of records; split-brain risk |
+| Anycast DNS | Latency + resilience | Less control of path |
+
+### Failure modes
+
+- Stale caches after IP change (classic “we updated DNS but half the world still hits old LB”)
+- Single DNS provider outage taking your brand offline
+- Misconfigured NS / expired domain (ops nightmare)
+- CNAME chains adding latency
+- Using DNS as a **request** router (it isn’t — no path/header awareness)
+
+### Interview tip
+
+On the whiteboard, draw **Clients → DNS → CDN/LB** and say: “DNS gets them to the right edge; the LB does per-request distribution.” If multi-region: “GeoDNS or anycast to region VIP; health-check removes bad region.”
+
+**Diagram:** [diagrams/foundations-traffic-tier.drawio](diagrams/foundations-traffic-tier.drawio)
+
+### Self-check
+
+1. Why is DNS alone a poor substitute for an application load balancer?
+2. How would you prepare TTL before a planned blue/green cutover?
+3. What does anycast buy you for DNS that unicast does not?
+
+---
+
+## Proxies
+
+A proxy sits between a client and a server and forwards traffic — optionally terminating TLS, caching, filtering, or load balancing. Interviews care about **forward vs reverse** and **where** the proxy lives on your diagram.
+
+### Forward proxy
+
+Sits in front of **clients** (corporate egress, VPN, scrapers). Clients are configured to use it. The origin sees the proxy’s IP. Uses: egress control, caching outbound, anonymizing, allowlists.
+
+### Reverse proxy
+
+Sits in front of **servers**. Clients think they talk to the origin; the reverse proxy routes to upstreams. Uses: TLS termination, load balancing, WAF, path-based routing, compression, HTTP/2→HTTP/1.1 bridging. NGINX, Envoy, HAProxy, cloud L7 LBs are reverse proxies in practice.
+
+```mermaid
+flowchart LR
+  subgraph forward
+    C1[Clients] --> FP[Forward proxy] --> O1[Many origins]
+  end
+  subgraph reverse
+    C2[Clients] --> RP[Reverse proxy] --> S1[Service A]
+    RP --> S2[Service B]
+  end
+```
+
+### Related cousins (do not confuse)
+
+| Thing | vs reverse proxy |
+|-------|------------------|
+| **API gateway** | Reverse proxy **plus** auth, rate limits, product API policy |
+| **Service mesh sidecar** | Per-instance proxy for east-west mTLS, retries, obs |
+| **CDN** | Reverse proxy at the edge with cache + PoPs |
+| **LB** | May be L4 or L7; L7 LB ≈ reverse proxy with health checks |
+
+### When to use
+
+- **Reverse:** almost every public web/API design — terminate TLS, route, protect origins.
+- **Forward:** enterprise egress, crawling fleets, “call the internet safely from private VPC.”
+- **Mesh sidecars:** many microservices needing uniform retries/mTLS (senior/ops depth).
+
+### Tradeoffs
+
+Central reverse proxy simplifies TLS and policy but can become a bottleneck or blast-radius concentrator. Sidecar meshes improve consistency at the cost of resource overhead and debugging complexity. Forward proxies add hop latency and a dependency for outbound calls.
+
+### Failure modes
+
+- Misconfigured timeouts → retry storms
+- Buffering large uploads/downloads → memory pressure
+- Single proxy tier without HA
+- Header stripping / `X-Forwarded-For` trust mistakes → wrong client identity for rate limits
+- WebSocket / gRPC upgrade mishandling
+
+### Interview tip
+
+Say “reverse proxy / L7 LB” when you mean edge routing; reserve “forward proxy” for egress. Label TLS termination on the box. If asked “NGINX or Envoy?” — either is fine; mention features you need (WAF, gRPC, retries).
+
+**Diagram:** [diagrams/foundations-traffic-tier.drawio](diagrams/foundations-traffic-tier.drawio)
+
+### Self-check
+
+1. Client → ? → many arbitrary websites: forward or reverse?
+2. Why must rate limiting trust `X-Forwarded-For` carefully behind a proxy?
+3. When would you add a service-mesh sidecar instead of only an edge reverse proxy?
+
+---
+
+## Real-time communication
+
+“Real-time” in interviews usually means **server-initiated updates** with low latency: chat, presence, live scores, collab cursors, notifications. Pick the transport deliberately — do not default to WebSockets for everything.
+
+### Options compared
+
+| Approach | Model | Best for | Watch-outs |
+|----------|-------|----------|------------|
+| **Short polling** | Client asks on interval | Simple dashboards, low fan-out | Wasteful; lag = interval |
+| **Long polling** | Server holds request until event or timeout | Fallback when WS blocked; moderate fan-out | Connection churn; harder load balancers |
+| **SSE (Server-Sent Events)** | One-way server→client stream over HTTP | Feeds, notifications, progress | Unidirectional; proxy buffering; auto-reconnect |
+| **WebSockets** | Bidirectional full-duplex | Chat, games, collab | Sticky or pub/sub fan-out; conn limits; LB config |
+| **gRPC streaming** | Bidirectional streams (HTTP/2) | Internal service streams | Not for browsers without grpc-web |
+| **WebRTC** | P2P / media | A/V calls, some data channels | Signaling + NAT; heavy for text chat |
+
+```mermaid
+sequenceDiagram
+  participant C as Client
+  participant S as Server
+  Note over C,S: Long poll
+  C->>S: GET /wait
+  S-->>C: event (or timeout)
+  Note over C,S: WebSocket
+  C->>S: WS upgrade
+  C->>S: msg
+  S->>C: msg
+  Note over C,S: SSE
+  C->>S: GET /stream
+  S-->>C: event
+  S-->>C: event
+```
+
+### When to pick what
+
+- **Chat 1:1 / channels with typing + presence:** WebSockets (+ pub/sub to fan out across gateway nodes).
+- **“Order status updates” or live dashboards one-way:** SSE or long poll; often enough.
+- **Mobile flaky networks:** design reconnect, resume cursors, idempotent event IDs — transport is only half the story.
+- **Strict corporate proxies:** WS may fail; have long-poll/SSE fallback.
+- **Fan-out to millions:** do **not** hold one process connection to every reader for every event — use a **gateway fleet + Redis/Kafka pub/sub** keyed by user or channel.
+
+### Architecture sketch for WS at scale
+
+1. Client connects to **WS gateway** (sticky via cookie/IP or connection ID registry).
+2. Gateway registers `connection_id → user_id` in a presence/conn store.
+3. Chat service publishes to `channel_id` topic; gateways subscribed to channels for their local conns push frames.
+4. Offline: drop to push notifications; persist messages in DB regardless.
+
+### Tradeoffs
+
+| Choice | Pros | Cons |
+|--------|------|------|
+| WS everywhere | Low latency bi-di | Ops: sticky, fan-out, idle timeouts |
+| SSE | Simple, HTTP-friendly | One-way; some proxy issues |
+| Long poll | Universal | Inefficient; thundering reconnects |
+| Polling | Trivial | Latency floor; server load |
+
+### Failure modes
+
+- Gateway memory bound by **concurrent connections** (often the real scale metric)
+- Sticky sessions breaking autoscale unless conn registry is external
+- Missed events on reconnect without resume tokens / last-event-id
+- Heartbeat failure → half-open dead conns
+- Hot channels (celebrity livestream chat) melting one shard
+
+### Interview tip
+
+Ask: “Do we need client→server messages at high rate, or mostly server push?” If mostly push, SSE may be simpler. Always mention **reconnect + catch-up** and **horizontal WS gateways**.
+
+### Self-check
+
+1. Why do WS gateways need a pub/sub layer when you scale beyond one box?
+2. When is SSE preferable to WebSockets?
+3. What is the scale bottleneck for a chat gateway: CPU per message or connections?
+
+---
 
 ## Load balancing
 
@@ -970,7 +1199,6 @@ When two technologies seem interchangeable, draw a 3-row table: consistency, lat
 
 Keep a one-sentence answer ready for each foundations topic you study.
 
-
 ## API gateway
 
 An API gateway is the front door for external clients: routing, auth, rate limits, request shaping, and often protocol translation. It is not a place to hide all business logic.
@@ -1035,7 +1263,6 @@ When two technologies seem interchangeable, draw a 3-row table: consistency, lat
 - “How do you test this failure in staging?”
 
 Keep a one-sentence answer ready for each foundations topic you study.
-
 
 ## Rate limiting
 
@@ -1115,7 +1342,6 @@ When two technologies seem interchangeable, draw a 3-row table: consistency, lat
 
 Keep a one-sentence answer ready for each foundations topic you study.
 
-
 ## Caching & CDN
 
 Caching stores expensive-to-compute or slow-to-fetch data closer to the consumer. A CDN is a geographically distributed cache for static (and sometimes dynamic) content.
@@ -1190,7 +1416,6 @@ When two technologies seem interchangeable, draw a 3-row table: consistency, lat
 - “How do you test this failure in staging?”
 
 Keep a one-sentence answer ready for each foundations topic you study.
-
 
 ## Databases
 
@@ -1284,7 +1509,6 @@ When two technologies seem interchangeable, draw a 3-row table: consistency, lat
 
 Keep a one-sentence answer ready for each foundations topic you study.
 
-
 ## Indexes
 
 Indexes trade write cost and storage for faster reads. Without the right index, your “scalable” service dies on table scans.
@@ -1358,7 +1582,6 @@ When two technologies seem interchangeable, draw a 3-row table: consistency, lat
 - “How do you test this failure in staging?”
 
 Keep a one-sentence answer ready for each foundations topic you study.
-
 
 ## Sharding
 
@@ -1436,6 +1659,81 @@ When two technologies seem interchangeable, draw a 3-row table: consistency, lat
 
 Keep a one-sentence answer ready for each foundations topic you study.
 
+## Consistent hashing
+
+Consistent hashing maps keys to nodes on a ring so that when nodes are added/removed, **most keys stay put** — only keys near the change move. It is the go-to answer for cache clusters, partitioners, and some DHT-style stores. Virtual nodes fix imbalance.
+
+### Ring intuition
+
+1. Hash nodes onto a circle (e.g. 0..2^32−1).
+2. Hash key; walk clockwise to first node → owner.
+3. Add a node: it takes a slice of keys from its neighbor — others untouched.
+
+```mermaid
+flowchart TB
+  subgraph ring [Hash ring]
+    N1[Node A]
+    N2[Node B]
+    N3[Node C]
+    N1 --- N2 --- N3 --- N1
+  end
+  K[key hash] -->|clockwise| N2
+```
+
+### Virtual nodes (vnodes)
+
+One physical node gets many positions on the ring (e.g. 100–200). Benefits:
+
+- **Smoother load** — random placement averages out
+- **Weighted capacity** — bigger boxes get more vnodes
+- **Gentler rebalance** — adding capacity steals small shards from many peers
+
+### Hotspot mitigations
+
+| Problem | Mitigation |
+|---------|------------|
+| Celebrity key | Local cache; replicate hot key to many nodes; salt key into N subkeys |
+| Uneven vnode placement | More vnodes; better hash; weighted ring |
+| Narrow hot range | Avoid pure range partitioning for that workload; hybrid |
+| Rebalance storms | Incremental transfer; rate-limited migration |
+
+### Vs simple modulo hashing
+
+`node = hash(key) % N` remaps **nearly all keys** when N changes. Consistent hashing remaps ~1/N. That is the interview punchline.
+
+### Relation to sharding
+
+Sharding often uses hash(key) % N or a lookup table. Consistent hashing is one **strategy** for shard placement and for **cache** node placement. Directory-based sharding is more flexible but needs a metadata service.
+
+### When to use
+
+- Distributed caches (Memcached-style client hashing)
+- Partitioning log/stream consumers
+- Designing “add cache boxes without flushing everything”
+
+### Tradeoffs
+
+Complexity vs modulo; vnode metadata size; need for a membership/gossip view of who is on the ring; handling “node down but still on ring” (prefer explicit leave + replication).
+
+### Failure modes
+
+- Too few vnodes → imbalance
+- Clients with divergent membership views → split ownership / misses
+- Ignoring replication: one node death loses its key range unless you store N successors (Dynamo-style)
+
+### Interview tip
+
+Draw a ring, place 3 nodes, show adding a fourth and which keys move. Say “virtual nodes for balance; hot keys handled separately with caching/salting.” Tie to [Sharding](#sharding) for data stores.
+
+**Diagram:** [diagrams/foundations-data-tier.drawio](diagrams/foundations-data-tier.drawio)
+
+### Self-check
+
+1. Why does `hash % N` hurt on cluster resize?
+2. What problem do virtual nodes solve?
+3. How do you protect a single viral key even with a perfect ring?
+
+---
 
 ## Replication
 
@@ -1505,7 +1803,6 @@ When two technologies seem interchangeable, draw a 3-row table: consistency, lat
 - “How do you test this failure in staging?”
 
 Keep a one-sentence answer ready for each foundations topic you study.
-
 
 ## CAP & PACELC
 
@@ -1581,7 +1878,6 @@ When two technologies seem interchangeable, draw a 3-row table: consistency, lat
 
 Keep a one-sentence answer ready for each foundations topic you study.
 
-
 ## Messaging
 
 Message queues and event streams decouple producers from consumers so spikes buffer and work continues when downstream is slow.
@@ -1650,7 +1946,6 @@ When two technologies seem interchangeable, draw a 3-row table: consistency, lat
 - “How do you test this failure in staging?”
 
 Keep a one-sentence answer ready for each foundations topic you study.
-
 
 ## Delivery guarantees
 
@@ -1728,7 +2023,6 @@ When two technologies seem interchangeable, draw a 3-row table: consistency, lat
 
 Keep a one-sentence answer ready for each foundations topic you study.
 
-
 ## Coordination
 
 When multiple nodes must agree on leadership, locks, or configuration, you need coordination primitives. Misusing them creates outages; avoiding them when possible is often wiser.
@@ -1801,6 +2095,511 @@ When two technologies seem interchangeable, draw a 3-row table: consistency, lat
 
 Keep a one-sentence answer ready for each foundations topic you study.
 
+## Bloom filters
+
+A Bloom filter is a **space-efficient probabilistic set**. It can say “definitely not present” or “probably present” (with a tunable false-positive rate). It never has false negatives for membership of inserted items (unless you implement deletion carelessly with counting variants).
+
+### How it works (intuition)
+
+- Bit array of size `m`, `k` hash functions.
+- Insert: set `k` bits.
+- Query: if any of the `k` bits is 0 → **absent**; if all 1 → **maybe present**.
+
+```mermaid
+flowchart LR
+  item[Item] --> h1[hash1]
+  item --> h2[hash2]
+  item --> h3[hash3]
+  h1 --> bits[(bit array)]
+  h2 --> bits
+  h3 --> bits
+```
+
+### When to use
+
+- **“Have we seen this URL?”** in a crawler before hitting a heavier store
+- **Cache protection:** Bloom in front of DB to skip lookups for missing keys (careful with invalidation)
+- **Compaction / LSM** internals (many DBs use them — name-drop OK)
+- **Sync systems:** quickly skip chunks you almost certainly have
+
+### When **not** to use
+
+- Need exact membership with deletions (unless counting Bloom / Cuckoo filter)
+- Need to list all members (you can’t)
+- False positives are catastrophic (billing, authz) without a definitive secondary check
+
+### Tradeoffs
+
+| Parameter | Effect |
+|-----------|--------|
+| Larger `m` | Fewer false positives; more memory |
+| More `k` | Up to a point improves FP; then hurts |
+| Counting Bloom | Allows delete; more memory |
+
+Always pair with a **source of truth** when false positives matter: Bloom says maybe → check RocksDB / Postgres.
+
+### Failure modes
+
+- Undersized filter → FP rate explodes; system thrashes on secondary checks
+- Treating “maybe” as “yes” for security decisions
+- Not resizing / rotating filters as cardinality grows
+- Clearing bits for delete on a non-counting Bloom → false negatives (corrupts invariant)
+
+### Interview tip
+
+In crawler / dedup designs: “Bloom filter for cheap negative checks, authoritative store for exact seen-set; accept rare redundant fetches from FPs.” Know one number: a few bytes per element for ~1% FP is the usual ballpark people cite.
+
+### Self-check
+
+1. Can a standard Bloom filter return a false negative after an insert?
+2. Why is Bloom alone insufficient for “user is banned”?
+3. How do Bloom filters help a web crawler’s scheduler?
+
+---
+
+## Checksums and data integrity
+
+Distributed systems move bytes across disks, NICs, and memory. **Silent corruption** is rare but real; interviews expect you to mention integrity checks for storage, replication, and uploads.
+
+### Layers of integrity
+
+| Layer | Mechanism | Catches |
+|-------|-----------|---------|
+| Disk / FS | Checksummed filesystems (e.g. ZFS/btrfs ideas), ECC RAM | Bit rot, some hardware faults |
+| Object storage | ETag / MD5 / SHA-256 on PUT; CRC on wire | Transfer corruption |
+| App | Content-hash chunk IDs; Merkle trees | Tampering + dedup identity |
+| Replication | Checksum before apply; scrub jobs | Diverged replicas |
+| Messages | CRC in framing; TLS integrity | Transit corruption / MITM (TLS) |
+
+### Content-addressed storage
+
+Hash the bytes → ID (`sha256:…`). Same content → same ID (dedup). Used in Dropbox-like chunk stores, container layers, Git. Verify on read: rehash and compare.
+
+### End-to-end checksum pattern (uploads)
+
+1. Client computes hash of file/chunk.
+2. Upload with hash in header or signed policy.
+3. Server verifies before commit; reject on mismatch.
+4. Store hash in metadata for later scrubbing.
+
+### Merkle trees (interview-level)
+
+Tree of hashes; root summarizes whole dataset. Efficiently find **which** block differs between replicas (anti-entropy in Dynamo-style systems). Mention for large sync / distributed DB repair — do not implement on the whiteboard.
+
+### When to emphasize
+
+- File sync, blob pipelines, backups, multi-region replication
+- Financial ledgers (application-level hashes / signatures)
+- Any “download then process” worker path
+
+### Tradeoffs
+
+Stronger hashes (SHA-256) cost CPU vs weaker CRCs; verify-on-every-read vs periodic scrub; storing checksums doubles metadata concern but saves silent bad data.
+
+### Failure modes
+
+- Trusting client hash without server verify
+- Using non-cryptographic hash where tampering matters
+- Checksum mismatch without remediation playbook (quarantine vs re-replicate)
+- Compressing then hashing inconsistently across versions
+
+### Interview tip
+
+For Dropbox/YouTube/backup designs: “chunk with content hash; verify on upload; scrub replicas asynchronously.” One sentence shows maturity.
+
+### Self-check
+
+1. Difference between detecting corruption and detecting malicious tampering?
+2. Why content-hash chunk IDs help both integrity and deduplication?
+3. What is a scrubber job in a replicated store?
+
+---
+
+## Distributed file systems
+
+Interview-level DFS (GFS/HDFS-inspired): large files split into **chunks/blocks**, a **metadata** service tracks the namespace and chunk locations, **chunk servers** store replicas, and clients read/write data **plane** separately from control plane.
+
+### Core components
+
+```mermaid
+flowchart LR
+  Client --> Master[Metadata / Namenode]
+  Client --> C1[Chunkserver]
+  Client --> C2[Chunkserver]
+  Master -.->|locations| Client
+  C1 ---|replicate| C2
+```
+
+| Piece | Responsibility |
+|-------|----------------|
+| **Metadata server** | Namespace (dirs/files), chunk maps, leases, GC |
+| **Chunkservers** | Store chunk replicas on local disk; report heartbeats |
+| **Client** | Talks to metadata for layout; transfers data to chunkservers |
+| **Secondary / standby** | Metadata HA (critical SPOF historically) |
+
+### Typical numbers (order-of-magnitude)
+
+- Chunk size: **64–256 MB** (amortizes metadata; sequential throughput)
+- Replication: **3×** across racks/AZs
+- Write: primary replica pipelines to secondaries (or quorum)
+
+### Ops realities interviewers like
+
+- Metadata is **not** infinite — millions of small files hurt (same lesson as HDFS)
+- Rebalancer moves chunks on disk/node imbalance
+- Checksum + scrub; re-replicate on disk failure
+- Lease/generation numbers avoid split-brain writers
+
+### Cloud analogue
+
+Object storage (S3) is often the modern interview answer for blob bytes; a “DFS” discussion still shows you understand **metadata vs data plane**, replication, and large sequential I/O. Many products use object storage + a metadata DB instead of classic HDFS.
+
+### When to use
+
+- Analytics lakes, training data, large media pipelines
+- Internal “cheap huge files” stores
+- Rarely as the primary store for tiny transactional rows
+
+### Tradeoffs
+
+| Classic DFS | Object store + metadata DB |
+|-------------|----------------------------|
+| POSIX-ish / append models vary | HTTP APIs; eventual listing |
+| Metadata SPOF risk | Managed durability; different consistency |
+| Great sequential throughput | Excellent durability; per-request costs |
+
+### Failure modes
+
+- Metadata outage freezes namespace ops
+- Small-file problem (metadata explosion)
+- Under-replicated chunks after correlated rack failure
+- Client writes without lease fencing → corruption
+
+### Interview tip
+
+If designing Dropbox: prefer **chunked object storage + metadata service** over inventing HDFS. Name chunk size, replication, and “client uploads chunks directly.” Link: [Dropbox-like](#dropbox-like). Diagram: [diagrams/dropbox.drawio](diagrams/dropbox.drawio).
+
+### Self-check
+
+1. Why are chunks large (64MB+) in GFS/HDFS-style systems?
+2. What is the blast radius of metadata-server loss?
+3. How does a client find which servers hold a chunk?
+
+---
+
+## Circuit breakers and bulkheads
+
+Resilience patterns stop failures from cascading. Timeouts and retries alone can **amplify** outages; circuit breakers and bulkheads contain blast radius.
+
+### Circuit breaker states
+
+```mermaid
+stateDiagram-v2
+  [*] --> Closed
+  Closed --> Open: failures exceed threshold
+  Open --> HalfOpen: cooldown elapsed
+  HalfOpen --> Closed: probe success
+  HalfOpen --> Open: probe failure
+```
+
+- **Closed:** normal; track error rate / latency.
+- **Open:** fail fast — do not call the bad dependency; return fallback or error.
+- **Half-open:** allow limited probes to test recovery.
+
+### Bulkheads
+
+Isolate resources so one workload cannot starve others — like ship compartments:
+
+- Separate **thread pools / connection pools** per dependency
+- Separate **queues** for priority classes (OTP vs marketing)
+- Separate **compute** for noisy tenants
+- Isolate **caches** so eviction storms in one keyspace don’t trash another
+
+### Complementary patterns
+
+| Pattern | Role |
+|---------|------|
+| **Timeout** | Bound wait |
+| **Retry + jitter** | Transient faults only; budget retries |
+| **Circuit breaker** | Stop calling a sick dependency |
+| **Bulkhead** | Limit blast radius / resource coupling |
+| **Load shedding** | Drop low-priority work when saturated |
+| **Fallback** | Cached / degraded response |
+
+### When to use
+
+- Any sync call to another service, DB, or payment provider
+- Multi-tenant platforms (noisy neighbor)
+- Notification lanes with different SLOs
+
+### Tradeoffs
+
+Fail-fast reduces load but can hide partial recovery if thresholds are wrong. Fine-grained bulkheads improve isolation but multiply pool tuning. Fallbacks risk serving stale or empty UX — be explicit.
+
+### Failure modes
+
+- Retry storms without breakers
+- One shared connection pool to DB exhausted by a heavy endpoint
+- Circuit stuck open due to bad health signal (need half-open + metrics)
+- Fallback returning incorrect financial data (never fallback “paid=true”)
+
+### Interview tip
+
+On deep-dive failures: “Timeouts + limited retries with jitter; circuit breaker on payment provider; bulkhead pools so search cannot exhaust checkout’s DB connections.” Draw a small breaker on the arrow to the dependency.
+
+**Diagram:** [diagrams/foundations-traffic-tier.drawio](diagrams/foundations-traffic-tier.drawio)
+
+### Self-check
+
+1. What problem do retries create during a partial outage?
+2. Closed vs open vs half-open in one sentence each?
+3. Give a bulkhead example for a notification system.
+
+---
+
+## SLA, SLO, and SLI
+
+These terms separate **contracts**, **targets**, and **measurements**. Senior interviews expect precise use — not “we want high availability” hand-waving.
+
+### Definitions
+
+| Term | Meaning | Example |
+|------|---------|---------|
+| **SLI** | Quantitative measure of service level | Availability = successful requests / total; p99 latency |
+| **SLO** | Target for an SLI | 99.9% monthly availability; p99 < 200 ms |
+| **SLA** | Business contract with consequences | Credits if SLO breached; legal/commercial |
+
+```mermaid
+flowchart LR
+  SLI[SLI measure] --> SLO[SLO target]
+  SLO --> SLA[SLA contract]
+```
+
+### Error budgets
+
+If SLO is 99.9% monthly, allowed downtime ≈ 43 minutes/month. **Error budget** = that allowance. Burn it on releases/experiments; freeze changes when budget is exhausted. This is how SRE ties reliability to velocity.
+
+### Choosing SLIs for designs
+
+- **User-facing API:** availability, latency (p50/p99), correctness (where measurable)
+- **Pipeline:** lag freshness, success ratio
+- **Storage:** durability (harder to measure live — often engineering objective)
+- Prefer **user-centric** SLIs (“feed load success”) over pure CPU
+
+### When to use in interviews
+
+- Senior prompts; multi-region; payments; “how do you know you’re healthy?”
+- Tie alerts to SLO burn rate, not raw CPU
+
+### Tradeoffs
+
+Too many SLOs → noise. Too tight → endless toil. Too loose → users hurt before you page. Latency SLOs without availability SLOs miss outages that return fast 500s… actually 500s hurt availability SLI — define success carefully.
+
+### Failure modes
+
+- SLA promised without measurement
+- Alerting on symptoms that don’t track SLIs
+- Averaging away regional outages in a global success ratio (use per-region SLIs)
+
+### Interview tip
+
+Write on the board: “SLO: 99.9% successful redirects, p99 < 50 ms; SLI: non-5xx within 50 ms / total.” Mention error budget once at senior level.
+
+### Self-check
+
+1. Can you have an SLO without an SLA?
+2. Rough downtime budget for 99.9% vs 99.99% monthly?
+3. Why is CPU% a weak SLI for user happiness?
+
+---
+
+## Observability
+
+Observability is the ability to explain **why** the system is sick from its external outputs. Metrics, logs, and traces are the three pillars — plus continuous profiling and topology in mature orgs.
+
+### Metrics
+
+Numeric time series: counters, gauges, histograms.
+
+- **RED:** Rate, Errors, Duration (request-scoped services)
+- **USE:** Utilization, Saturation, Errors (resources)
+- Histograms for latency percentiles (p50/p99)
+- Exemplars linking metrics → traces
+
+### Logs
+
+Timestamped events. Structured JSON > free text. Use for audit, errors, sparse high-cardinality details. **Do not** log secrets. Sample high-volume debug.
+
+### Traces
+
+A **trace** = end-to-end request path; **spans** = units of work. Critical for microservices. Propagate trace context (`traceparent`) across HTTP/queue boundaries. Sample thoughtfully in high QPS systems.
+
+```mermaid
+flowchart LR
+  Req[Request] --> S1[API span]
+  S1 --> S2[Auth span]
+  S1 --> S3[DB span]
+  S1 --> S4[Cache span]
+```
+
+### Correlation
+
+One `request_id` / `trace_id` in logs + traces + user bug reports. Without correlation IDs, pillars stay siloed.
+
+### Dashboards & alerting
+
+- Golden signals on services you own
+- Alert on **SLO burn** and saturation, not every blip
+- Runbooks linked from alerts
+
+### When to deepen
+
+Always for senior; for mid, name the three pillars and one golden dashboard. For chat/video/payments, mention consumer lag, connection count, payment success rate.
+
+### Tradeoffs
+
+High-cardinality metrics explode cost (user_id labels). Full trace sampling is expensive — tail-based sampling helps. Logging everything → cost and PII risk.
+
+### Failure modes
+
+- Metrics without histograms (avg latency lies)
+- No trace propagation across async boundaries
+- Alert fatigue → ignored pages
+- Observability gap during outages of the observability stack (need backups)
+
+### Interview tip
+
+Add a small “metrics / tracing” note or say: “We’ll expose RED metrics, structured logs with request_id, and trace gateway→service→DB.” For queues: “Alert on lag and age of oldest message.”
+
+**Diagram:** [diagrams/foundations-data-tier.drawio](diagrams/foundations-data-tier.drawio)
+
+### Self-check
+
+1. RED vs USE — when each?
+2. Why averages hide outages that p99 catches?
+3. What breaks if you don’t propagate trace context into queue consumers?
+
+---
+
+## REST vs GraphQL vs gRPC
+
+API style is a **product and performance** choice. Interviews reward “when,” not religion.
+
+### Quick comparison
+
+| | **REST/JSON** | **GraphQL** | **gRPC** |
+|--|---------------|-------------|----------|
+| Model | Resources + HTTP verbs | Client-specified query schema | Protobuf RPC methods |
+| Payload | JSON text | JSON (typically) | Binary protobuf |
+| Browser | Native | Native | Needs grpc-web / gateway |
+| Streaming | Limited (SSE/WS aside) | Subscriptions (complexity) | First-class streams |
+| Caching | HTTP cache semantics | Harder (POST body queries) | App-level |
+| Best fit | Public HTTP APIs | Aggregating BFF for varied clients | Internal service mesh |
+
+### When to pick REST
+
+Default for public APIs, CRUD, CDN-friendly GETs, wide client ecosystems. Easy to reason about status codes and idempotency (GET/PUT).
+
+### When to pick GraphQL
+
+Mobile/web clients that need **flexible shapes** and would otherwise chattily call many REST endpoints. Put GraphQL at a **BFF**; keep mutating domain services behind it. Watch N+1 resolvers (DataLoader), authz per field, and cache complexity.
+
+### When to pick gRPC
+
+Internal microservices: strict contracts, codegen, low latency, bi-di streaming (e.g. streaming location updates). Expose REST/JSON at the edge if public browsers matter.
+
+### Hybrid pattern (common)
+
+```mermaid
+flowchart LR
+  Mobile --> BFF[REST or GraphQL BFF]
+  BFF --> S1[gRPC User]
+  BFF --> S2[gRPC Feed]
+  BFF --> S3[gRPC Media]
+```
+
+### Tradeoffs
+
+| Choice | Risk |
+|--------|------|
+| GraphQL everywhere | Heavy server; caching/CDN pain; complex authz |
+| gRPC to browsers | Friction; prefer edge translate |
+| Fat REST chatty APIs | Mobile latency; over/under fetching |
+
+### Failure modes
+
+- GraphQL unbounded queries → DoS (depth/complexity limits)
+- REST without idempotency keys on POST payments
+- Protobuf version skew across services (need compatibility rules)
+
+### Interview tip
+
+“Public: REST. Mobile aggregation: optional GraphQL BFF. Internal: gRPC.” Then stop — do not redesign the whole company unless asked.
+
+### Self-check
+
+1. Why is HTTP caching easier with REST GET than GraphQL?
+2. Name one GraphQL production hazard.
+3. When is gRPC streaming a better fit than REST polling?
+
+---
+
+## Monolith vs microservices
+
+This is an organizational and scaling-axis decision, not a badge of seniority. Strong candidates often **start modular monolith** and split on clear seams.
+
+### Definitions
+
+- **Monolith:** one deployable unit; modular code boundaries possible (packages/modules).
+- **Microservices:** independently deployable services with network boundaries, separate data often.
+
+### Tradeoffs
+
+| | Monolith | Microservices |
+|--|----------|---------------|
+| Deploy | Simple | Independent; need CI/CD maturity |
+| Consistency | Single DB transactions | Sagas / eventual consistency |
+| Scale | Scale whole app | Scale hot services only |
+| Failure | Process-wide | Partial failure / cascading |
+| Org | One team owns all | Team ↔ service alignment (Conway) |
+| Ops | Simpler tracing | Need mesh, obs, versioning |
+
+### When monolith is the *senior* choice
+
+- Small team, unclear domains, early product
+- Strong transactional invariants across modules
+- Latency-sensitive in-process calls
+- You can still enforce **module boundaries** and extract later
+
+### When to split
+
+- Independent scale axes (feed fan-out vs auth)
+- Separate release cadences / ownership
+- Blast-radius isolation (payments vs marketing site)
+- Polyglot needs (rare as primary reason)
+
+### Migration path
+
+1. Modular monolith with clear packages
+2. Extract read-only service behind interface
+3. Split data when necessary (hardest part)
+4. Introduce async events for cross-domain
+
+### Failure modes
+
+- Distributed monolith: many services, one shared DB, chatty sync calls
+- Nano-services overhead
+- Dual writes without a plan during extraction
+
+### Interview tip
+
+For URL shortener / typeahead: “Modular monolith is fine.” For Uber/Netflix-scale: “services along domain seams.” Explicitly say what you’d **not** split on day one.
+
+### Self-check
+
+1. What is a distributed monolith?
+2. Why is data split harder than code split?
+3. Give a case where a monolith is the mature recommendation.
 
 ## Security
 
@@ -1878,8 +2677,151 @@ When two technologies seem interchangeable, draw a 3-row table: consistency, lat
 
 Keep a one-sentence answer ready for each foundations topic you study.
 
-
 # Interview Approach
+
+## Whiteboard like a strong candidate
+
+This section is a **drawing and narration masterclass**. Foundations teach *what* to know; designs teach *what* to propose; this teaches *how* to look competent in the first 15 minutes with a marker in your hand.
+
+Open the starter template while practicing: [diagrams/whiteboard-starter-template.drawio](diagrams/whiteboard-starter-template.drawio) (https://app.diagrams.net or VS Code draw.io extension).
+
+### First 5 minutes script (clarify aloud)
+
+Say roughly this (adapt to the prompt):
+
+1. **Restate:** “I’ll design a URL shortener that creates short links and redirects with low latency.”
+2. **Actors:** “Web/mobile clients; optionally authenticated creators.”
+3. **Functional MVP:** “Create, redirect, optional basic click count. Out of scope: full analytics warehouse.”
+4. **NFRs:** “Redirect p99 under ~50 ms service-side; durability of mappings; high read/write skew.”
+5. **Scale assumption:** “I’ll assume X monthly creates and ~10× redirects — correct me if you have target numbers.”
+6. **Write NFRs** in a corner of the board. Check in: “Does that match what you want?”
+
+Do **not** draw boxes yet except maybe a title. Clarifying is not stalling.
+
+### How to draw boxes (left → right / top → down)
+
+Canonical order:
+
+```text
+Clients → DNS/CDN (if needed) → Load balancer → API / services → Caches & DBs → Async (queue → workers)
+```
+
+```mermaid
+flowchart LR
+  C[Clients] --> LB[LB]
+  LB --> S[Services]
+  S --> Cache[(Cache)]
+  S --> DB[(DB)]
+  S --> Q[Queue]
+  Q --> W[Workers]
+```
+
+**Narrate while drawing:** “Clients hit a load balancer in front of a stateless API tier. Reads go through a cache; writes hit the primary store. Side effects go async to a queue.”
+
+Use the template: [diagrams/whiteboard-starter-template.drawio](diagrams/whiteboard-starter-template.drawio).
+
+### What NOT to draw early
+
+- Multi-region active-active meshes
+- Service mesh sidecars on every box
+- Kafka + Flink + feature store for a junior warm-up
+- Exact AWS service logos (generic “object store” is better unless they ask cloud-native)
+- Every microservice you can name — start with **one API box**, split when a scale axis appears
+
+Leave blank space on the right/bottom for “evolution” and deep dives.
+
+### Narrating tradeoffs while drawing
+
+Each arrow can carry a one-liner:
+
+- “Async here so email failure doesn’t fail checkout.”
+- “Cache here because read:write is 100:1 — accept TTL staleness.”
+- “Primary-secondary replication — RPO seconds on async.”
+
+Interviewers listen for **tradeoff sentences**, not only boxes.
+
+### Handling “why not X?” without freezing
+
+Template answer:
+
+1. **Acknowledge:** “X is reasonable for …”
+2. **Requirement fit:** “Given our NFR of …,”
+3. **Cost:** “X adds … (ops / consistency / latency)”
+4. **Decision:** “I’d keep Y for MVP and revisit X when …”
+
+Example: “Why not GraphQL?” → “Great for flexible mobile aggregation; this API is two endpoints with CDN-friendly GET redirects — REST is simpler and cacheable. If we add a rich creator dashboard, a BFF/GraphQL layer later is fine.”
+
+### Whiteboard hygiene
+
+- Write **QPS and storage** under the title once estimated
+- Label protocols on a few arrows (`HTTPS`, `gRPC`, `Kafka`)
+- Circle SPOFs when you discuss failures
+- Number deep-dive sections (① code gen ② cache ③ analytics)
+
+### Sample full mock transcript — URL shortener (≈12 exchanges)
+
+**Interviewer:** Design a URL shortener like bit.ly.
+
+**You:** I’ll clarify first. MVP: create short URL, redirect, optional click counts. Auth optional. Out of scope: full BI. NFRs: low redirect latency, unique codes, durability. Scale — do you have numbers, or assume ~100M creates/month and 10× redirects?
+
+**Interviewer:** Your assumptions are fine.
+
+**You:** Capacity: ~40 creates/s avg, ~400 redirects/s avg, peaks maybe 5–10×. Storage tens of GB/year — single primary DB + cache is enough; I’ll still keep the design clean. *[writes numbers]*
+
+**Interviewer:** OK, draw the system.
+
+**You:** *[draws left→right]* Clients → LB → API service → Redis cache and Postgres. Creates write DB then fill cache. Redirects: cache then DB; 302. Click events async to a queue for analytics. *[points]* Diagram file we’d use in practice: [diagrams/url-shortener.drawio](diagrams/url-shortener.drawio).
+
+**Interviewer:** How do you generate codes?
+
+**You:** 64-bit random encoded Base62 with uniqueness constraint and rare retry — or Snowflake ID encoded Base62. Avoid short sequential IDs because they’re enumerable. Custom aliases checked for uniqueness and reserved words.
+
+**Interviewer:** 301 or 302?
+
+**You:** 302 if we need accurate per-click analytics and cache control; 301 if we want browsers/CDNs to cache permanently — tradeoff accuracy vs load.
+
+**Interviewer:** Hot viral link?
+
+**You:** Cache absorbs it; add local in-process cache on API nodes for extreme keys; ensure single-flight on miss. DB isn’t in the hot path once warm.
+
+**Interviewer:** What fails if Postgres is down?
+
+**You:** Creates fail closed (503). Redirects still work for warm cache entries; cold misses fail. Multi-AZ primary and replicas for reads if we allow slightly stale.
+
+**Interviewer:** Why not shard day one?
+
+**You:** QPS and data don’t require it. Shard by code hash when a single primary can’t keep up — not before.
+
+**Interviewer:** Abuse?
+
+**You:** Scheme allowlist http/https, rate limit creates, async malware URL scan, disable bad codes.
+
+**Interviewer:** 10× scale.
+
+**You:** More API replicas; cache cluster; read replicas; then hash-shard links; consider multi-region with global ID space or region-prefixed codes.
+
+**Interviewer:** Any questions for me?
+
+**You:** I’d next deep-dive analytics freshness and multi-region active-passive if time.
+
+### Sample micro-script — news feed (first drawing only)
+
+1. Write: “Feed: hybrid fan-out; celebrity = pull.”
+2. Draw: Client → API → Feed service → Redis feed lists; Post service → Kafka → fan-out workers.
+3. Say: “On post, enqueue; workers push IDs into followers’ caches; celebrities skipped — readers merge on read.”
+4. Leave ranking ML blank until asked.
+
+Diagram: [diagrams/news-feed.drawio](diagrams/news-feed.drawio).
+
+### Practice checklist
+
+- [ ] Clarified aloud before boxes
+- [ ] Numbers on board
+- [ ] Left-to-right data plane
+- [ ] One async path
+- [ ] Explicit consistency sentence
+- [ ] One failure scenario
+- [ ] One “why not X?” handled with the 4-part template
 
 ## Clarify requirements
 
@@ -1966,7 +2908,6 @@ Set a 10-minute timer. Apply only the ideas from this page to the prompt **“De
 
 Say them deliberately in mocks until natural.
 
-
 ## Capacity estimation
 
 Back-of-envelope math shows you can size storage, QPS, and bandwidth. Aim for **order-of-magnitude** correctness, not spreadsheet precision.
@@ -2052,7 +2993,6 @@ Set a 10-minute timer. Apply only the ideas from this page to the prompt **“De
 
 Say them deliberately in mocks until natural.
 
-
 ## Design template
 
 Use this template on every practice prompt until it is muscle memory. Adapt depth to time and level—do not skip steps silently.
@@ -2132,7 +3072,6 @@ Set a 10-minute timer. Apply only the ideas from this page to the prompt **“De
 - “Evolution path: MVP → … → …”
 
 Say them deliberately in mocks until natural.
-
 
 ## Deep dive & failures
 
@@ -2223,7 +3162,6 @@ Set a 10-minute timer. Apply only the ideas from this page to the prompt **“De
 
 Say them deliberately in mocks until natural.
 
-
 ## Tradeoffs cheatsheet
 
 Quick contrasts you can deploy in interviews. Always pair with *context*—tradeoffs are not absolute winners.
@@ -2310,7 +3248,6 @@ Set a 10-minute timer. Apply only the ideas from this page to the prompt **“De
 - “Evolution path: MVP → … → …”
 
 Say them deliberately in mocks until natural.
-
 
 # Design Walkthroughs
 
@@ -2495,24 +3432,58 @@ Walk one write handler: validate → authorize → mutate store → enqueue side
 4. Replay poison message  
 State what user experience should be in each case.
 
+### Whiteboard chronological script
+
+1. Title + NFRs corner (latency, uniqueness, durability).
+2. Clarify 301 vs 302, auth, analytics scope aloud.
+3. Write capacity (~40 WPS / ~400 RPS order-of-magnitude).
+4. Draw Client → LB → API (left to right).
+5. Add Postgres + Redis; narrate write-then-cache, read cache-first.
+6. Add analytics queue; leave multi-region blank.
+7. Deep-dive code generation on the side.
+8. Circle SPOF (primary DB); state cache-through behavior on DB outage.
+
+**Diagram:** [diagrams/url-shortener.drawio](diagrams/url-shortener.drawio)
+
+### Interviewer probes (realistic Q&A)
+
+**Interviewer:** Why Postgres not Cassandra?  
+**You:** Modest scale, strong uniqueness on `code`, simple relational metadata — Postgres is enough; Cassandra when write volume and multi-region dictate.
+
+**Interviewer:** Consistency for redirect after create?  
+**You:** Read-your-writes via writing cache on create; other regions may lag if geo-replicated.
+
+**Interviewer:** Celebrity / viral code?  
+**You:** Cache + local hot-key cache; not a DB problem once warm.
+
+**Interviewer:** Failure: Redis down?  
+**You:** Fall through to DB; watch DB QPS; fail open on redirects if product accepts load risk, or serve 503 for cold path.
+
+**Interviewer:** 10× scale?  
+**You:** Scale API horizontally; shard by code hash when primary saturates.
 
 ## Rate limiter
 
-Build a service or library that enforces request quotas across a fleet.
+Build a service or middleware that enforces request quotas across a fleet. Classic mid-level design: algorithms, distributed counters, and fail-open vs fail-closed.
+
+**Diagram:** [diagrams/rate-limiter.drawio](diagrams/rate-limiter.drawio) — open in [diagrams.net](https://app.diagrams.net) or the VS Code draw.io extension.
 
 ### 1. Clarify
 
-- Limits per API key / user / IP?
-- Exact vs approximate?
-- Centralized service vs middleware library?
-- Soft vs hard throttle; delay vs reject?
-- Multi-datacenter?
+- Limits per API key / user / IP / endpoint?
+- Exact vs approximate counting?
+- Centralized service vs library in each gateway?
+- Soft throttle (delay) vs hard reject (429)?
+- Multi-datacenter consistency needed?
+- Burst allowed (token bucket) or smooth only?
 
-**Assumptions:** per-user token bucket, ~1M users, peak 100K decisions/sec, fail-open optional, single region first.
+**Assumptions:** per-user token bucket, ~1M active keys, peak ~100K decisions/sec, single region first, HTTP `429` + `Retry-After`.
 
 ### 2. Capacity
 
-100K QPS decisions → Redis must shard; each decision 1–2 RTT. Local + sync hybrid possible.
+100K QPS decisions → Redis (or Redis Cluster) must shard by key; each decision ideally 1 RTT with Lua/atomic ops. Local in-process pre-filter can shed obvious floods before Redis.
+
+Storage: counters are tiny (key + tokens + timestamp); memory dominated by cardinality of active keys in a window.
 
 ### 3. APIs
 
@@ -2521,120 +3492,87 @@ POST /v1/check
   { "key": "user:42", "cost": 1, "limit": 100, "window_sec": 60 }
   → { "allowed": true, "remaining": 83, "reset_sec": 12 }
 
-# or middleware:
-Allow(key) → bool + headers
+POST /v1/check  (denied)
+  → { "allowed": false, "remaining": 0, "reset_sec": 12 }
+     HTTP 429 from gateway with Retry-After
 ```
+
+Config side: CRUD for rules (optional deep dive).
 
 ### 4. Data model
 
-Redis keys: `rl:{key}:{bucket}` → token count + last refill timestamp. Or sorted sets for sliding log (heavier).
-
-Config store: limits per route/plan in SQL/config service.
+```
+rule(key_pattern, limit, window_sec, algo)
+redis key: rl:{key}:{window_id} → counter | token bucket hash
+```
 
 ### 5. High-level design
 
 ```mermaid
 flowchart LR
-  App --> RL[RateLimiter sidecar/lib]
-  RL --> Redis[(Redis Cluster)]
-  Admin --> Config[(Config DB)]
-  RL --> Config
+  Client --> GW[Gateway / middleware]
+  GW --> RL[Rate limiter]
+  RL --> Redis[(Redis counters)]
+  RL --> Cfg[(Rules)]
+  RL -->|allow| API[Upstream API]
 ```
 
-Gateway calls RL before routing. RL atomically refills and consumes tokens via Lua script.
+**Path:** extract key → load rule → atomic consume tokens → allow or 429.
 
-### 6. Deep dive — algorithm & atomicity
+### 6. Algorithms
 
-**Token bucket in Lua:** read tokens+ts; refill based on now-ts; if tokens>=cost decrement; else deny. One RTT, race-safe.
+| Algo | Pros | Cons |
+|------|------|------|
+| Fixed window | Simple INCR | 2× burst at boundary |
+| Sliding window log | Accurate | Memory heavy |
+| Sliding window counter | Good approx | Slight error |
+| Token bucket | Bursts + average rate | Slightly more state |
+| Leaky bucket | Smooth egress | Less burst-friendly |
 
-**Distributed accuracy:** Redis cluster hash slot by key → per-key atomicity. Global exact sum across shards not required for per-user keys.
+**Pick:** token bucket in Redis (hash: tokens, last_refill) updated with Lua for atomicity.
 
-**Local rate limiting:** each instance allows `limit/N` — approximate, survives Redis outage, can over-allow by N.
+### 7. Distributed issues
 
-**Hybrid:** local bulk tokens refilled from Redis periodically—low latency, bounded overshoot.
+- **Race:** use Lua / MULTI so check+decr is atomic.
+- **Shard:** hash key to Redis slot; no cross-key transaction needed.
+- **Clock skew:** prefer Redis server time for refill.
+- **Multi-region:** regional limiters (loose global) or central with higher latency — call out tradeoff.
 
-### 7. Failures
+### 8. Failures
 
-- Redis down: fail-open (availability) vs fail-closed (safety)—product choice; document it.
-- Clock skew: prefer Redis server time in Lua.
-- Hot tenant keys: isolate or raise limits; dedicated shard.
-- Config push delay: version limits; poll/watch.
+- Redis down: **fail-open** (availability) vs **fail-closed** (safety). Payments/auth often closed; public read APIs may open with caution.
+- Hot key: one user hammering — expected; ensure Lua is O(1).
+- Config push delay: version rules; cache rules in gateway with short TTL.
 
-### 8. Interview tips
+### 9. Whiteboard chronological script
 
-- Return `429` + `Retry-After`.
-- Distinguish **rate** (QPS) vs **quota** (daily).
-- Mention race without atomic ops.
+1. Clarify limits (per user/IP/key), burst vs smooth, where enforced.
+2. Write capacity (gateway QPS).
+3. Draw Client → Gateway → Rate limiter → Redis → upstream.
+4. Name algorithm (token bucket) and key design.
+5. Leave distributed race discussion for probe.
+6. Show 429 + Retry-After on the side.
+
+### 10. Interviewer probes (realistic Q&A)
+
+**Interviewer:** Fixed window vs sliding?  
+**You:** Fixed is cheap but allows ~2× burst at boundary; sliding/token bucket smoother; approximate sliding with two counters or Redis sorted sets.
+
+**Interviewer:** Consistency across limiter nodes?  
+**You:** Central Redis (Cluster) for shared counters; atomic Lua; accept tiny error only if using local sync approximations.
+
+**Interviewer:** Redis down?  
+**You:** Product call — fail closed for auth/payment; fail open for best-effort reads with alerting.
+
+**Interviewer:** Hot key (one user)?  
+**You:** Limiting that user is intended; Redis per-key ops stay cheap; optional local rate limit in front.
+
+**Interviewer:** 10× decision QPS?  
+**You:** Shard Redis; add local token caches that sync periodically (approximate); scale gateways horizontally.
 
 ### Evolution
 
-Multi-region: regional limiters + async reconcile, or central with higher latency; often regional limits + global daily quota.
-
-### Sequence — allow/deny
-
-```mermaid
-sequenceDiagram
-  participant G as Gateway
-  participant RL as Limiter
-  participant R as Redis
-  G->>RL: check(user, cost=1)
-  RL->>R: EVAL token_bucket.lua
-  R-->>RL: allowed, remaining
-  alt allowed
-    RL-->>G: allow
-    G->>G: forward request
-  else denied
-    RL-->>G: 429 + Retry-After
-  end
-```
-
-### Config examples
-
-- Login: 5/min per IP + 20/hour per account
-- Search: 10/s per user, burst 30
-- Webhook egress: 100/s per tenant
-
-### Multi-tenant fairness
-
-Weighted fair limits prevent one noisy tenant from consuming Redis CPU. Isolate extreme tenants on dedicated keys/shards.
-
-### Testing strategy
-
-Load-test with concurrent clients sharing a key; assert never over `burst` beyond documented tolerance. Chaos: kill Redis; verify fail-open/closed behavior matches config.
-
-### Evolution
-
-Add sliding-window approximators for smoother UX; export quota usage to billing; edge enforcement via WASM/gateway plugins for ultra-low latency.
-
-### Interviewer Q&A (drill these aloud)
-
-**Q: What is the consistency model for the core read?**  
-A: State it explicitly (e.g. “redirects may see new links within TTL seconds; creates read-your-writes via primary”).
-
-**Q: Single point of failure?**  
-A: Name primary DB / broker / region; give mitigation (replicas, multi-AZ, queue buffer).
-
-**Q: How do you prevent duplicate side effects on retry?**  
-A: Idempotency keys / upserts / dedupe table—tie to this design’s writes.
-
-**Q: What metric pages you at 3am?**  
-A: Pick SLIs: error rate, p99, lag, saturation—not CPU alone.
-
-**Q: How does this evolve to 10× data?**  
-A: Partition key, storage tiering, or CQRS—one concrete next step.
-
-### Implementation sketch (pseudocode mindset)
-
-Walk one write handler: validate → authorize → mutate store → enqueue side effects → return. Mention timeouts on dependency calls. This bridges design and coding rounds.
-
-### Load & chaos test plan (talk track)
-
-1. Happy-path load at 2× peak estimate  
-2. Dependency latency injection (+500 ms)  
-3. Kill one AZ of the data store  
-4. Replay poison message  
-State what user experience should be in each case.
-
+Local + Redis hybrid → multi-region with regional quotas → enriched rules (per-endpoint, special tiers).
 
 ## Notification system
 
@@ -2774,6 +3712,26 @@ Walk one write handler: validate → authorize → mutate store → enqueue side
 4. Replay poison message  
 State what user experience should be in each case.
 
+### Whiteboard chronological script
+
+1. Clarify channels (push/email/SMS/in-app) and priority lanes.
+2. Draw producers → Notif API → priority queues → workers → providers.
+3. Add prefs/quiet hours DB.
+4. Mention idempotency per notification id.
+5. Leave template rendering deep dive for later.
+
+**Diagram:** [diagrams/notification-system.drawio](diagrams/notification-system.drawio)
+
+### Interviewer probes (realistic Q&A)
+
+**Interviewer:** OTP vs marketing?  
+**You:** Separate queues/bulkheads; OTP higher SLO, no digest batching; marketing deferrable.
+
+**Interviewer:** Exactly-once to APNs?  
+**You:** At-least-once + provider idempotency keys / dedupe; user may still see rare dupes — design templates accordingly.
+
+**Interviewer:** Provider outage?  
+**You:** Circuit breaker; retry with jitter; shift to alternate channel if prefs allow.
 
 ## News feed
 
@@ -2906,6 +3864,27 @@ Walk one write handler: validate → authorize → mutate store → enqueue side
 4. Replay poison message  
 State what user experience should be in each case.
 
+### Whiteboard chronological script
+
+1. Clarify follow model, ranking vs chrono, celebrity problem.
+2. Write fan-out-on-write vs read tradeoff in one sentence.
+3. Draw Post service → queue → fan-out workers → Redis feed lists.
+4. Draw read path API → feed cache → hydrate posts.
+5. Mark celebrities as pull exceptions.
+6. Leave ML ranker blank until asked (or point to recommendation section).
+
+**Diagram:** [diagrams/news-feed.drawio](diagrams/news-feed.drawio)
+
+### Interviewer probes (realistic Q&A)
+
+**Interviewer:** Why hybrid fan-out?  
+**You:** Push to normal users’ caches for fast read; celebrities would explode write amplification — readers pull their posts on demand.
+
+**Interviewer:** Consistency?  
+**You:** Eventual — feeds lag seconds; OK for social. Stronger for “delete my post” via async fan-out of deletes.
+
+**Interviewer:** Hotspot celebrity posts?  
+**You:** Cache post body heavily; don’t fan-out to 50M followers on write.
 
 ## Chat & messaging
 
@@ -3039,6 +4018,26 @@ Walk one write handler: validate → authorize → mutate store → enqueue side
 4. Replay poison message  
 State what user experience should be in each case.
 
+### Whiteboard chronological script
+
+1. Clarify 1:1 vs groups (if groups dominate, pivot to group-chat design).
+2. Draw WS gateway fleet before business logic.
+3. Persist message then fan-out via pub/sub.
+4. Add presence store; offline push.
+5. Leave media upload to object storage + CDN.
+
+**Diagram:** [diagrams/chat-messaging.drawio](diagrams/chat-messaging.drawio)
+
+### Interviewer probes (realistic Q&A)
+
+**Interviewer:** DB for messages?  
+**You:** Wide-column / partitioned store by conversation_id + timestamp; metadata in Postgres.
+
+**Interviewer:** Ordering across devices?  
+**You:** Per-conversation monotonic IDs; clients reconcile with server ids.
+
+**Interviewer:** Gateway sticky sessions?  
+**You:** Prefer external conn registry + pub/sub so any gateway can push; stickiness optional for locality.
 
 ## Instagram-like
 
@@ -3169,6 +4168,21 @@ Walk one write handler: validate → authorize → mutate store → enqueue side
 4. Replay poison message  
 State what user experience should be in each case.
 
+### Whiteboard chronological script
+
+1. Clarify feed vs stories vs DMs scope; lock MVP to upload + follow feed.
+2. Draw upload → object storage + async processing.
+3. Reuse news-feed hybrid fan-out for home.
+4. CDN in front of media.
+5. Leave explore/recommendations as phase 2 box.
+
+### Interviewer probes (realistic Q&A)
+
+**Interviewer:** Media storage?  
+**You:** Object store + CDN; API only returns signed URLs; process thumbnails async.
+
+**Interviewer:** Feed at 10×?  
+**You:** Same hybrid feed; shard follow graph; cache timelines.
 
 ## Uber-like
 
@@ -3290,6 +4304,26 @@ Walk one write handler: validate → authorize → mutate store → enqueue side
 4. Replay poison message  
 State what user experience should be in each case.
 
+### Whiteboard chronological script
+
+1. Clarify trip lifecycle, matching radius, city launch.
+2. Draw rider/driver apps → API → trip + matching + location ingest.
+3. Add geo index for nearby drivers.
+4. Event pipeline for trip state.
+5. Leave pricing/surge as formula box.
+
+**Diagram:** [diagrams/uber-dispatch.drawio](diagrams/uber-dispatch.drawio)
+
+### Interviewer probes (realistic Q&A)
+
+**Interviewer:** Where do GPS updates go?  
+**You:** High-write location service → geo index (Redis GEO / quadtile); not the OLTP trips primary for every ping.
+
+**Interviewer:** Matching consistency?  
+**You:** Optimistic lock / conditional update on driver availability so two riders don’t get same driver.
+
+**Interviewer:** Hot downtown?  
+**You:** Shard geo by city/cell; more matchers; cap search radius dynamically.
 
 ## Video streaming
 
@@ -3414,6 +4448,25 @@ Walk one write handler: validate → authorize → mutate store → enqueue side
 4. Replay poison message  
 State what user experience should be in each case.
 
+### Whiteboard chronological script
+
+1. Clarify VOD vs live; ABR; comments scope.
+2. Draw upload → object store → transcoder queue → packaged HLS/DASH → CDN.
+3. Metadata DB for titles; playback auth signed cookies/URLs.
+4. Leave recommendation blank or stub.
+
+**Diagram:** [diagrams/video-streaming.drawio](diagrams/video-streaming.drawio)
+
+### Interviewer probes (realistic Q&A)
+
+**Interviewer:** Why CDN?  
+**You:** Video bytes dominate egress; edge caching cuts origin load and latency.
+
+**Interviewer:** Hot video?  
+**You:** CDN absorbs; origin shielded; popular encodings pre-warmed.
+
+**Interviewer:** Transcoding failure?  
+**You:** Retry poison with limit; mark video failed; alert; user can reupload.
 
 ## Dropbox-like
 
@@ -3531,130 +4584,124 @@ Walk one write handler: validate → authorize → mutate store → enqueue side
 4. Replay poison message  
 State what user experience should be in each case.
 
+### Whiteboard chronological script
+
+1. Clarify sync vs web upload; sharing; conflict policy.
+2. Draw client → metadata service + block/chunk service → object store.
+3. Content-hash dedup index; sync notify channel.
+4. Mention checksums on chunk upload.
+
+**Diagram:** [diagrams/dropbox.drawio](diagrams/dropbox.drawio)
+
+### Interviewer probes (realistic Q&A)
+
+**Interviewer:** Why chunks?  
+**You:** Resume, dedup, parallel upload; metadata references chunk lists.
+
+**Interviewer:** Conflict two writers?  
+**You:** Version vectors / last-writer with conflict copy; don’t silently merge binary blindly.
+
+**Interviewer:** Metadata SPOF?  
+**You:** Replicated metadata DB; block data already in durable object store.
 
 ## Web crawler
 
-Politely discover and fetch URLs at scale for search indexing or archives.
+Polite, scalable URL fetcher for search/index pipelines. Focus on frontier, politeness, dedup, and failure isolation—not building Google.
 
 ### 1. Clarify
 
-- Seed URLs? Domain allow/deny?
-- Freshness / recrawl policy?
-- JS rendering?
-- Robots.txt / crawl delay?
-- Output: store HTML or extract text?
+- Seed set / continuous crawl?
+- JS rendering required (expensive) or static HTML?
+- Respect robots.txt and crawl-delay?
+- Max pages / freshness SLO?
+- Downstream: store raw HTML, or parse+index in-scope?
+
+**MVP:** static fetch, politeness per host, Bloom+store dedup, store HTML to object storage, emit parse jobs.
 
 ### 2. Capacity
 
-Billions of URLs; politeness limits often bind before NIC. Plan frontier queue size and per-host rate limits.
+Target 1K pages/sec steady → ~86M/day. Bandwidth and DNS dominate. Store: 100 KB HTML avg → ~8.6 TB/day raw before compression — compress and TTL/tier.
 
-### 3. APIs / control
+### 3. APIs / control plane
 
 ```
-POST /admin/seeds
-GET  /admin/stats
-# workers pull from frontier
+POST /v1/seeds  { "urls": [...] }
+GET  /v1/stats  → { frontier_size, fetch_qps, error_rate }
+POST /v1/hosts/{host}/pause
 ```
+
+Workers pull from frontier; no public fetch API required.
 
 ### 4. Data model
 
 ```
-frontier(url, next_fetch_at, priority)
-url_seen bloom / DB (canonical URL)
-documents(url_hash, content_ref, fetched_at, status)
-host_state(host, next_slot, crawl_delay)
+frontier(url, priority, next_fetch_at, host)
+seen_exact(url_hash)  -- durable
+seen_bloom             -- probabilistic
+robots_cache(host, rules, fetched_at)
+documents(url, fetch_ts, content_ref, status)
 ```
 
 ### 5. High-level design
 
 ```mermaid
 flowchart LR
-  Seeds --> Frontier[(Priority frontier)]
-  Frontier --> Scheduler
-  Scheduler --> Fetchers
-  Fetchers --> DNS
-  Fetchers --> Web
-  Fetchers --> Store[(Content store)]
-  Fetchers --> Extractor
-  Extractor --> Frontier
-  Fetchers --> Robots[Robots cache]
+  Seeds --> Frontier[Frontier / priority queues]
+  Frontier --> Fetcher
+  Fetcher --> DNS
+  Fetcher --> HostRL[Per-host rate limit]
+  Fetcher --> Store[(Object store)]
+  Fetcher --> Seen[Bloom + exact seen]
+  Fetcher --> ParseQ[Parse queue]
 ```
 
-### 6. Deep dive — politeness & frontier
+**Loop:** take URL → check seen → DNS → robots → per-host token → fetch → store → extract links → enqueue new URLs.
 
-Scheduler ensures per-host concurrency=1 (or small N) and respects crawl-delay. Canonicalize URLs (scheme/host/trailing slash). Bloom filter + exact store for seen URLs (false positives miss pages; false negatives waste fetch—tune).
+### 6. Deep dives
 
-**Priority:** prefer high PageRank seeds, sitemaps, change-frequency heuristics.
+**Politeness:** per-host queues; concurrency 1 (or small N); honor crawl-delay.
 
-**DNS & IP:** cache DNS; optional crawl by IP with Host header; avoid hammering shared hosters.
+**Dedup:** Bloom filter for cheap negatives; exact store for positives. False positives → rare missed pages; tune size. See [Bloom filters](#bloom-filters).
+
+**Canonicalization:** scheme/host casing, trailing slash, strip tracking params.
+
+**Priority:** sitemap/seed high; discover links lower; recrawl by freshness score.
 
 ### 7. Failures
 
-- Trap sites (infinite calendars): URL normalization + depth limits + per-host budgets.
-- Fetcher crash: lease URLs with timeout; requeue.
-- Legal/robots: hard fail closed if robots disallows.
+- Slow hosts clog workers: timeouts + isolate host queue.
+- Redirect loops: max hop count.
+- Poison huge docs: size cap; circuit on parser.
+- DNS outage: cache TTLs; backoff.
 
-### 8. Interview tips
+### 8. Whiteboard chronological script
 
-- Politeness is the ethical and practical core.
-- Separate frontier, fetcher, storage.
-- Mention canonicalization to avoid dupes.
+1. Clarify politeness, scope (seed domains), JS rendering needs.
+2. Draw frontier queue → fetcher workers → parser → URL filter (Bloom + store) → storage.
+3. Per-host rate limits; DNS cache.
+4. Leave ranking/indexer as downstream box.
+5. Call out Bloom FP tradeoff in one sentence.
 
-### Canonicalization rules (examples)
+### 9. Interviewer probes (realistic Q&A)
 
-- Lowercase host
-- Strip `#fragment`
-- Sort query params; drop tracking params (`utm_*`)
-- Default ports omitted
-- Trailing slash policy per host
+**Interviewer:** Seen-URL set too large?  
+**You:** Bloom for negatives + durable exact store; accept rare redundant fetches from FPs.
 
-Inconsistent canonicalization wastes crawl budget.
+**Interviewer:** Politeness failure?  
+**You:** Per-host queues and token buckets; respect robots.txt; separate crawl-delay.
 
-### Freshness
+**Interviewer:** Why not one giant FIFO?  
+**You:** Starves politeness and priority; use per-host scheduling on top of global frontier.
 
-Recrawl score = f(change history, importance, last_modified headers). Prefer `If-Modified-Since` / ETag to save bandwidth.
+**Interviewer:** 10× fetch rate?  
+**You:** More fetcher pools by host-hash shard; expand DNS cache; ensure downstream storage ingress keeps up.
 
-### Rendering
-
-Headless browsers are 10–100× costlier—use only for allowlisted JS-heavy domains. Default: raw fetch + parse links.
-
-### Storage
-
-Content-addressed raw bytes + metadata index; compress; respect retention policies.
+**Interviewer:** Consistency?  
+**You:** Crawl is eventually consistent discovery; exactly-once fetch not required — idempotent store by URL version.
 
 ### Evolution
 
-Distributed crawl workers by host hash; feedback from indexer on dead links; sitemaps as first-class seeds.
-
-### Interviewer Q&A (drill these aloud)
-
-**Q: What is the consistency model for the core read?**  
-A: State it explicitly (e.g. “redirects may see new links within TTL seconds; creates read-your-writes via primary”).
-
-**Q: Single point of failure?**  
-A: Name primary DB / broker / region; give mitigation (replicas, multi-AZ, queue buffer).
-
-**Q: How do you prevent duplicate side effects on retry?**  
-A: Idempotency keys / upserts / dedupe table—tie to this design’s writes.
-
-**Q: What metric pages you at 3am?**  
-A: Pick SLIs: error rate, p99, lag, saturation—not CPU alone.
-
-**Q: How does this evolve to 10× data?**  
-A: Partition key, storage tiering, or CQRS—one concrete next step.
-
-### Implementation sketch (pseudocode mindset)
-
-Walk one write handler: validate → authorize → mutate store → enqueue side effects → return. Mention timeouts on dependency calls. This bridges design and coding rounds.
-
-### Load & chaos test plan (talk track)
-
-1. Happy-path load at 2× peak estimate  
-2. Dependency latency injection (+500 ms)  
-3. Kill one AZ of the data store  
-4. Replay poison message  
-State what user experience should be in each case.
-
+Add headless render pool for JS sites; change-detection recrawl; integrate with [Search](#search) indexer.
 
 ## Typeahead
 
@@ -3772,6 +4819,19 @@ Walk one write handler: validate → authorize → mutate store → enqueue side
 4. Replay poison message  
 State what user experience should be in each case.
 
+### Whiteboard chronological script
+
+1. Clarify dataset (users, queries), latency budget (<50 ms).
+2. Draw client → edge/API → trie/prefix index (Redis/memory) → rank top k.
+3. Mention cache of popular prefixes; personalization light touch.
+
+### Interviewer probes (realistic Q&A)
+
+**Interviewer:** Data structure?  
+**You:** Trie / sorted sets by prefix; or search engine completion suggester.
+
+**Interviewer:** Hot prefix “a”?  
+**You:** Cache aggressively; limit fan-out; precompute top results.
 
 ## Search
 
@@ -3886,6 +4946,19 @@ Walk one write handler: validate → authorize → mutate store → enqueue side
 4. Replay poison message  
 State what user experience should be in each case.
 
+### Whiteboard chronological script
+
+1. Clarify docs, freshness, ranking needs.
+2. Draw ingest → analyzer → inverted index shards → query planner → rank.
+3. Separate from primary OLTP.
+
+### Interviewer probes (realistic Q&A)
+
+**Interviewer:** Why not SQL LIKE?  
+**You:** Inverted index for token retrieval at scale; ranking and relevance.
+
+**Interviewer:** Index lag?  
+**You:** Near-real-time refresh; product accepts seconds lag unless stated.
 
 ## Ticket booking
 
@@ -4006,6 +5079,19 @@ Walk one write handler: validate → authorize → mutate store → enqueue side
 4. Replay poison message  
 State what user experience should be in each case.
 
+### Whiteboard chronological script
+
+1. Clarify seat map, hold TTL, payment.
+2. Draw similar to checkout: hold seat → pay → confirm.
+3. Strong consistency on seat inventory.
+
+### Interviewer probes (realistic Q&A)
+
+**Interviewer:** Double booking?  
+**You:** Conditional seat state transition (available→held→sold) with version/TTL; never two sold.
+
+**Interviewer:** Flash on sale?  
+**You:** Queue, shard by event_id, wait-room.
 
 ## Payments
 
@@ -4134,6 +5220,469 @@ Walk one write handler: validate → authorize → mutate store → enqueue side
 4. Replay poison message  
 State what user experience should be in each case.
 
+### Whiteboard chronological script
+
+1. Clarify PSP vs wallet; currencies; idempotency expectations.
+2. Write NFRs: no double-charge; durable ledger; webhook retries.
+3. Draw Client → API → Payment intent service → Ledger DB; outbox → PSP.
+4. Draw webhook receiver → verify signature → state machine advance.
+5. Mention tokenization — never store raw PAN.
+6. Leave FX/multi-currency as a side note unless asked.
+
+### Interviewer probes (realistic Q&A)
+
+**Interviewer:** Exactly-once money movement?  
+**You:** Exactly-once *effects* via idempotent payment intents and an append-only ledger; at-least-once retries to the PSP with the same idempotency key.
+
+**Interviewer:** Consistency model?  
+**You:** Strong append for ledger entries; eventual for notifications and analytics.
+
+**Interviewer:** PSP timeout after charge unknown?  
+**You:** Leave intent in `pending`; reconcile via PSP retrieve API; never create a second charge without the same idempotency key.
+
+**Interviewer:** 10× volume?  
+**You:** Partition ledger by account/time; scale webhook workers; keep PSP as external bottleneck with circuit breakers and bulkheads.
+
+
+
+## Nearby places (Yelp-like)
+
+Geospatial search: find businesses near a lat/lng, filter by category, sort by distance/rating. Interviewers probe geo indexes, hot downtown tiles, and ranking.
+
+**Diagram:** [diagrams/nearby-places.drawio](diagrams/nearby-places.drawio) — open in [diagrams.net](https://app.diagrams.net) or the VS Code draw.io extension.
+
+### 1. Clarify questions a strong candidate asks first
+
+- Radius search only, or also map viewport (bounding box)?
+- Filters: open now, category, price, rating floor?
+- Personalization / ads in scope?
+- Write path: user reviews & photos, or read-only catalog MVP?
+- Freshness: how fast must a new business appear in search?
+- Target QPS for search vs detail page?
+
+**MVP assume:** radius + category + sort by distance then rating; reviews eventually consistent; no ads.
+
+### 2. Capacity estimates
+
+Assume 50M businesses globally, 10M DAU, 20 searches/user/day → 200M searches/day ≈ **2.3K QPS avg**, peak **15–25K**.
+
+- Metadata ~2 KB/business → ~100 GB (+ replicas)
+- Geo index overhead similar order
+- Review writes much lower QPS than searches
+
+### 3. APIs + data model
+
+```
+GET /v1/search?lat=&lng=&radius_m=&category=&sort=&cursor=
+  → { results: [{biz_id, name, dist_m, rating, price}], next_cursor }
+
+GET /v1/businesses/{id}
+POST /v1/businesses/{id}/reviews  (auth)
+```
+
+```
+businesses(biz_id PK, name, lat, lng, category, price, rating_avg, ... )
+geo_index: S2 cell / geohash → [biz_ids]  OR Elasticsearch geo_point
+reviews(review_id, biz_id, user_id, stars, text, created_at)
+```
+
+### 4. High-level architecture
+
+```mermaid
+flowchart LR
+  Client --> LB --> API
+  API --> Geo[Geo index]
+  API --> Biz[(Business DB)]
+  API --> Cache[(Result cache)]
+  API --> Rank[Ranker]
+```
+
+**Search path:** map lat/lng+radius → covering geo cells → candidate IDs → fetch metadata → rank/filter → paginate.
+
+### 5. Whiteboard chronological script
+
+1. Write title + NFRs (search latency p99 < 200 ms).
+2. Ask geo questions aloud; lock MVP.
+3. Write capacity (QPS, 50M biz).
+4. Draw Client → LB → Search API (left→right).
+5. Add **Geo index** and **Business DB**; say “candidates then hydrate.”
+6. Add **cache** for popular downtown queries; leave blank for personalization.
+7. Deep dive: S2/geohash cells, hotspot tiles, ranking.
+8. Failures: geo node down → degrade radius / serve stale cache.
+
+### 6. Interviewer probes
+
+**Interviewer:** Why not `SELECT * WHERE distance < R` on Postgres alone?  
+**You:** Fine at small scale; at global catalog + high QPS you want a geo index (GiST/S2/ES). Postgres + PostGIS can work regionally with careful sharding.
+
+**Interviewer:** How do geohashes/S2 help?  
+**You:** Quantize the map into cells; query = union of cells covering the radius; then precise haversine filter.
+
+**Interviewer:** Downtown SF is hot.  
+**You:** Cache top queries; shard geo by cell ranges; replicate hot cells; avoid single hot partition.
+
+**Interviewer:** Consistency for new business listing?  
+**You:** Accept seconds–minutes lag indexing to search; admin “publish” can wait on index ack if needed.
+
+**Interviewer:** 10× search QPS.  
+**You:** Cache, read replicas, partition geo index, CDN for static detail assets — not one bigger box.
+
+### Deep dive — ranking sketch
+
+`score = w1 * dist_decay + w2 * rating + w3 * popularity` with category filters. Keep ML light unless senior prompt expands.
+
+### Evolution
+
+Add autocomplete (typeahead), spell correction, personalized rerank, ads auction as separate systems.
+
+---
+
+## Group chat (Slack / Discord-like)
+
+Channels, servers/workspaces, fan-out to many members, presence, roles. Harder than 1:1 chat because of **membership cardinality** and **hot channels**.
+
+**Diagram:** [diagrams/group-chat.drawio](diagrams/group-chat.drawio)
+
+### 1. Clarify questions
+
+- Workspace → channels → threads? Voice/video in scope?
+- Max channel size (100 vs 100k)?
+- History retention / search?
+- Mentions, reactions, edits, deletes?
+- Guests / RBAC?
+- Mobile push when offline?
+
+**MVP:** text channels, membership, history pagination, presence approximate, push offline.
+
+### 2. Capacity estimates
+
+10M DAU; avg 50 messages/user/day → 500M msg/day ≈ **6K QPS** writes; reads/fan-out much higher in concurrent online users. Peak evenings 5–10×. Store: 1 KB/msg → ~500 GB/day before compression/compaction — plan retention tiers.
+
+### 3. APIs + data model
+
+```
+POST /v1/channels/{id}/messages  { text, nonce }
+GET  /v1/channels/{id}/messages?before=&limit=
+WS   /v1/gateway  (connect, subscribe channels, presence)
+POST /v1/channels/{id}/memberships
+```
+
+```
+workspaces(ws_id, ...)
+channels(channel_id, ws_id, name, type)
+memberships(channel_id, user_id, role)
+messages(channel_id, msg_id, sender, text, ts)  -- PK (channel_id, msg_id)
+```
+
+Message IDs: Snowflake for rough time order.
+
+### 4. High-level architecture
+
+```mermaid
+flowchart LR
+  Clients --> WSG[WS Gateway fleet]
+  WSG --> Msg[Message service]
+  WSG --> Chan[Channel service]
+  Msg --> Store[(Msg store)]
+  Msg --> Bus[Kafka fan-out]
+  Bus --> WSG
+  WSG --> Pres[Presence]
+```
+
+**Send:** client → gateway → message service persists → publish to channel topic → gateways with local subscribers push.
+
+### 5. Whiteboard chronological script
+
+1. Clarify channel size & MVP; write NFRs (delivery at-least-once to online; history durable).
+2. Capacity rough order.
+3. Draw **WS gateway fleet** first (connection plane).
+4. Draw message service + **append-only store keyed by channel_id**.
+5. Draw Kafka/pubsub fan-out back to gateways.
+6. Add membership/authz check on send.
+7. Leave search/indexing blank; add presence as ephemeral store.
+8. Probe hot channel (#announcements) mitigation.
+
+### 6. Interviewer probes
+
+**Interviewer:** Fan-out to 100k members?  
+**You:** Don’t open 100k writes on send. Persist once; push only to **currently connected** subscribers via pub/sub. Offline users get history on read + push notification coalescing.
+
+**Interviewer:** Ordering?  
+**You:** Per-channel ordering via single partition keyed by channel_id; client uses msg_id/timestamps; optimistic UI with nonce dedupe.
+
+**Interviewer:** Celebrity / company-all channel?  
+**You:** Treat as broadcast channel: pull model for history, sample presence, rate-limit sends, dedicated partitions.
+
+**Interviewer:** DB choice?  
+**You:** Cassandra/Dynamo/Scylla for append-heavy messages by (channel_id, msg_id); Postgres for workspace metadata/membership.
+
+**Interviewer:** Consistency of edits/deletes?  
+**You:** Tombstones / edit events in stream; clients apply; search index eventual.
+
+### Failures
+
+Gateway death: clients reconnect, resume with `last_msg_id`. Kafka lag: delay in live push; history still correct. Authz misconfig: IDOR — always check membership server-side.
+
+---
+
+## Collaborative document
+
+Google-Docs-like concurrent editing. Focus on **conflict strategy** (OT vs CRDT) at high level, presence/cursors, snapshots + op log — not implementing the algebra.
+
+**Diagram:** [diagrams/collab-doc.drawio](diagrams/collab-doc.drawio)
+
+### 1. Clarify questions
+
+- Plain text, rich text, or spreadsheets (much harder)?
+- Max concurrent editors per doc?
+- Offline editing required?
+- Comments / suggestions mode?
+- Export versions / audit?
+- Scale: docs count vs concurrent sessions?
+
+**MVP:** rich text, <50 concurrent editors, online-first with reconnect catch-up, periodic snapshots.
+
+### 2. Capacity estimates
+
+50M docs, 1M concurrently open, avg 2 editors → **2M WS connections** (gateway-bound). Ops/sec per doc low (typing bursts); overall op QPS maybe tens of thousands. Snapshots every N ops or T seconds.
+
+### 3. APIs + data model
+
+```
+WS /v1/docs/{doc_id}/session
+  → client sends ops; server broadcasts transformed ops / CRDT updates
+GET /v1/docs/{doc_id}  → latest snapshot + version
+POST /v1/docs/{doc_id}/snapshots  (internal)
+```
+
+```
+docs(doc_id, title, owner, ...)
+snapshots(doc_id, version, blob_ref)
+op_log(doc_id, seq, op_payload, author)  -- or CRDT state blobs
+acl(doc_id, user_id, role)
+```
+
+### 4. High-level architecture
+
+```mermaid
+flowchart LR
+  Editors --> GW[Collab gateway]
+  GW --> Eng[OT or CRDT engine]
+  Eng --> Snap[(Snapshots)]
+  Eng --> Log[(Op log)]
+  GW --> Presence
+```
+
+Sticky session or doc_id → responsible server for OT; CRDTs allow freer multi-master with merge.
+
+### 5. Whiteboard chronological script
+
+1. Clarify: doc type, concurrency, offline.
+2. Say: “I’ll pick **CRDT** for offline-friendly merge **or OT** with a central sequencer — I’ll explain tradeoffs.”
+3. Draw editors → WS gateway → collab engine.
+4. Add snapshot store + op log; presence box.
+5. Explain reconnect: client sends `last_version`; server sends missing ops / state.
+6. Leave ML/grammar blank; discuss ACL.
+7. Failure: engine node loss → reattach doc lease to another node.
+
+### 6. Interviewer probes
+
+**Interviewer:** OT vs CRDT?  
+**You:** OT transforms ops against concurrent ops; typically needs central ordering. CRDTs merge commutative state; better offline; larger payloads / more complex data structures. Pick one; don’t invent hybrid mid-board.
+
+**Interviewer:** Why snapshots?  
+**You:** Don’t replay million ops on open; compact log; faster load.
+
+**Interviewer:** Conflict “last write wins”?  
+**You:** Insufficient for text — characters interleave wrongly. Need OT/CRDT.
+
+**Interviewer:** 10× concurrent editors on one doc?  
+**You:** Rare; shard by doc already. Optimize broadcast (binary ops), batching, and maybe interest management for cursors.
+
+**Interviewer:** Consistency?  
+**You:** Strong causal/convergent session state for a doc; metadata ACLs on primary DB.
+
+### Interview tip
+
+Senior signal: “GC of tombstones in CRDTs,” “doc lease,” “schema for op versioning.” Keep algebra off the board unless they are specialists.
+
+---
+
+## E-commerce checkout and inventory
+
+Cart → reserve inventory → payment → order. Classic consistency + idempotency + oversell prevention.
+
+**Diagram:** [diagrams/ecommerce-checkout.drawio](diagrams/ecommerce-checkout.drawio)
+
+### 1. Clarify questions
+
+- Single warehouse or multi-warehouse / omnichannel?
+- Guest checkout?
+- Flash sales / limited drops?
+- Partial capture / auth-capture payments?
+- International tax/shipping in scope?
+- Idempotency & exactly-once payment effects?
+
+**MVP:** one inventory pool, card pay via PSP, soft reservation with TTL, no marketplace multi-seller.
+
+### 2. Capacity estimates
+
+5M DAU; 2% convert → 100K orders/day ≈ **1.2 QPS avg**, peak **50–200 QPS** (promos). Inventory reads/checks much hotter during browse. Data: orders small; inventory counters hot.
+
+### 3. APIs + data model
+
+```
+POST /v1/carts/{id}/items
+POST /v1/checkout/sessions  { cart_id, idempotency_key }
+POST /v1/checkout/sessions/{id}/confirm
+GET  /v1/orders/{id}
+```
+
+```
+inventory(sku, warehouse_id, on_hand, reserved)
+reservations(res_id, sku, qty, expires_at, state)
+orders(order_id, user_id, state, amount, idempotency_key UNIQUE)
+order_items(...)
+payments(payment_id, order_id, psp_ref, state)
+```
+
+### 4. High-level architecture
+
+```mermaid
+flowchart LR
+  Buyer --> Cart --> Inv[Inventory]
+  Cart --> Ord[Order service]
+  Ord --> Pay[Payments / PSP]
+  Ord --> Q[Fulfillment queue]
+  Inv --> Res[(Reservations TTL)]
+```
+
+**Flow:** validate cart → **reserve** stock (TTL 10–15 min) → create order pending → charge PSP with idempotency key → mark paid → commit reservation → enqueue fulfillment. On fail/expiry: release reservation.
+
+### 5. Whiteboard chronological script
+
+1. Clarify flash sale + warehouse; write “no oversell” NFR.
+2. Capacity — note browse ≫ order QPS.
+3. Draw Cart → Inventory → Order → Payment.
+4. Add **reservation TTL** explicitly; say why not decrement final stock on add-to-cart.
+5. Add idempotency key on charge; payment state machine.
+6. Async fulfillment queue; leave returns blank.
+7. Deep dive flash sale: gate with queue, shuffle shards, cache product page.
+
+### 6. Interviewer probes
+
+**Interviewer:** How do you prevent oversell?  
+**You:** Atomic reservation (DB transaction or Redis Lua/INCR with bounds) with TTL; commit on paid; release on expiry/cancel. Check `reserved + sold <= on_hand`.
+
+**Interviewer:** Payment succeeds, DB crash before order paid?  
+**You:** Idempotent confirm job reconciles with PSP using idempotency key / payment intent id; order state machine is source for fulfillment eligibility.
+
+**Interviewer:** DB choice?  
+**You:** Relational for orders/inventory transactions; Redis for hot reservation counters during flash sales with durable backup.
+
+**Interviewer:** Celebrity drop 10×?  
+**You:** Waiting room queue; per-SKU rate limits; pre-split inventory shards; read-only catalog cache; degrade non-critical recommendations.
+
+**Interviewer:** Consistency?  
+**You:** Strong for inventory reservation and payment state; eventual for email/recommendations.
+
+### Failure modes
+
+Double charge without idempotency; reservation leak (TTL worker down); stock desync between Redis and DB — periodic reconcile.
+
+---
+
+## Recommendation and feed ranking (senior sketch)
+
+Not a full ML course — an **architecture sketch** for candidate generation → rank → filter → serve, with online/offline features. Use when interviewers push past basic news-feed fan-out.
+
+**Diagram:** [diagrams/recommendation-feed.drawio](diagrams/recommendation-feed.drawio)
+
+### 1. Clarify questions
+
+- Goal metric: dwell, CTR, watch time, revenue?
+- Cold start users/items?
+- Inventory: posts, videos, products?
+- Latency budget for feed request?
+- Explainability / safety filters required?
+- Real-time personalization vs daily batch?
+
+**MVP:** home feed ranking over existing candidate sources; safety filters; p99 < 150 ms for rank path.
+
+### 2. Capacity estimates
+
+20M DAU; 30 feed opens/day → 600M requests/day ≈ **7K QPS**, peak **40K**. Candidate sets ~1000 → rank → return 20. Feature store reads dominate cost.
+
+### 3. APIs + data model
+
+```
+GET /v1/feed?cursor=  → ranked item ids + decorators
+POST /v1/events  { impress / click / dismiss }  (client telemetry)
+```
+
+```
+items(item_id, author_id, features...)
+user_features(user_id, ...)  -- batch + nearline
+engagement_events(... partitioned by time)
+models(model_id, version, artifact_uri)
+```
+
+### 4. High-level architecture
+
+```mermaid
+flowchart TB
+  Client --> API
+  API --> CG[Candidate generation]
+  API --> Rank[Ranker]
+  API --> Filter[Filters]
+  CG --> FS[(Feature store)]
+  Rank --> FS
+  Events --> Near[Nearline joins]
+  Near --> FS
+  Batch[Batch training] --> Model[Model registry]
+  Model --> Rank
+```
+
+**Stages:** (1) retrieve candidates from multiple sources (following, trending, similarity), (2) feature hydrate, (3) score, (4) filter seen/blocked/policy, (5) diversity re-rank.
+
+### 5. Whiteboard chronological script
+
+1. Clarify objective metric & latency.
+2. Draw **pipeline stages** left→right: retrieve → rank → filter → decorate — before naming TensorFlow.
+3. Add feature store + event pipeline (online vs batch).
+4. Say: “I’ll keep model training offline; inference in rank service.”
+5. Blank space for ads auction if asked.
+6. Discuss celebrity/hot items separately from personalization.
+7. Failure: ranker down → fallback to chronological / heuristic.
+
+### 6. Interviewer probes
+
+**Interviewer:** Where does ML run?  
+**You:** Train offline; export model; rank service does inference. Nearline features from events within minutes.
+
+**Interviewer:** Cold start?  
+**You:** Popular / editorial candidates; content features; explore slot in diversity layer.
+
+**Interviewer:** Consistency?  
+**You:** Feed ranking is approximate; don’t promise transactional ranking. Eventual feature freshness.
+
+**Interviewer:** 10× QPS?  
+**You:** Cache candidate sets per user segment; ANN indexes for similarity; scale rankers horizontally; aggressive timeouts + fallback.
+
+**Interviewer:** Why not rank the entire corpus?  
+**You:** Impossible at ms budgets — **multi-stage retrieval** is the point.
+
+### Interview tip
+
+Senior bar: name **candidate generation**, **feature freshness**, **fallback**, **evaluation** (A/B, offline AUC) without claiming fake precision.
+
+### Self-check (design)
+
+1. Why multi-stage retrieval?
+2. What fails open when the ranker times out?
+3. Online vs batch features — one example each?
+
+---
 
 # Practice
 
@@ -4207,7 +5756,6 @@ If behind at minute 20 with no diagram, cut estimate polish and draw.
 ### Interview tip
 
 In a real interview, glance at the clock at minutes 15 and 30. Self-pacing is a senior signal.
-
 
 ## Practice prompts
 
@@ -4303,7 +5851,6 @@ Twenty-four prompts with hint checklists. Attempt **before** expanding hints. Us
 - “Budget cut 50%—what do you drop?”
 - “Compliance: data must stay in EU”
 
-
 ## Self-review
 
 After each drill, review within 15 minutes while memory is fresh. Honest review beats another unreviewed mock.
@@ -4352,7 +5899,6 @@ From blank: redraw the HLD in 8 minutes. If you cannot, the design was not yet y
 ### Interview tip
 
 Keep a “miss list” flashcard of phrases you forget under stress: *idempotency key*, *signed URL*, *hybrid fan-out*, *fail-open*.
-
 
 ## Mock rubric
 
@@ -4434,6 +5980,12 @@ When practicing alone, narrate the rubric category you are satisfying (“this i
 
 ---
 
+
+---
+
+---
+
 ## Disclaimer
 
 This guide teaches industry-standard concepts (load balancing, sharding, CAP, etc.) in original wording for interview practice. It is independent study material and is not affiliated with any commercial interview course.
+
