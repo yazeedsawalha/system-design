@@ -1,0 +1,16 @@
+{
+  "name": "system-design-site",
+  "version": "1.0.0",
+  "description": "Free system design interview curriculum with Excalidraw-style diagrams",
+  "main": "index.js",
+  "scripts": {
+    "gen:diagrams": "node scripts/gen_excalidraw_diagrams.mjs",
+    "test": "echo \"No tests yet\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@moona3k/excalidraw-export": "^0.2.1"
+  }
+}

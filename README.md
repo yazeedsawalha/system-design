@@ -1,6 +1,6 @@
 # System Design Interview Guide
 
-A **free, original** curriculum that teaches system design from zero — plain-English foundations, a repeatable interview approach, whiteboard habits, 19 design walkthroughs, and timed practice. Everything lives in this single **README** with **inline SVG diagrams**.
+A **free, original** curriculum that teaches system design from zero — plain-English foundations, a repeatable interview approach, whiteboard habits, 19 design walkthroughs, and timed practice. Everything lives in this single **README** with **inline Excalidraw-style PNG diagrams**.
 
 > **Disclaimer:** Free original curriculum for learning and interview practice. **Not affiliated** with DesignGurus, Educative, ByteByteGo, or any paid course. Industry-standard concepts in original wording. Product names in design titles (e.g. "Instagram-like") are familiar problem frames only.
 
@@ -46,52 +46,52 @@ Even if you are **not** interviewing yet, complete Foundations before jumping to
 4. Use the **[Interview Approach](#interview-approach)** template on every design.
 5. Study **[Design Walkthroughs](#design-walkthroughs)**; practice under a timer in **[Practice](#practice)**.
 
-Diagrams render on GitHub as `![…](diagrams/svg/….svg)`. Editable `.drawio` sources live under [`diagrams/`](diagrams/). Regenerate SVGs with `python3 scripts/gen_svg_diagrams.py`.
+Diagrams are **Excalidraw** hand-drawn style (rough strokes, Virgil font, pastel fills). GitHub embeds are PNGs: `![…](diagrams/png/….png)`. Editable sources live in [`diagrams/excalidraw/*.excalidraw`](diagrams/excalidraw/) — open them at [excalidraw.com](https://excalidraw.com) → **Open**. Regenerate with `node scripts/gen_excalidraw_diagrams.mjs`. Optional legacy `.drawio` files remain under [`diagrams/`](diagrams/) if you prefer diagrams.net.
 
 ## Diagrams index
 
-Diagrams appear **inline next to the section they teach** — not as a giant gallery up front. Below is a compact filename → topic map. Open any SVG on GitHub; edit the matching `.drawio` in [diagrams.net](https://app.diagrams.net).
+Diagrams appear **inline next to the section they teach** — not as a giant gallery up front. Below is a compact filename → topic map. Open any PNG on GitHub; download the matching `.excalidraw` from [`diagrams/excalidraw/`](diagrams/excalidraw/) to edit on [excalidraw.com](https://excalidraw.com).
 
 **Example (API aggregation — the teaching style used throughout Foundations):**
 
-![API aggregation without vs with gateway](diagrams/svg/api-aggregation.svg)
+![API aggregation without vs with gateway](diagrams/png/api-aggregation.png)
 
-| SVG | Teaches |
+| PNG | Teaches |
 |-----|---------|
-| [api-aggregation.svg](diagrams/svg/api-aggregation.svg) | API gateway — 3 calls vs 1 |
-| [vertical-vs-horizontal-scale.svg](diagrams/svg/vertical-vs-horizontal-scale.svg) | System characteristics — scale up vs out |
-| [cache-aside-vs-direct.svg](diagrams/svg/cache-aside-vs-direct.svg) | Caching — without cache vs cache-aside |
-| [dns-resolution.svg](diagrams/svg/dns-resolution.svg) | DNS |
-| [load-balancing.svg](diagrams/svg/load-balancing.svg) | Load balancing |
-| [caching-strategies.svg](diagrams/svg/caching-strategies.svg) | Caching strategies |
-| [sharding-consistent-hash.svg](diagrams/svg/sharding-consistent-hash.svg) | Sharding & consistent hashing |
-| [replication-failover.svg](diagrams/svg/replication-failover.svg) | Replication |
-| [cap-pacelc.svg](diagrams/svg/cap-pacelc.svg) | CAP & PACELC |
-| [messaging.svg](diagrams/svg/messaging.svg) | Messaging (queue vs pub/sub) |
-| [rate-limiting.svg](diagrams/svg/rate-limiting.svg) | Rate limiting |
-| [websocket-vs-polling.svg](diagrams/svg/websocket-vs-polling.svg) | Real-time: polling vs streams |
-| [bloom-filter.svg](diagrams/svg/bloom-filter.svg) | Bloom filters |
-| [circuit-breaker.svg](diagrams/svg/circuit-breaker.svg) | Circuit breakers |
-| [observability.svg](diagrams/svg/observability.svg) | Observability |
-| [microservices-vs-monolith.svg](diagrams/svg/microservices-vs-monolith.svg) | Monolith vs microservices |
-| [url-shortener.svg](diagrams/svg/url-shortener.svg) | URL shortener design |
-| [news-feed.svg](diagrams/svg/news-feed.svg) | News feed |
-| [chat-messaging.svg](diagrams/svg/chat-messaging.svg) | Chat |
-| [uber-dispatch.svg](diagrams/svg/uber-dispatch.svg) | Uber-like dispatch |
-| [video-streaming.svg](diagrams/svg/video-streaming.svg) | Video streaming |
-| [dropbox.svg](diagrams/svg/dropbox.svg) | Dropbox-like |
-| [notification-system.svg](diagrams/svg/notification-system.svg) | Notifications |
-| [nearby-places.svg](diagrams/svg/nearby-places.svg) | Nearby places |
-| [group-chat.svg](diagrams/svg/group-chat.svg) | Group chat |
-| [ecommerce-checkout.svg](diagrams/svg/ecommerce-checkout.svg) | Checkout |
-| [recommendation-feed.svg](diagrams/svg/recommendation-feed.svg) | Recommendations |
-| [search-inverted-index.svg](diagrams/svg/search-inverted-index.svg) | Search |
-| [typeahead.svg](diagrams/svg/typeahead.svg) | Typeahead |
-| [web-crawler.svg](diagrams/svg/web-crawler.svg) | Web crawler |
-| [ticket-booking.svg](diagrams/svg/ticket-booking.svg) | Ticket booking |
-| [payments.svg](diagrams/svg/payments.svg) | Payments |
-| [interview-flow.svg](diagrams/svg/interview-flow.svg) | Interview flow |
-| [whiteboard-template.svg](diagrams/svg/whiteboard-template.svg) | Whiteboard template |
+| [api-aggregation.png](diagrams/png/api-aggregation.png) | API gateway — 3 calls vs 1 |
+| [vertical-vs-horizontal-scale.png](diagrams/png/vertical-vs-horizontal-scale.png) | System characteristics — scale up vs out |
+| [cache-aside-vs-direct.png](diagrams/png/cache-aside-vs-direct.png) | Caching — without cache vs cache-aside |
+| [dns-resolution.png](diagrams/png/dns-resolution.png) | DNS |
+| [load-balancing.png](diagrams/png/load-balancing.png) | Load balancing |
+| [caching-strategies.png](diagrams/png/caching-strategies.png) | Caching strategies |
+| [sharding-consistent-hash.png](diagrams/png/sharding-consistent-hash.png) | Sharding & consistent hashing |
+| [replication-failover.png](diagrams/png/replication-failover.png) | Replication |
+| [cap-pacelc.png](diagrams/png/cap-pacelc.png) | CAP & PACELC |
+| [messaging.png](diagrams/png/messaging.png) | Messaging (queue vs pub/sub) |
+| [rate-limiting.png](diagrams/png/rate-limiting.png) | Rate limiting |
+| [websocket-vs-polling.png](diagrams/png/websocket-vs-polling.png) | Real-time: polling vs streams |
+| [bloom-filter.png](diagrams/png/bloom-filter.png) | Bloom filters |
+| [circuit-breaker.png](diagrams/png/circuit-breaker.png) | Circuit breakers |
+| [observability.png](diagrams/png/observability.png) | Observability |
+| [microservices-vs-monolith.png](diagrams/png/microservices-vs-monolith.png) | Monolith vs microservices |
+| [url-shortener.png](diagrams/png/url-shortener.png) | URL shortener design |
+| [news-feed.png](diagrams/png/news-feed.png) | News feed |
+| [chat-messaging.png](diagrams/png/chat-messaging.png) | Chat |
+| [uber-dispatch.png](diagrams/png/uber-dispatch.png) | Uber-like dispatch |
+| [video-streaming.png](diagrams/png/video-streaming.png) | Video streaming |
+| [dropbox.png](diagrams/png/dropbox.png) | Dropbox-like |
+| [notification-system.png](diagrams/png/notification-system.png) | Notifications |
+| [nearby-places.png](diagrams/png/nearby-places.png) | Nearby places |
+| [group-chat.png](diagrams/png/group-chat.png) | Group chat |
+| [ecommerce-checkout.png](diagrams/png/ecommerce-checkout.png) | Checkout |
+| [recommendation-feed.png](diagrams/png/recommendation-feed.png) | Recommendations |
+| [search-inverted-index.png](diagrams/png/search-inverted-index.png) | Search |
+| [typeahead.png](diagrams/png/typeahead.png) | Typeahead |
+| [web-crawler.png](diagrams/png/web-crawler.png) | Web crawler |
+| [ticket-booking.png](diagrams/png/ticket-booking.png) | Ticket booking |
+| [payments.png](diagrams/png/payments.png) | Payments |
+| [interview-flow.png](diagrams/png/interview-flow.png) | Interview flow |
+| [whiteboard-template.png](diagrams/png/whiteboard-template.png) | Whiteboard template |
 
 ## Table of Contents
 
@@ -770,7 +770,7 @@ Pitfalls are normal. The difference between candidates is how quickly they notic
 
 **In plain English:** Before drawing boxes, decide what "good" means for the product — how fast, how reliable, how consistent. For an Instagram-like feed you might care more about quick loads than every like appearing instantly everywhere.
 
-![Vertical vs horizontal scaling](diagrams/svg/vertical-vs-horizontal-scale.svg)
+![Vertical vs horizontal scaling](diagrams/png/vertical-vs-horizontal-scale.png)
 
 > **Key takeaway:** Name concrete targets (latency, availability, consistency) early; those numbers drive every later choice.
 
@@ -881,7 +881,7 @@ TCP: reliable ordered streams (HTTP, most DBs). UDP: lower overhead, app handles
 
 ### WebSockets & long polling
 
-![WebSocket vs SSE vs Polling](diagrams/svg/websocket-vs-polling.svg)
+![WebSocket vs SSE vs Polling](diagrams/png/websocket-vs-polling.png)
 
 For server push (chat, collab cursors), WebSockets keep a bidirectional channel. They stress connection-count limits and need sticky routing or a pub/sub fan-out layer. Long polling is a simpler fallback.
 
@@ -923,9 +923,9 @@ Label protocol on arrows: `HTTPS`, `gRPC`, `Kafka`, `Redis PUB/SUB`. It signals 
 
 **In plain English:** DNS is the phone book of the internet: it turns a name like maps.example.com into an IP address your phone can dial. When you type a URL, DNS is usually the first hop.
 
-![DNS Resolution](diagrams/svg/dns-resolution.svg)
+![DNS Resolution](diagrams/png/dns-resolution.png)
 
-<sub>Editable source: [dns-resolution.drawio](diagrams/dns-resolution.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [dns-resolution.excalidraw](diagrams/excalidraw/dns-resolution.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 
 > **Key takeaway:** DNS gets users to the right edge; it is a blunt failover tool because caches hold answers for a TTL.
@@ -1073,9 +1073,9 @@ Say “reverse proxy / L7 LB” when you mean edge routing; reserve “forward p
 
 **In plain English:** Sometimes the server needs to push updates to the user — a new chat message, a live score, a typing indicator — without the app constantly asking "anything new?". That is what WebSockets, SSE, and polling are about.
 
-![WebSocket vs SSE vs Polling](diagrams/svg/websocket-vs-polling.svg)
+![WebSocket vs SSE vs Polling](diagrams/png/websocket-vs-polling.png)
 
-<sub>Editable source: [websocket-vs-sse-vs-polling.drawio](diagrams/websocket-vs-sse-vs-polling.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [websocket-vs-polling.excalidraw](diagrams/excalidraw/websocket-vs-polling.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 
 > **Key takeaway:** Do not default to WebSockets for everything; pick the transport by direction of data and how flaky the network is.
@@ -1156,9 +1156,9 @@ Ask: “Do we need client→server messages at high rate, or mostly server push?
 
 **In plain English:** A load balancer is a traffic cop in front of many identical servers. Instead of one machine melting under Black Friday traffic, requests are spread across healthy copies.
 
-![Load Balancing](diagrams/svg/load-balancing.svg)
+![Load Balancing](diagrams/png/load-balancing.png)
 
-<sub>Editable source: [load-balancing-patterns.drawio](diagrams/load-balancing-patterns.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [load-balancing.excalidraw](diagrams/excalidraw/load-balancing.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 
 > **Key takeaway:** Put an LB in front of a stateless app tier; health checks remove bad instances so users never notice one death.
@@ -1221,7 +1221,7 @@ Say “stateless app servers behind an L7 LB” early; it unlocks horizontal sca
 
 **In plain English:** Imagine a mobile shopping app that needs the user's profile, recent orders, and recommendations to paint the home screen. Without help, the phone makes three separate calls over a flaky mobile network. An API gateway (or a Backend-for-Frontend) can turn that into one call: the phone asks once, and the gateway gathers the pieces on the fast datacenter network.
 
-![API aggregation without vs with gateway](diagrams/svg/api-aggregation.svg)
+![API aggregation without vs with gateway](diagrams/png/api-aggregation.png)
 
 > **Key takeaway:** A gateway is the front door — routing, auth, rate limits, and optional aggregation — not a dumping ground for all business logic.
 
@@ -1276,9 +1276,9 @@ Draw **Clients → Gateway (auth, rate limit) → Service A/B/C**. Say internal 
 
 **In plain English:** Rate limiting is a polite bouncer: it caps how many requests a user, IP, or API key can make so one noisy client cannot knock over the whole club.
 
-![Rate Limiting](diagrams/svg/rate-limiting.svg)
+![Rate Limiting](diagrams/png/rate-limiting.png)
 
-<sub>Editable source: [rate-limiting-algorithms.drawio](diagrams/rate-limiting-algorithms.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [rate-limiting.excalidraw](diagrams/excalidraw/rate-limiting.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 
 > **Key takeaway:** Protect shared resources with per-key limits; return 429 with Retry-After instead of letting the database melt.
@@ -1344,12 +1344,12 @@ Ask “per user or per IP?” and “burst allowed?” Then pick token bucket + 
 
 **In plain English:** A cache keeps a hot copy of slow-to-fetch data in fast memory so you do not ask the database every time. A CDN is the same idea for files (images, videos, JS) stored in many cities so users download from somewhere nearby.
 
-![Caching Strategies](diagrams/svg/caching-strategies.svg)
+![Caching Strategies](diagrams/png/caching-strategies.png)
 
-<sub>Editable source: [caching-strategies.drawio](diagrams/caching-strategies.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [caching-strategies.excalidraw](diagrams/excalidraw/caching-strategies.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 
-![Without cache vs cache-aside](diagrams/svg/cache-aside-vs-direct.svg)
+![Without cache vs cache-aside](diagrams/png/cache-aside-vs-direct.png)
 
 > **Key takeaway:** Cache what is read often and expensive to recompute; always have a plan for stale data (TTL or invalidate on write).
 
@@ -1547,9 +1547,9 @@ After drawing tables, verbally add indexes for the top three queries. Interviewe
 
 **In plain English:** When one database can no longer hold all the rows or take all the writes, sharding splits the data across many databases — each holds a slice (for example, users A–M on shard 1, N–Z on shard 2).
 
-![Sharding & Consistent Hashing](diagrams/svg/sharding-consistent-hash.svg)
+![Sharding & Consistent Hashing](diagrams/png/sharding-consistent-hash.png)
 
-<sub>Editable source: [sharding-consistent-hash.drawio](diagrams/sharding-consistent-hash.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [sharding-consistent-hash.excalidraw](diagrams/excalidraw/sharding-consistent-hash.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 
 > **Key takeaway:** Pick a shard key that spreads load evenly and keeps related data together; hot keys are the classic failure mode.
@@ -1613,9 +1613,9 @@ State the shard key and the query that remains single-shard. Then name one cross
 
 **In plain English:** Consistent hashing is a clever way to decide which shard owns a key so that when you add or remove a machine, only a small fraction of keys move — not everything.
 
-![Sharding & Consistent Hashing](diagrams/svg/sharding-consistent-hash.svg)
+![Sharding & Consistent Hashing](diagrams/png/sharding-consistent-hash.png)
 
-<sub>Editable source: [sharding-consistent-hash.drawio](diagrams/sharding-consistent-hash.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [sharding-consistent-hash.excalidraw](diagrams/excalidraw/sharding-consistent-hash.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 
 > **Key takeaway:** Use it for caches and shards when membership changes; virtual nodes help spread keys more evenly.
@@ -1696,9 +1696,9 @@ Draw a ring, place 3 nodes, show adding a fourth and which keys move. Say “vir
 
 **In plain English:** Replication means keeping copies of the same data on more than one machine. If the primary dies, a replica can take over; replicas can also serve read traffic.
 
-![Replication & Failover](diagrams/svg/replication-failover.svg)
+![Replication & Failover](diagrams/png/replication-failover.png)
 
-<sub>Editable source: [replication-failover.drawio](diagrams/replication-failover.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [replication-failover.excalidraw](diagrams/excalidraw/replication-failover.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 
 > **Key takeaway:** Sync replication protects against data loss but slows writes; async is faster but can lose the last few seconds on failover.
@@ -1755,9 +1755,9 @@ Draw primary + at least one replica and say whether replication is sync or async
 
 **In plain English:** When part of the network breaks, a distributed system often cannot be both fully consistent and fully available at the same time. CAP/PACELC are vocabulary for naming which side you lean toward — for this product, under partition and in steady state.
 
-![CAP & PACELC](diagrams/svg/cap-pacelc.svg)
+![CAP & PACELC](diagrams/png/cap-pacelc.png)
 
-<sub>Editable source: [cap-pacelc.drawio](diagrams/cap-pacelc.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [cap-pacelc.excalidraw](diagrams/excalidraw/cap-pacelc.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 
 > **Key takeaway:** Do not recite acronyms; say what your design does when a region is unreachable and what users see.
@@ -1819,9 +1819,9 @@ Prefer concrete language: “On region failure we serve stale reads for 2 minute
 
 **In plain English:** A message queue lets one part of the system hand work to another without waiting — like dropping a ticket in a inbox. Pub/sub is the same idea when many teams each need their own copy of an event (email, search indexer, analytics).
 
-![Messaging](diagrams/svg/messaging.svg)
+![Messaging](diagrams/png/messaging.png)
 
-<sub>Editable source: [messaging-pubsub-vs-queue.drawio](diagrams/messaging-pubsub-vs-queue.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [messaging.excalidraw](diagrams/excalidraw/messaging.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 
 > **Key takeaway:** Use queues to absorb spikes and decouple failures; choose queue vs pub/sub based on one-consumer vs many-subscribers.
@@ -1996,9 +1996,9 @@ For “only one worker should process this,” prefer a **queue with single-cons
 
 **In plain English:** A Bloom filter is a tiny, slightly forgetful checklist: it can say "this item is definitely not here" or "maybe it is." Crawlers and caches use it to skip expensive lookups for things they have never seen.
 
-![Bloom Filter](diagrams/svg/bloom-filter.svg)
+![Bloom Filter](diagrams/png/bloom-filter.png)
 
-<sub>Editable source: [bloom-filter.drawio](diagrams/bloom-filter.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [bloom-filter.excalidraw](diagrams/excalidraw/bloom-filter.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 
 > **Key takeaway:** Great for cheap negative checks; never treat a "maybe" as proof the item exists.
@@ -2185,7 +2185,7 @@ Object storage (S3) is often the modern interview answer for blob bytes; a “DF
 
 ### Interview tip
 
-If designing Dropbox: prefer **chunked object storage + metadata service** over inventing HDFS. Name chunk size, replication, and “client uploads chunks directly.” Link: [Dropbox-like](#dropbox-like). Diagram: [diagrams/dropbox.drawio](diagrams/dropbox.drawio).
+If designing Dropbox: prefer **chunked object storage + metadata service** over inventing HDFS. Name chunk size, replication, and “client uploads chunks directly.” Link: [Dropbox-like](#dropbox-like). Diagram: [diagrams/excalidraw/dropbox.excalidraw](diagrams/excalidraw/dropbox.excalidraw).
 
 ### Self-check
 
@@ -2199,9 +2199,9 @@ If designing Dropbox: prefer **chunked object storage + metadata service** over 
 
 **In plain English:** If a dependency is on fire, blindly retrying can burn your service down too. A circuit breaker stops calling a sick dependency for a while; a bulkhead limits how much of your capacity any one dependency can consume.
 
-![Circuit Breaker](diagrams/svg/circuit-breaker.svg)
+![Circuit Breaker](diagrams/png/circuit-breaker.png)
 
-<sub>Editable source: [circuit-breaker-states.drawio](diagrams/circuit-breaker-states.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [circuit-breaker.excalidraw](diagrams/excalidraw/circuit-breaker.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 
 > **Key takeaway:** Pair timeouts, bounded retries with jitter, circuit breakers, and isolation — retries alone can amplify outages.
@@ -2334,9 +2334,9 @@ Write on the board: “SLO: 99.9% successful redirects, p99 < 50 ms; SLI: non-5x
 
 **In plain English:** Observability is how you explain why the system is sick using metrics, logs, and traces — the difference between "CPU is high" and "checkout is slow because payments p99 spiked after deploy."
 
-![Observability](diagrams/svg/observability.svg)
+![Observability](diagrams/png/observability.png)
 
-<sub>Editable source: [observability-three-pillars.drawio](diagrams/observability-three-pillars.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [observability.excalidraw](diagrams/excalidraw/observability.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 
 > **Key takeaway:** Instrument golden signals, correlate with request IDs across services, and alert on symptoms users feel.
@@ -2474,9 +2474,9 @@ flowchart LR
 
 **In plain English:** A monolith is one deployable app (still fine — and often wise — early on). Microservices split the product into independently deployable pieces that talk over the network. The senior move is usually: start modular, split when scale or team boundaries demand it.
 
-![Monolith vs Microservices](diagrams/svg/microservices-vs-monolith.svg)
+![Monolith vs Microservices](diagrams/png/microservices-vs-monolith.png)
 
-<sub>Editable source: [microservices-vs-monolith.drawio](diagrams/microservices-vs-monolith.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [microservices-vs-monolith.excalidraw](diagrams/excalidraw/microservices-vs-monolith.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 
 > **Key takeaway:** Do not split for resume points; split when you need independent scale, ownership, or blast-radius isolation.
@@ -2599,13 +2599,13 @@ Add a box for **Auth service / IdP** and say “all data plane requests carry a 
 
 ## Whiteboard like a strong candidate
 
-![Whiteboard Template](diagrams/svg/whiteboard-template.svg)
+![Whiteboard Template](diagrams/png/whiteboard-template.png)
 
-![Interview Flow](diagrams/svg/interview-flow.svg)
+![Interview Flow](diagrams/png/interview-flow.png)
 
 This section is a **drawing and narration masterclass**. Foundations teach *what* to know; designs teach *what* to propose; this teaches *how* to look competent in the first 15 minutes with a marker in your hand.
 
-Open the starter template while practicing: [diagrams/whiteboard-starter-template.drawio](diagrams/whiteboard-starter-template.drawio) (https://app.diagrams.net or VS Code draw.io extension).
+Open the starter template while practicing: [diagrams/excalidraw/whiteboard-template.excalidraw](diagrams/excalidraw/whiteboard-template.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy draw.io also under [`diagrams/`](diagrams/).
 
 ### First 5 minutes script (clarify aloud)
 
@@ -2640,7 +2640,7 @@ flowchart LR
 
 **Narrate while drawing:** “Clients hit a load balancer in front of a stateless API tier. Reads go through a cache; writes hit the primary store. Side effects go async to a queue.”
 
-Use the template: [diagrams/whiteboard-starter-template.drawio](diagrams/whiteboard-starter-template.drawio).
+Use the template: [diagrams/excalidraw/whiteboard-template.excalidraw](diagrams/excalidraw/whiteboard-template.excalidraw).
 
 ### What NOT to draw early
 
@@ -2692,7 +2692,7 @@ Example: “Why not GraphQL?” → “Great for flexible mobile aggregation; th
 
 **Interviewer:** OK, draw the system.
 
-**You:** *[draws left→right]* Clients → LB → API service → Redis cache and Postgres. Creates write DB then fill cache. Redirects: cache then DB; 302. Click events async to a queue for analytics. *[points]* Diagram file we’d use in practice: [diagrams/url-shortener.drawio](diagrams/url-shortener.drawio).
+**You:** *[draws left→right]* Clients → LB → API service → Redis cache and Postgres. Creates write DB then fill cache. Redirects: cache then DB; 302. Click events async to a queue for analytics. *[points]* Diagram file we’d use in practice: [diagrams/excalidraw/url-shortener.excalidraw](diagrams/excalidraw/url-shortener.excalidraw).
 
 **Interviewer:** How do you generate codes?
 
@@ -2733,7 +2733,7 @@ Example: “Why not GraphQL?” → “Great for flexible mobile aggregation; th
 3. Say: “On post, enqueue; workers push IDs into followers’ caches; celebrities skipped — readers merge on read.”
 4. Leave ranking ML blank until asked.
 
-Diagram: [diagrams/news-feed.drawio](diagrams/news-feed.drawio).
+Diagram: [diagrams/excalidraw/news-feed.excalidraw](diagrams/excalidraw/news-feed.excalidraw).
 
 ### Practice checklist
 
@@ -2749,9 +2749,9 @@ Diagram: [diagrams/news-feed.drawio](diagrams/news-feed.drawio).
 
 The first five minutes decide whether your design solves the right problem. Clarifying is not stalling—it is product thinking under pressure.
 
-![Interview Flow](diagrams/svg/interview-flow.svg)
+![Interview Flow](diagrams/png/interview-flow.png)
 
-<sub>Editable source: [interview-clarify-to-hld.drawio](diagrams/interview-clarify-to-hld.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [interview-flow.excalidraw](diagrams/excalidraw/interview-flow.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 
 ### Goals of clarification
@@ -3182,7 +3182,7 @@ Say them deliberately in mocks until natural.
 
 **In plain English:** A URL shortener turns a long link into a short code (like short.ly/aB3xY9) and redirects people who open it. It is the classic warm-up design: easy to explain, rich enough to practice storage, caching, and abuse.
 
-![URL Shortener](diagrams/svg/url-shortener.svg)
+![URL Shortener](diagrams/png/url-shortener.png)
 
 > **Key takeaway:** Optimize the redirect path (cache first); generating unique codes and stopping spam are the real deep dives.
 
@@ -3374,9 +3374,9 @@ State what user experience should be in each case.
 7. Deep-dive code generation on the side.
 8. Circle SPOF (primary DB); state cache-through behavior on DB outage.
 
-![URL Shortener](diagrams/svg/url-shortener.svg)
+![URL Shortener](diagrams/png/url-shortener.png)
 
-<sub>Editable source: [url-shortener.drawio](diagrams/url-shortener.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [url-shortener.excalidraw](diagrams/excalidraw/url-shortener.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 ### Interviewer probes (realistic Q&A)
 
@@ -3403,9 +3403,9 @@ State what user experience should be in each case.
 
 Build a service or middleware that enforces request quotas across a fleet. Classic mid-level design: algorithms, distributed counters, and fail-open vs fail-closed.
 
-![Rate Limiter](diagrams/svg/rate-limiting.svg)
+![Rate Limiter](diagrams/png/rate-limiting.png)
 
-<sub>Editable source: [rate-limiter.drawio](diagrams/rate-limiter.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [rate-limiting.excalidraw](diagrams/excalidraw/rate-limiting.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 ### 1. Clarify
 
@@ -3515,7 +3515,7 @@ Local + Redis hybrid → multi-region with regional quotas → enriched rules (p
 
 ## Notification system
 
-![Notification System](diagrams/svg/notification-system.svg)
+![Notification System](diagrams/png/notification-system.png)
 
 Multi-channel notifications: push, email, SMS, in-app—triggered by product events with user preferences.
 
@@ -3661,9 +3661,9 @@ State what user experience should be in each case.
 4. Mention idempotency per notification id.
 5. Leave template rendering deep dive for later.
 
-![Notification System](diagrams/svg/notification-system.svg)
+![Notification System](diagrams/png/notification-system.png)
 
-<sub>Editable source: [notification-system.drawio](diagrams/notification-system.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [notification-system.excalidraw](diagrams/excalidraw/notification-system.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 ### Interviewer probes (realistic Q&A)
 
@@ -3678,7 +3678,7 @@ State what user experience should be in each case.
 
 ## News feed
 
-![News Feed](diagrams/svg/news-feed.svg)
+![News Feed](diagrams/png/news-feed.png)
 
 Home timeline of posts from people you follow—ranking optional for deep dive.
 
@@ -3818,9 +3818,9 @@ State what user experience should be in each case.
 5. Mark celebrities as pull exceptions.
 6. Leave ML ranker blank until asked (or point to recommendation section).
 
-![News Feed](diagrams/svg/news-feed.svg)
+![News Feed](diagrams/png/news-feed.png)
 
-<sub>Editable source: [news-feed.drawio](diagrams/news-feed.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [news-feed.excalidraw](diagrams/excalidraw/news-feed.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 ### Interviewer probes (realistic Q&A)
 
@@ -3835,7 +3835,7 @@ State what user experience should be in each case.
 
 ## Chat & messaging
 
-![Chat & Messaging](diagrams/svg/chat-messaging.svg)
+![Chat & Messaging](diagrams/png/chat-messaging.png)
 
 1:1 and group chat with online delivery, history, and read indicators (light).
 
@@ -3975,9 +3975,9 @@ State what user experience should be in each case.
 4. Add presence store; offline push.
 5. Leave media upload to object storage + CDN.
 
-![Chat & Messaging](diagrams/svg/chat-messaging.svg)
+![Chat & Messaging](diagrams/png/chat-messaging.png)
 
-<sub>Editable source: [chat-messaging.drawio](diagrams/chat-messaging.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [chat-messaging.excalidraw](diagrams/excalidraw/chat-messaging.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 ### Interviewer probes (realistic Q&A)
 
@@ -4137,7 +4137,7 @@ State what user experience should be in each case.
 
 ## Uber-like
 
-![Uber-like Dispatch](diagrams/svg/uber-dispatch.svg)
+![Uber-like Dispatch](diagrams/png/uber-dispatch.png)
 
 Riders request trips; drivers are matched using geospatial proximity and ETA.
 
@@ -4265,9 +4265,9 @@ State what user experience should be in each case.
 4. Event pipeline for trip state.
 5. Leave pricing/surge as formula box.
 
-![Uber-like Dispatch](diagrams/svg/uber-dispatch.svg)
+![Uber-like Dispatch](diagrams/png/uber-dispatch.png)
 
-<sub>Editable source: [uber-dispatch.drawio](diagrams/uber-dispatch.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [uber-dispatch.excalidraw](diagrams/excalidraw/uber-dispatch.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 ### Interviewer probes (realistic Q&A)
 
@@ -4282,7 +4282,7 @@ State what user experience should be in each case.
 
 ## Video streaming
 
-![Video Streaming](diagrams/svg/video-streaming.svg)
+![Video Streaming](diagrams/png/video-streaming.png)
 
 Upload, process, and stream videos with adaptive bitrate (think YouTube/NetflixLite).
 
@@ -4412,9 +4412,9 @@ State what user experience should be in each case.
 3. Metadata DB for titles; playback auth signed cookies/URLs.
 4. Leave recommendation blank or stub.
 
-![Video Streaming](diagrams/svg/video-streaming.svg)
+![Video Streaming](diagrams/png/video-streaming.png)
 
-<sub>Editable source: [video-streaming.drawio](diagrams/video-streaming.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [video-streaming.excalidraw](diagrams/excalidraw/video-streaming.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 ### Interviewer probes (realistic Q&A)
 
@@ -4429,7 +4429,7 @@ State what user experience should be in each case.
 
 ## Dropbox-like
 
-![Dropbox-like Sync](diagrams/svg/dropbox.svg)
+![Dropbox-like Sync](diagrams/png/dropbox.png)
 
 Users upload files; sync across devices with dedupe, versioning, and sharing (light).
 
@@ -4552,9 +4552,9 @@ State what user experience should be in each case.
 3. Content-hash dedup index; sync notify channel.
 4. Mention checksums on chunk upload.
 
-![Dropbox-like Sync](diagrams/svg/dropbox.svg)
+![Dropbox-like Sync](diagrams/png/dropbox.png)
 
-<sub>Editable source: [dropbox.drawio](diagrams/dropbox.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [dropbox.excalidraw](diagrams/excalidraw/dropbox.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 ### Interviewer probes (realistic Q&A)
 
@@ -4571,9 +4571,9 @@ State what user experience should be in each case.
 
 Polite, scalable URL fetcher for search/index pipelines. Focus on frontier, politeness, dedup, and failure isolation—not building Google.
 
-![Web Crawler](diagrams/svg/web-crawler.svg)
+![Web Crawler](diagrams/png/web-crawler.png)
 
-<sub>Editable source: [web-crawler.drawio](diagrams/web-crawler.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [web-crawler.excalidraw](diagrams/excalidraw/web-crawler.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 
 ### 1. Clarify
@@ -4679,9 +4679,9 @@ Add headless render pool for JS sites; change-detection recrawl; integrate with 
 
 Suggest queries or entities as the user types, with very low latency.
 
-![Typeahead](diagrams/svg/typeahead.svg)
+![Typeahead](diagrams/png/typeahead.png)
 
-<sub>Editable source: [typeahead.drawio](diagrams/typeahead.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [typeahead.excalidraw](diagrams/excalidraw/typeahead.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 
 ### 1. Clarify
@@ -4814,9 +4814,9 @@ State what user experience should be in each case.
 
 Full-text search over documents (products, web pages, or app content) with ranking and filters.
 
-![Search Inverted Index](diagrams/svg/search-inverted-index.svg)
+![Search Inverted Index](diagrams/png/search-inverted-index.png)
 
-<sub>Editable source: [search-inverted-index.drawio](diagrams/search-inverted-index.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [search-inverted-index.excalidraw](diagrams/excalidraw/search-inverted-index.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 
 ### 1. Clarify
@@ -4946,9 +4946,9 @@ State what user experience should be in each case.
 
 Concert/stadium seats (or airline-style inventory) with holds, payments, and no double booking.
 
-![Ticket Booking](diagrams/svg/ticket-booking.svg)
+![Ticket Booking](diagrams/png/ticket-booking.png)
 
-<sub>Editable source: [ticket-booking-concurrency.drawio](diagrams/ticket-booking-concurrency.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [ticket-booking.excalidraw](diagrams/excalidraw/ticket-booking.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 
 ### 1. Clarify
@@ -5084,9 +5084,9 @@ State what user experience should be in each case.
 
 Move money (or ledger entries) between parties with idempotency, webhooks, and auditability—marketplace or merchant payments.
 
-![Payments Idempotency](diagrams/svg/payments.svg)
+![Payments Idempotency](diagrams/png/payments.png)
 
-<sub>Editable source: [payment-idempotency.drawio](diagrams/payment-idempotency.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [payments.excalidraw](diagrams/excalidraw/payments.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 
 ### 1. Clarify
@@ -5244,9 +5244,9 @@ State what user experience should be in each case.
 
 Geospatial search: find businesses near a lat/lng, filter by category, sort by distance/rating. Interviewers probe geo indexes, hot downtown tiles, and ranking.
 
-![Nearby Places](diagrams/svg/nearby-places.svg)
+![Nearby Places](diagrams/png/nearby-places.png)
 
-<sub>Editable source: [nearby-places.drawio](diagrams/nearby-places.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [nearby-places.excalidraw](diagrams/excalidraw/nearby-places.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 ### 1. Clarify questions a strong candidate asks first
 
@@ -5338,9 +5338,9 @@ Add autocomplete (typeahead), spell correction, personalized rerank, ads auction
 
 Channels, servers/workspaces, fan-out to many members, presence, roles. Harder than 1:1 chat because of **membership cardinality** and **hot channels**.
 
-![Group Chat](diagrams/svg/group-chat.svg)
+![Group Chat](diagrams/png/group-chat.png)
 
-<sub>Editable source: [group-chat.drawio](diagrams/group-chat.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [group-chat.excalidraw](diagrams/excalidraw/group-chat.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 ### 1. Clarify questions
 
@@ -5511,9 +5511,9 @@ Senior signal: “GC of tombstones in CRDTs,” “doc lease,” “schema for o
 
 Cart → reserve inventory → payment → order. Classic consistency + idempotency + oversell prevention.
 
-![E-commerce Checkout](diagrams/svg/ecommerce-checkout.svg)
+![E-commerce Checkout](diagrams/png/ecommerce-checkout.png)
 
-<sub>Editable source: [ecommerce-checkout.drawio](diagrams/ecommerce-checkout.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [ecommerce-checkout.excalidraw](diagrams/excalidraw/ecommerce-checkout.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 ### 1. Clarify questions
 
@@ -5597,9 +5597,9 @@ Double charge without idempotency; reservation leak (TTL worker down); stock des
 
 Not a full ML course — an **architecture sketch** for candidate generation → rank → filter → serve, with online/offline features. Use when interviewers push past basic news-feed fan-out.
 
-![Recommendation Feed](diagrams/svg/recommendation-feed.svg)
+![Recommendation Feed](diagrams/png/recommendation-feed.png)
 
-<sub>Editable source: [recommendation-feed.drawio](diagrams/recommendation-feed.drawio) (open in [diagrams.net](https://app.diagrams.net)).</sub>
+<sub>Editable source: [recommendation-feed.excalidraw](diagrams/excalidraw/recommendation-feed.excalidraw) (open at [excalidraw.com](https://excalidraw.com)). Legacy: `.drawio` under [`diagrams/`](diagrams/).</sub>
 
 ### 1. Clarify questions
 
