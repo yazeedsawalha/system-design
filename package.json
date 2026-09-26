@@ -1,16 +1,16 @@
 {
-  "name": "system-design-site",
-  "version": "1.0.0",
-  "description": "Free system design interview curriculum with Excalidraw-style diagrams",
-  "main": "index.js",
+  "name": "system-design-from-zero",
+  "version": "2.0.0",
+  "private": true,
+  "description": "A free, visual system design guide in one README — diagrams generated from code",
+  "type": "module",
   "scripts": {
-    "gen:diagrams": "node scripts/gen_excalidraw_diagrams.mjs",
-    "test": "echo \"No tests yet\""
+    "diagrams": "node scripts/diagrams/render.mjs"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@moona3k/excalidraw-export": "^0.2.1"
+  "license": "MIT",
+  "devDependencies": {
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "puppeteer-core": "^25.12.0"
   }
 }
